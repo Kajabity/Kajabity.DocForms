@@ -18,18 +18,14 @@
  * http://www.kajabity.com
  */
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-
-using Kajabity.Tools.Forms;
+using Kajabity.DocForms.Forms;
 
 namespace HexViewer
 {
-	/// <summary>
-	/// Description of MainForm.
-	/// </summary>
-	public partial class MainForm : SDIForm
+    /// <summary>
+    /// Description of MainForm.
+    /// </summary>
+    public partial class MainForm : SDIRecentDocumentsForm
 	{
 		public MainForm()
 			: base( new BinaryDocumentManager() )
@@ -39,9 +35,8 @@ namespace HexViewer
 			//
 			InitializeComponent();
 
-            //
-            // TODO: Add constructor code after the InitializeComponent() call.
-            //
+            // Load recent documents.
+            InitialseRecentDocuments( recentDocumentsToolStripMenuItem );
         }
 
         public override void DocumentChanged()
@@ -86,5 +81,15 @@ namespace HexViewer
 		{
 			this.FileExitClick(sender, e);
 		}
-	}
+
+        private void recentDocumentsToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            this.OnRecentDocumentMenuItemClicked( sender, e );
+        }
+
+        private void fileToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
+        {
+            this.OnParentMenuDropDownOpening( sender, e );
+        }
+    }
 }

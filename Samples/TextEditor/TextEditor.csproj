@@ -97,12 +97,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Kajabity Tools\Kajabity Tools.csproj">
-      <Project>{15F2E1E6-D8B9-4AF1-85BB-7D28BD88B9BD}</Project>
-      <Name>Kajabity Tools</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -121,5 +115,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Kajabity.DocForms\Kajabity.DocForms.csproj">
+      <Project>{15f2e1e6-d8b9-4af1-85bb-7d28bd88b9bd}</Project>
+      <Name>Kajabity.DocForms</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

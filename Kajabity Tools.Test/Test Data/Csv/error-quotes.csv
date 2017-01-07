@@ -1,3 +1,0 @@
-normal field,"valid quoted field"
- "leading space error",first-error-line
-"trailing space error" ,second-error-line

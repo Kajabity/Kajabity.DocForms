@@ -3,10 +3,12 @@
 #---------------------------------# 
  
 # version format 
-version: 0.4-{branch}-{build}
+version: 0.5-{build}
 
-# branches to build
-#branches
+# branches to build - only build the master branch.
+branches:
+  only:
+    - master
 
  
 # Do not build on tags (GitHub only)
@@ -19,7 +21,8 @@ skip_tags: true
  
 # scripts that are called at very beginning, before repo cloning 
 init:
-    - cmd: git config --global core.autocrlf true
+  # Carriage returns are bad
+  - git config --global core.autocrlf input
 
 # Automatically register private account and/or project AppVeyor NuGet feeds.
 nuget:
@@ -37,7 +40,7 @@ platform: Any CPU
 
 # build Configuration, i.e. Debug, Release, etc.
 before_build:
-    - cmd: nuget restore "Kajabity Tools.sln"
+    - cmd: nuget restore "Kajabity.DocForms.sln"
 
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
@@ -55,18 +58,14 @@ build:
 #---------------------------------# 
  
 artifacts:
-    - path: Kajabity Tools\bin\$(configuration)\Kajabity.Tools.dll
-
-    - path: Samples\CsvEditor\bin\$(configuration)\CsvEditor.exe
+    - path: Kajabity.DocForms\bin\$(configuration)\Kajabity.DocForms.dll
 
     - path: Samples\HexViewer\bin\$(configuration)\HexViewer.exe
-
-    - path: Samples\JavaPropertiesEditor\bin\$(configuration)\JavaPropertiesEditor.exe
 
     - path: Samples\TextEditor\bin\$(configuration)\TextEditor.exe
 
       # Being more specific to avoid also identifying NUnit as an artefact.
-    - path: Kajabity Tools\bin\$(configuration)\*.nupkg
+    - path: Kajabity.DocForms\bin\$(configuration)\*.nupkg
 
 #---------------------------------# 
 #     deployment configuration    # 
@@ -89,8 +88,8 @@ deploy:
 
     # Deploy to GitHub Releases 
   - provider: GitHub 
-    release: kajabity.tools-v$(appveyor_build_version)
-    description: 'Kajabity Tools Release v$(appveyor_build_version)'
+    release: Kajabity.DocForms-v$(appveyor_build_version)
+    description: 'Kajabity.DocForms Release v$(appveyor_build_version)'
     auth_token:
         secure: qyEhOXLpH0txl0uO1Y3k99DUnjxsF2bmZydo8h7g05/fyNs+uj/ge+Qg273TsVU1
     draft: false

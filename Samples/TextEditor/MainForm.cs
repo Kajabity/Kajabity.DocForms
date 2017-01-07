@@ -18,18 +18,16 @@
  * http://www.kajabity.com
  */
 
+using Kajabity.DocForms.Documents;
+using Kajabity.DocForms.Forms;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using Kajabity.Tools.Forms;
 
 namespace TextEditor
 {
-	/// <summary>
-	/// Description of MainForm.
-	/// </summary>
-	public partial class MainForm : SDIForm
+    /// <summary>
+    /// Description of MainForm.
+    /// </summary>
+    public partial class MainForm : SDIForm
 	{
 		public MainForm() :
 			base( new TextDocumentManager() )

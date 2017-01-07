@@ -18,7 +18,7 @@
  * http://www.kajabity.com
  */
 using System;
-using Kajabity.Tools.Forms;
+using Kajabity.DocForms.Documents;
 
 namespace HexViewer
 {
