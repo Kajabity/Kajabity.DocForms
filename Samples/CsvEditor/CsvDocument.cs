@@ -18,7 +18,7 @@
  * http://www.kajabity.com
  */
 
-using Kajabity.Tools.Forms;
+using Kajabity.DocForms.Documents;
 
 namespace CsvEditor
 {

@@ -25,7 +25,7 @@ namespace HexViewer
     /// <summary>
     /// Description of MainForm.
     /// </summary>
-    public partial class MainForm : SDIRecentDocumentsForm
+    public partial class MainForm : SDIForm
 	{
 		public MainForm()
 			: base( new BinaryDocumentManager() )

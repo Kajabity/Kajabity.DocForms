@@ -19,15 +19,15 @@
  */
 
 using System.IO;
-using Kajabity.Tools.Forms;
+using Kajabity.DocForms.Documents;
 
 
 namespace JavaPropertiesEditor
 {
-	/// <summary>
-	/// Description of JavaPropertiesDocumentManager.
-	/// </summary>
-	public class JavaPropertiesDocumentManager : DocumentManager
+    /// <summary>
+    /// Description of JavaPropertiesDocumentManager.
+    /// </summary>
+    public class JavaPropertiesDocumentManager : DocumentManager
 	{
 		public JavaPropertiesDocumentManager()
 		{

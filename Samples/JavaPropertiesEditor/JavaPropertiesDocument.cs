@@ -18,8 +18,7 @@
  * http://www.kajabity.com
  */
 using System;
-
-using Kajabity.Tools.Forms;
+using Kajabity.DocForms.Documents;
 using Kajabity.Tools.Java;
 
 namespace JavaPropertiesEditor

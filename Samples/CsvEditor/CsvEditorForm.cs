@@ -1,6 +1,4 @@
-﻿using Kajabity.Tools.Csv;
-using Kajabity.Tools.Forms;
-/*
+﻿/*
  * Copyright 2009-15 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +20,8 @@ using Kajabity.Tools.Forms;
 using System;
 using System.Text;
 using System.Windows.Forms;
+using Kajabity.DocForms.Forms;
+using Kajabity.Tools.Csv;
 
 namespace CsvEditor
 {

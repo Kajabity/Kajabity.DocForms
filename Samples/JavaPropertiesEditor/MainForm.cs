@@ -18,17 +18,17 @@
  * http://www.kajabity.com
  */
 
-using Kajabity.Tools.Forms;
-using Kajabity.Tools.Java;
 using System;
 using System.Windows.Forms;
+using Kajabity.DocForms.Forms;
+using Kajabity.Tools.Java;
 
 namespace JavaPropertiesEditor
 {
-	/// <summary>
-	/// Description of MainForm.
-	/// </summary>
-	public partial class MainForm : SDIForm
+    /// <summary>
+    /// Description of MainForm.
+    /// </summary>
+    public partial class MainForm : SDIForm
 	{
 		public MainForm()
             : base( new JavaPropertiesDocumentManager() )

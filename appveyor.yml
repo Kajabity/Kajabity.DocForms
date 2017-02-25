@@ -1,14 +1,32 @@
+##
+## Copyright 2009-17 Williams Technologies Limited.
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+##
+## Kajbity is a trademark of Williams Technologies Limited.
+##
+## http://www.kajabity.com
+##
+
 #---------------------------------# 
 #      general configuration      # 
 #---------------------------------# 
  
 # version format 
-version: 0.5-{build}
+version: 0.1-{build}
 
 # branches to build - only build the master branch.
-branches:
-  only:
-    - master
+#branches
 
  
 # Do not build on tags (GitHub only)
@@ -22,7 +40,7 @@ skip_tags: true
 # scripts that are called at very beginning, before repo cloning 
 init:
   # Carriage returns are bad
-  - git config --global core.autocrlf input
+  - git config --global core.autocrlf true
 
 # Automatically register private account and/or project AppVeyor NuGet feeds.
 nuget:
@@ -36,7 +54,7 @@ nuget:
 #---------------------------------# 
  
 # build platform, i.e. x86, x64, Any CPU. This setting is optional. 
-platform: Any CPU 
+# platform: Any CPU 
 
 # build Configuration, i.e. Debug, Release, etc.
 before_build:
@@ -63,9 +81,10 @@ artifacts:
     - path: Samples\HexViewer\bin\$(configuration)\HexViewer.exe
 
     - path: Samples\TextEditor\bin\$(configuration)\TextEditor.exe
-
-      # Being more specific to avoid also identifying NUnit as an artefact.
-    - path: Kajabity.DocForms\bin\$(configuration)\*.nupkg
+	
+    - path: Samples\CsvEditor\bin\$(configuration)\CsvEditor.exe
+	
+    - path: Samples\JavaPropertiesEditor\bin\$(configuration)\JavaPropertiesEditor.exe
 
 #---------------------------------# 
 #     deployment configuration    # 

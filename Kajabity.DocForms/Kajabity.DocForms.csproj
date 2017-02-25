@@ -10,7 +10,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Simon\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <DocumentationFile>bin\Debug\Kajabity Tools.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\Kajabity.DocForms.xml</DocumentationFile>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
@@ -97,10 +97,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Kajabity.Tools.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Kajabity.DocForms.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
@@ -116,16 +116,13 @@
     <Compile Include="Forms\SDIForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SDIRecentDocumentsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Documents\TextDocument.cs" />
     <Compile Include="Documents\TextDocumentManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Kajabity Tools.nuspec">
+    <None Include="Kajabity.DocForms.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Kajabity.Tools.snk" />
+    <None Include="Kajabity.DocForms.snk" />
     <None Include="license.rtf" />
     <None Include="NOTICE.txt" />
     <None Include="README.md" />

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
  *
  * http://www.kajabity.com
  */
-
-using System;
 
 namespace Kajabity.DocForms.Documents
 {

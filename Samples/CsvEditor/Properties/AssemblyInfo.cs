@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "CsvEditor" )]
-[assembly: AssemblyCopyright( "Copyright 2009-15 Williams Technologies Limited." )]
+[assembly: AssemblyCopyright( "Copyright 2009-17 Williams Technologies Limited." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

@@ -17,15 +17,15 @@
  *
  * http://www.kajabity.com
  */
-using System;
+
 using Kajabity.DocForms.Documents;
 
 namespace HexViewer
 {
-	/// <summary>
-	/// Description of PictureDocument.
-	/// </summary>
-	public class BinaryDocument : Document
+    /// <summary>
+    /// Description of PictureDocument.
+    /// </summary>
+    public class BinaryDocument : Document
 	{
 		private byte[] data;
 		public byte[] Data

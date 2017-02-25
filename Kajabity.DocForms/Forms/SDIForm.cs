@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,17 @@
  */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Forms;
 using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+
 using Kajabity.DocForms.Documents;
+using Microsoft.Win32;
 
 namespace Kajabity.DocForms.Forms
 {
@@ -30,8 +37,12 @@ namespace Kajabity.DocForms.Forms
     /// Extends System.Windows.Forms.Form to implement support for handling 
     /// Documents in a Single Document Interface (SDI) style.
     /// </summary>
-    public class SDIForm : Form
+    public class SDIForm: Form
     {
+        //  ---------------------------------------------------------------------
+        //  Attributes.
+        //  ---------------------------------------------------------------------
+
         /// <summary>
         /// A reference to an instance of the DocumentManager used to load and save
         /// documents for the application.
@@ -47,6 +58,42 @@ namespace Kajabity.DocForms.Forms
         protected bool backup = false;
 
         //  ---------------------------------------------------------------------
+        //  Recent Document Attributes.
+        //  ---------------------------------------------------------------------
+
+        /// <summary>
+        /// The base path for each Recent Document entry in the registry.
+        /// </summary>
+        private static string RecentDocumentRegistryEntryName = "RecentDocument-";
+
+        /// <summary>
+        /// Maximum number of documents to remember
+        /// </summary>
+        private static int MaximumRecentDocumentCount = 20;
+
+        /// <summary>
+        /// Maximum length of path the document path entry in the list.
+        /// </summary>
+        private static int MaximumDisplayNameLength = 100;
+
+        /// <summary>
+        /// Holds a list of the most recent filenames used by the application.
+        /// May be used to support Recent Files menu features.
+        /// </summary>
+        protected List<string> recentFiles = new List<string>();
+
+        /// <summary>
+        /// A reference to a menu item to be used to contain a list of recently opened 
+        /// files.
+        /// </summary>
+        protected ToolStripMenuItem recentItemsMenuItem = null;
+
+        /// <summary>
+        /// The registry path under which recent documents are stored.
+        /// </summary>
+        protected string registryPath;
+
+        //  ---------------------------------------------------------------------
         //  Constructors.
         //  ---------------------------------------------------------------------
 
@@ -56,7 +103,7 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         public SDIForm()
         {
-            this.Load += new EventHandler( SDIForm_Load );
+            Load += new EventHandler( SDIForm_Load );
         }
 
         /// <summary>
@@ -66,17 +113,17 @@ namespace Kajabity.DocForms.Forms
         public SDIForm( DocumentManager manager )
         {
             this.manager = manager;
-            this.Load += new EventHandler( SDIForm_Load );
+            Load += new EventHandler( SDIForm_Load );
         }
 
         //  ---------------------------------------------------------------------
         //  Methods.
         //  ---------------------------------------------------------------------
 
-        private void SDIForm_Load( object sender, System.EventArgs e )
+        private void SDIForm_Load( object sender, EventArgs e )
         {
             newDocument();
-            DocumentChanged();
+            //DocumentChanged();
         }
 
         /// <summary>
@@ -87,7 +134,7 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileNewClick( object sender, System.EventArgs e )
+        public void FileNewClick( object sender, EventArgs e )
         {
             if( canCloseDocument( sender, e ) )
             {
@@ -103,7 +150,7 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileOpenClick( object sender, System.EventArgs e )
+        public void FileOpenClick( object sender, EventArgs e )
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "Open " + Application.ProductName + " file";
@@ -206,13 +253,22 @@ namespace Kajabity.DocForms.Forms
         public virtual void DocumentChanged()
         {
             //	Force a display update.
-            this.Refresh();
+            Refresh();
+        }
+
+        /// <summary>
+        /// Called whenever a document is saved - only the filename and modified status will need updating.
+        /// Override, calling the base class implementation, to provide specific Forms handling.
+        /// </summary>
+        public virtual void DocumentStatusChanged()
+        {
+            // Derived forms could update filename or status display.
         }
 
         /// <summary>
         /// Helper to create a new document - triggers DocumentChanged().
         /// </summary>
-        private void newDocument()
+        protected void newDocument()
         {
             if( manager != null )
             {
@@ -234,7 +290,7 @@ namespace Kajabity.DocForms.Forms
                 manager.Load( filename );
 
                 // add successfully opened file to MRU list
-                //mruManager.Add( filename );
+                AddFileHistory( filename );
 
                 //	Refresh display.
                 DocumentChanged();
@@ -244,8 +300,8 @@ namespace Kajabity.DocForms.Forms
                 // Report the error
                 Debug.WriteLine( ex.ToString() );
 
-                // remove file from MRU list - if it exists
-                //mruManager.Remove(filename);
+                // Remove file from MRU list - if it exists
+                RemoveFileHistory( filename );
 
                 // Let the calling methods handle it.
                 throw ex;
@@ -253,27 +309,45 @@ namespace Kajabity.DocForms.Forms
         }
 
         /// <summary>
-        /// Helper to save a document - triggers DocumentChanged().
+        /// Helper to save a document - triggers DocumentStatusChanged().
         /// </summary>
         /// <param name="filename">the filename and path to save the document into</param>
         private void saveDocument( string filename )
         {
-            if( backup && File.Exists( filename ) )
+            try
             {
-                string backupFilename = filename + "~";
-
-                if( File.Exists( backupFilename ) )
+                if( backup && File.Exists( filename ) )
                 {
-                    File.Delete( backupFilename );
+                    string backupFilename = filename + "~";
+
+                    if( File.Exists( backupFilename ) )
+                    {
+                        File.Delete( backupFilename );
+                    }
+
+                    File.Move( filename, backupFilename );
                 }
 
-                File.Move( filename, backupFilename );
+                //	Save the file
+                manager.Save( filename );
+
+                // add successfully opened file to MRU list
+                AddFileHistory( filename );
+
+                //	Refresh display of document status.
+                DocumentStatusChanged();
             }
+            catch( Exception ex )
+            {
+                // Report the error
+                Debug.WriteLine( ex.ToString() );
 
-            manager.Save( filename );
+                // Remove file from MRU list - if it exists
+                RemoveFileHistory( filename );
 
-            //	Refresh display.
-            DocumentChanged();
+                // Let the calling methods handle it.
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -294,7 +368,7 @@ namespace Kajabity.DocForms.Forms
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
         /// <returns>returns true if the document is closed.</returns>
-        protected bool canCloseDocument( object sender, System.EventArgs e )
+        protected bool canCloseDocument( object sender, EventArgs e )
         {
             if( manager.Modified )
             {
@@ -317,5 +391,212 @@ namespace Kajabity.DocForms.Forms
 
             return true;
         }
+
+        #region Recent Document Methods
+        //  ---------------------------------------------------------------------
+        //  Recent Document Methods.
+        //  ---------------------------------------------------------------------
+
+        /// <summary>
+        /// A method to initialise the Recent Documents feature - pass in a menu item and,
+        /// when the menu is opened, it will have he recent files added.
+        /// </summary>
+        /// <param name="recentItemsMenuItem"></param>
+        public void InitialseRecentDocuments( ToolStripMenuItem recentItemsMenuItem )
+        {
+            this.recentItemsMenuItem = recentItemsMenuItem;
+
+            // Read any previously stored recent documents.
+            try
+            {
+                // Set registry path from Application Settings.
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string companyName = ( (AssemblyCompanyAttribute) Attribute.GetCustomAttribute( assembly, typeof( AssemblyCompanyAttribute ), false ) ).Company;
+                string appName = assembly.GetName().Name;
+
+                registryPath = "Software\\" + companyName + "\\" + appName + "\\Recent Documents";
+                Debug.WriteLine( "Registry Path = " + registryPath );
+
+                RegistryKey key = Registry.CurrentUser.OpenSubKey( registryPath );
+                if( key != null )
+                {
+                    for( int rd = 0; rd < MaximumRecentDocumentCount; rd++ )
+                    {
+                        string path = (string) key.GetValue( RecentDocumentRegistryEntryName + rd, "" );
+                        if( path != null && path.Length > 0 )
+                        {
+                            // Convert to a canonical, none relative format.
+                            string fullPath = Path.GetFullPath( path );
+
+                            // Ensure unique entries only.
+                            RemoveFileHistory( fullPath );
+
+                            // Now add this to the head of the list.
+                            recentFiles.Add( fullPath );
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            catch( Exception ex )
+            {
+                Debug.WriteLine( "Error loading recent documents from registry key " + registryPath );
+                Debug.Write( ex.Message );
+            }
+        }
+
+        /// <summary>
+        /// On Parent Menu DropDown Opening - e.g. fileToolStripMenuItem_DropDownOpening
+        /// </summary>
+        protected void OnParentMenuDropDownOpening( object sender, EventArgs e )
+        {
+            if( recentItemsMenuItem.DropDownItems.Count > 0 )
+            {
+                recentItemsMenuItem.DropDownItems.Clear();
+            }
+
+            recentItemsMenuItem.Enabled = recentFiles.Count > 0;
+
+            int maxRd = Math.Min( recentFiles.Count, MaximumRecentDocumentCount );
+            for( int rd = 0; rd < maxRd; rd++ )
+            {
+                string path = recentFiles[ rd ];
+
+                ToolStripMenuItem menuItem = new ToolStripMenuItem( GetShortPath( path ) );
+                menuItem.Tag = path;
+                menuItem.Click += OnRecentDocumentMenuItemClicked;
+
+                recentItemsMenuItem.DropDownItems.Add( menuItem );
+            }
+        }
+
+        /// <summary>
+        /// Truncates a path to fit within a certain number of characters by replacing path components with ellipses.
+        /// <see cref="https://msdn.microsoft.com/en-us/library/windows/desktop/bb773578(v=vs.85).aspx"/>
+        /// </summary>
+        /// <param name="pszOut">The address of the string that has been altered.</param>
+        /// <param name="pszSrc">A pointer to a null-terminated string of length MAX_PATH that contains the path to be altered.</param>
+        /// <param name="cchMax">
+        /// The maximum number of characters to be contained in the new string, including the terminating null character. 
+        /// For example, if cchMax = 8, the resulting string can contain a maximum of 7 characters plus the terminating null character.
+        /// </param>
+        /// <param name="dwFlags">Reserved</param>
+        /// <returns>Returns TRUE if successful, or FALSE otherwise.</returns>
+        [DllImport( "shlwapi.dll", CharSet = CharSet.Auto )]
+        static extern bool PathCompactPathEx( [Out] StringBuilder pszOut, string pszSrc, int cchMax, int dwFlags );
+
+        private string GetShortPath( string longPath )
+        {
+            StringBuilder shortPath = new StringBuilder( MaximumDisplayNameLength );
+            if( PathCompactPathEx( shortPath, longPath, shortPath.Capacity, 0 ) )
+            {
+                return shortPath.ToString();
+            }
+            else
+            {
+                return longPath;
+            }
+        }
+
+        /// <summary>
+        /// When the for closes, save the recent documents in the Registry.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnFormClosing( System.Windows.Forms.FormClosingEventArgs e )
+        {
+            if( canCloseDocument( this, e ) )
+            {
+                // Now, store recent document paths in registry.
+                try
+                {
+                    RegistryKey key = Registry.CurrentUser.CreateSubKey( registryPath );
+                    if( key != null )
+                    {
+                        int maxRd = Math.Min( recentFiles.Count, MaximumRecentDocumentCount );
+
+                        for( int rd = 0; rd < maxRd; rd++ )
+                        {
+                            key.SetValue( RecentDocumentRegistryEntryName + rd, recentFiles[ rd ] );
+                        }
+                    }
+                }
+                catch( Exception ex )
+                {
+                    Debug.WriteLine( "Error writing recent documents from registry key " + registryPath );
+                    Debug.WriteLine( ex.Message );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void OnRecentDocumentMenuItemClicked( object sender, EventArgs e )
+        {
+            string path = (string) ( (ToolStripMenuItem) sender ).Tag;
+
+            loadDocument( path );
+
+            if( !manager.Opened )
+            {
+                // Clearly not a valid entry any more - so remove it from the list.
+                RemoveFileHistory( path );
+
+                MessageBox.Show( this, "Failed to open \"" + path + "\".", "Open Recent",
+                    MessageBoxButtons.OK );
+            }
+            else
+            {
+                // Move it to the top of the list.
+                AddFileHistory( path );
+            }
+        }
+
+        /// <summary>
+        /// Add file name to MRU list.
+        /// Call this function when file is opened successfully.
+        /// If file already exists in the list, it is moved to the first place.
+        /// </summary>
+        /// <param name="file">File Name</param>
+        public void AddFileHistory( string file )
+        {
+            RemoveFileHistory( file );
+
+            // if array has maximum length, remove last element
+            if( recentFiles.Count == MaximumRecentDocumentCount )
+                recentFiles.RemoveAt( MaximumRecentDocumentCount - 1 );
+
+            // add new file name to the start of array
+            recentFiles.Insert( 0, file );
+        }
+
+        /// <summary>
+        /// Remove file name from MRU list.
+        /// Call this function when File - Open operation failed.
+        /// </summary>
+        /// <param name="file">File Name</param>
+        public void RemoveFileHistory( string file )
+        {
+            int i = 0;
+
+            IEnumerator myEnumerator = recentFiles.GetEnumerator();
+
+            while( myEnumerator.MoveNext() )
+            {
+                if( (string) myEnumerator.Current == file )
+                {
+                    recentFiles.RemoveAt( i );
+                    return;
+                }
+
+                i++;
+            }
+        }
+        #endregion
     }
 }

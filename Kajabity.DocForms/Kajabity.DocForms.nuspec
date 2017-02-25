@@ -8,12 +8,11 @@
     <owners>$author$</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>http://www.kajabity.com/content/kajabity-tools/</projectUrl>
+    <iconUrl>http://kajabity.com/images/logo-57x57.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <copyright>Copyright 2009-16 Williams Technologies Limited.</copyright>
-    <!--
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-    <tags>Tag1 Tag2</tags>
-    -->
+    <releaseNotes>Kajabity Tools Forms and Document classes extracted from the Kajabity.Tools nuget.</releaseNotes>
+    <copyright>Copyright © 2009-17 Williams Technologies Limited.</copyright>
+    <tags>Kajabity Tools Forms SDIForm Recent Documents MRU</tags>
   </metadata>
 </package>
