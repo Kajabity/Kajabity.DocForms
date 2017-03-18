@@ -44,9 +44,9 @@ namespace TextEditor
 
 		public override void DocumentChanged()
 		{
-			if( manager.Opened )
+			if( Manager.Opened )
 			{
-				textBox.Text = ((TextDocumentManager) manager).TextDocument.Text;
+				textBox.Text = ((TextDocumentManager) Manager).TextDocument.Text;
 			}
 
 			//	Force a display update.
@@ -57,98 +57,98 @@ namespace TextEditor
 		{
 			if( textBox.Modified)
 			{
-				((TextDocumentManager) manager).TextDocument.Text = textBox.Text;
+				((TextDocumentManager) Manager).TextDocument.Text = textBox.Text;
 			}
 		}
 
-		void NewToolStripMenuItemClick(object sender, EventArgs e)
+	    private void NewToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			FileNewClick( sender, e );
 		}
-		
-		void OpenToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void OpenToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			FileOpenClick( sender, e );
 		}
-		
-		void SaveToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void SaveToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 			FileSaveClick( sender, e );
 		}
-		
-		void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 			FileSaveAsClick( sender, e );
 		}
-		
-		void PageSetupToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void PageSetupToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 		}
-		
-		void PrintToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void PrintToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 		}
-		
-		void PrintPreviewToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void PrintPreviewToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 		}
-		
-		void ExitToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void ExitToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 			FileExitClick( sender, e );
 		}
-		
-		void PrintToolStripButtonClick(object sender, EventArgs e)
+
+	    private void PrintToolStripButtonClick(object sender, EventArgs e)
 		{
 			
 		}
-		
-		void CutToolStripButtonClick(object sender, EventArgs e)
+
+	    private void CutToolStripButtonClick(object sender, EventArgs e)
 		{
 			textBox.Cut();
 		}
-		
-		void CopyToolStripButtonClick(object sender, EventArgs e)
+
+	    private void CopyToolStripButtonClick(object sender, EventArgs e)
 		{
 			textBox.Copy();
 		}
-		
-		void PasteToolStripButtonClick(object sender, EventArgs e)
+
+	    private void PasteToolStripButtonClick(object sender, EventArgs e)
 		{
 			textBox.Paste();
 		}
-		
-		void UndoToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void UndoToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			textBox.Undo();
 		}
-		
-		void RedoToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void RedoToolStripMenuItemClick(object sender, EventArgs e)
 		{
 		}
-		
-		void SelectAllToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void SelectAllToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			textBox.SelectAll();
 		}
-		
-		void DeleteToolStripMenuItemClick(object sender, EventArgs e)
+
+	    private void DeleteToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			textBox.SelectedText = "";
 		}
-		
-		void EditToolStripMenuItemDropDownOpening(object sender, EventArgs e)
+
+	    private void EditToolStripMenuItemDropDownOpening(object sender, EventArgs e)
 		{
 			undoToolStripMenuItem.Enabled = textBox.CanUndo;
 		}
-		
-		void BottomToolStripPanelClick(object sender, System.EventArgs e)
+
+	    private void BottomToolStripPanelClick(object sender, EventArgs e)
 		{
 			
 		}

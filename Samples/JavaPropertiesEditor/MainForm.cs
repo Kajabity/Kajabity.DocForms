@@ -47,7 +47,7 @@ namespace JavaPropertiesEditor
 			//
 			InitializeComponent();
 
-            loadDocument( filename );
+            LoadDocument( filename );
 		}
 
 		public string Status
@@ -74,11 +74,11 @@ namespace JavaPropertiesEditor
             // Clear the list.
             listView1.Items.Clear();
 			
-			if( manager.Opened )
+			if( Manager.Opened )
 			{
                 //	Update main form heading.
-                Text = Application.ProductName + " - " + manager.Document.Name;
-				JavaProperties properties = ((JavaPropertiesDocument) manager.Document).Properties;
+                Text = Application.ProductName + " - " + Manager.Document.Name;
+				JavaProperties properties = ((JavaPropertiesDocument) Manager.Document).Properties;
 				
 				//	Update the content window.
 				foreach( String key in properties.Keys )

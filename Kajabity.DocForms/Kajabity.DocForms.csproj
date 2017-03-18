@@ -124,7 +124,6 @@
     </None>
     <None Include="Kajabity.DocForms.snk" />
     <None Include="license.rtf" />
-    <None Include="NOTICE.txt" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>

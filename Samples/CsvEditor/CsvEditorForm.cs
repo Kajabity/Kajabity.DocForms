@@ -46,9 +46,9 @@ namespace CsvEditor
             listView.Items.Clear();
             listView.Columns.Clear();
 
-            if( manager.Opened )
+            if( Manager.Opened )
             {
-                CsvDocument doc = (CsvDocument) manager.Document;
+                CsvDocument doc = (CsvDocument) Manager.Document;
                 ListViewItem[] lvItems = new ListViewItem[ doc.Rows.Length ];
                 int counter = 0;
                 int maxColumns = 1;
@@ -76,10 +76,10 @@ namespace CsvEditor
 
             }
 
-            saveToolStripButton.Enabled = manager.Opened;
-            saveToolStripMenuItem.Enabled = manager.Opened;
+            saveToolStripButton.Enabled = Manager.Opened;
+            saveToolStripMenuItem.Enabled = Manager.Opened;
 
-            saveAsToolStripMenuItem.Enabled = manager.Opened;
+            saveAsToolStripMenuItem.Enabled = Manager.Opened;
 
             printToolStripButton.Enabled = false; // manager.Opened;
             printToolStripMenuItem.Enabled = false; //manager.Opened;
@@ -98,13 +98,13 @@ namespace CsvEditor
         {
             string title = Application.ProductName;
 
-            if( manager.Opened )
+            if( Manager.Opened )
             {
                 //	Update main form heading.
-                title += " - " + manager.Document.Name;
+                title += " - " + Manager.Document.Name;
             }
 
-            if( manager.Modified )
+            if( Manager.Modified )
             {
                 //	Update main form heading.
                 Text += "*";
@@ -121,7 +121,7 @@ namespace CsvEditor
         /// </summary>
         /// <param name="col">the index of the column starting at zero for A.</param>
         /// <returns>the alphabetic column name</returns>
-        private string columnName( int col )
+        private static string columnName( int col )
         {
             StringBuilder buf = new StringBuilder();
             do
@@ -140,18 +140,7 @@ namespace CsvEditor
 
         private void openToolStripMenuItem_Click( object sender, EventArgs e )
         {
-            try
-            {
-                FileOpenClick( sender, e );
-            }
-            catch( CsvParseException parseEx )
-            {
-                MessageBox.Show(this, parseEx.Message, "Error parsing file", MessageBoxButtons.OK, MessageBoxIcon.Error );
-            }
-            catch( Exception ex )
-            {
-                MessageBox.Show( this, ex.Message, "Error opening file", MessageBoxButtons.OK, MessageBoxIcon.Error );
-            }
+            FileOpenClick( sender, e );
         }
 
         private void saveToolStripMenuItem_Click( object sender, EventArgs e )

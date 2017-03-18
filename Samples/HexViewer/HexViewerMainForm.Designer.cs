@@ -96,6 +96,7 @@ namespace HexViewer
             this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -147,7 +148,7 @@ namespace HexViewer
             this.panel.Location = new System.Drawing.Point(0, 0);
             this.panel.Name = "panel";
             this.panel.Padding = new System.Windows.Forms.Padding(4);
-            this.panel.Size = new System.Drawing.Size(652, 232);
+            this.panel.Size = new System.Drawing.Size(744, 490);
             this.panel.TabIndex = 0;
             // 
             // menuStrip
@@ -510,6 +511,13 @@ namespace HexViewer
             this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.helpToolStripButton.Text = "He&lp";
             // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            // 
             // HexViewerMainForm
             // 
             this.AllowDrop = true;
@@ -539,7 +547,6 @@ namespace HexViewer
 		
 		private System.Windows.Forms.ToolStrip toolStrip;
 		private System.Windows.Forms.MenuStrip menuStrip;
-//		private HexPanel panel;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer;
 		private System.Windows.Forms.ToolStripButton helpToolStripButton;

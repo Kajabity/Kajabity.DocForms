@@ -23,7 +23,7 @@
 #---------------------------------# 
  
 # version format 
-version: 0.1-{build}
+version: 0.2-{build}
 
 # branches to build - only build the master branch.
 #branches
