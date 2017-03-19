@@ -40,8 +40,6 @@ namespace HexViewer
         /// </summary>
 	    public BinaryDocumentManager()
         {
-            DefaultName = "file";
-            DefaultExtension = "dat";
         }
 
         /// <summary>

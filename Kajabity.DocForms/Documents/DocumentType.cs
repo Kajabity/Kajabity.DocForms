@@ -18,12 +18,15 @@
  * http://www.kajabity.com
  */
 
+using System.Text;
+
 namespace Kajabity.DocForms.Documents
 {
     /// <summary>
     /// Encapsulates the name of a type of document and it's default extension.
     /// Used in File Open/Save dialogs and to provide the default filename for
     /// New documents.
+    /// <see href="https://msdn.microsoft.com/en-us/library/system.windows.forms.filedialog.filter(v=vs.110).aspx"/>
     /// </summary>
     public class DocumentType
     {
@@ -32,27 +35,47 @@ namespace Kajabity.DocForms.Documents
         /// dialogs and as the basis for a default document name for new
         /// Documents.
         /// </summary>
-        public string Name;
+        public string Name { get; }
 
         /// <summary>
         /// The filename filter pattern to apply in File Open/Save dialogs.
         /// </summary>
-        public string Pattern;
+        public string Pattern { get; }
 
         //  ---------------------------------------------------------------------
         //  Constructors.
         //  ---------------------------------------------------------------------
 
         /// <summary>
-        /// Default or Empty constructor.
+        /// Construct a document type for a given name and filename filter pattern.
         /// </summary>
-        public DocumentType()
+        /// <param name="name">the display name of the document type.</param>
+        /// <param name="pattern">one or more filename patterns using '*' wildcard and separated by ';'.</param>
+        public DocumentType( string name, string pattern )
         {
+            Name = name;
+            Pattern = pattern;
+            //TODO: Validate and split the pattern.
+            //TODO: support string array in alternate constructor.
         }
 
         //  ---------------------------------------------------------------------
         //  Methods.
         //  ---------------------------------------------------------------------
 
+        /// <summary>
+        /// Converts the DocumentType to an individual file type entry for an OpenFileDialog or OpenSaveDialog filter.
+        /// </summary>
+        /// <returns>a string forming part of a file dialog filter entry.</returns>
+        public string ToFilterPattern()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append( Name );
+            sb.Append( " files (" );
+            sb.Append( Pattern );
+            sb.Append( ")|" );
+            sb.Append( Pattern );
+            return sb.ToString();
+        }
     }
 }
