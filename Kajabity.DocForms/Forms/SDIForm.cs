@@ -400,8 +400,10 @@ namespace Kajabity.DocForms.Forms
         /// <summary>
         /// A method to initialise the Recent Documents feature - pass in a menu item and,
         /// when the menu is opened, it will have he recent files added.
+        /// Recent files are stored in the Registry using the path:
+        /// HKEY_CURRENT_USER\Software\(company-name)\(application-name)\Recent Documents
         /// </summary>
-        /// <param name="recentItemsMenuItem"></param>
+        /// <param name="recentItemsMenuItem">a reference to the "Recent Documents..." menu item</param>
         public void InitialseRecentDocuments( ToolStripMenuItem recentItemsMenuItem )
         {
             this.recentItemsMenuItem = recentItemsMenuItem;
@@ -410,7 +412,7 @@ namespace Kajabity.DocForms.Forms
             try
             {
                 // Set registry path from Application Settings.
-                Assembly assembly = Assembly.GetExecutingAssembly();
+                Assembly assembly = Assembly.GetEntryAssembly();
                 string companyName = ( (AssemblyCompanyAttribute) Attribute.GetCustomAttribute( assembly, typeof( AssemblyCompanyAttribute ), false ) ).Company;
                 string appName = assembly.GetName().Name;
 
@@ -475,7 +477,7 @@ namespace Kajabity.DocForms.Forms
 
         /// <summary>
         /// Truncates a path to fit within a certain number of characters by replacing path components with ellipses.
-        /// <see cref="https://msdn.microsoft.com/en-us/library/windows/desktop/bb773578(v=vs.85).aspx"/>
+        /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb773578(v=vs.85).aspx"/>
         /// </summary>
         /// <param name="pszOut">The address of the string that has been altered.</param>
         /// <param name="pszSrc">A pointer to a null-terminated string of length MAX_PATH that contains the path to be altered.</param>

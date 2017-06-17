@@ -1,6 +1,5 @@
-using Kajabity.DocForms.Documents;
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,70 +17,56 @@ using Kajabity.DocForms.Documents;
  *
  * http://www.kajabity.com
  */
+
+using Kajabity.DocForms.Documents;
 using System.Diagnostics;
 using System.IO;
 
 namespace HexViewer
 {
-	/// <summary>
-	/// Description of BinaryDocumentManager.
-	/// </summary>
-	public class BinaryDocumentManager	: DocumentManager
-	{
+    /// <summary>
+    /// A DocumentManager for BinaryDocuments supporting file loading.
+    /// New and Save operations are unnecessary for this View Only application.
+    /// </summary>
+    public class BinaryDocumentManager: DocumentManager
+    {
+        /// <summary>
+        /// Construct a BinaryDocumentManager.
+        /// </summary>
+	    public BinaryDocumentManager()
+        {
+        }
 
-		public BinaryDocument BinaryDocument
-		{
-			get
-			{
-				return (BinaryDocument) document;
-			}
-		}
-
-		public BinaryDocumentManager()
-		{
-			DefaultName = "file";
-			DefaultExtension = "dat";
-		}
-
-		public override void NewDocument()
-		{
-			document = new BinaryDocument();
-
-			base.NewDocument();
-		}
-
+        /// <summary>
+        /// Load a file into a byte array and hold in the BinaryDocument.
+        /// </summary>
+        /// <param name="filename">the file to load as a byte array</param>
 		public override void Load( string filename )
-		{
-			Debug.WriteLine( "Loading " + filename );
-			
-			byte[] buffer;
-			FileStream fileStream = new FileStream( filename, FileMode.Open, FileAccess.Read );
-			try
-			{
-				int length = (int) fileStream.Length;  // get file length
-				buffer = new byte[length];            // create buffer
-				int count;                            // actual number of bytes read
-				int sum = 0;                          // total number of bytes read
+        {
+            Debug.WriteLine( "Loading " + filename );
 
-				// read until Read method returns 0 (end of the stream has been reached)
-				while ((count = fileStream.Read(buffer, sum, length - sum)) > 0)
-				{
-					sum += count;  // sum is a buffer offset for next reading
-				}
-				
-				document = new BinaryDocument( buffer );
-			}
-			finally
-			{
-				fileStream.Close();
-			}
+            FileStream fileStream = new FileStream( filename, FileMode.Open, FileAccess.Read );
+            try
+            {
+                int length = (int) fileStream.Length;   // get file length
+                var buffer = new byte[length];          // a buffer to hold the file contents.
+                int count;                              // actual number of bytes read
+                int sum = 0;                            // total number of bytes read
 
-			base.Load( filename );
-		}
+                // read until Read method returns 0 (end of the stream has been reached)
+                while( (count = fileStream.Read( buffer, sum, length - sum )) > 0 )
+                {
+                    sum += count;  // sum is a buffer offset for next reading
+                }
 
-		public override void Save( string filename )
-		{
-			base.Save( filename );
-		}
-	}
+                document = new BinaryDocument( buffer );
+            }
+            finally
+            {
+                fileStream.Close();
+            }
+
+            base.Load( filename );
+        }
+    }
 }

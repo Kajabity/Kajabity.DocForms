@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
  *
  * http://www.kajabity.com
  */
+
 #region Using directives
 
-using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -29,12 +29,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HexViewer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription( "A simple application to open and display a file (Document) as a hexadecimal" )]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany( "Williams Technologies" )]
 [assembly: AssemblyProduct("HexViewer")]
-[assembly: AssemblyCopyright( "Copyright 2009-15 Williams Technologies Limited." )]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright( "Copyright 2009-17 Williams Technologies Limited." )]
+[assembly: AssemblyTrademark( "Kajabity.com" )]
 [assembly: AssemblyCulture("")]
 
 // This sets the default COM visibility of types in the assembly to invisible.
@@ -47,4 +47,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion( "0.1.*" )]
+[assembly: AssemblyFileVersion( "0.1.0.0" )]
+

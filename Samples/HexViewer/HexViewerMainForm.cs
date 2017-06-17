@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,41 @@ using Kajabity.DocForms.Forms;
 namespace HexViewer
 {
     /// <summary>
-    /// Description of MainForm.
+    /// Description of HexViewerMainForm.
     /// </summary>
-    public partial class MainForm : SDIForm
+    public partial class HexViewerMainForm : SDIForm
 	{
-		public MainForm()
+		public HexViewerMainForm()
 			: base( new BinaryDocumentManager() )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
+
+            // Hide the menu items we haven't implmented yet - not forgetting spurious separators.
+            newToolStripButton.Visible = false;
+            newToolStripMenuItem.Visible = false;
+            toolStripSeparator1.Visible = false;
+            saveAsToolStripMenuItem.Visible = false;
+            saveToolStripButton.Visible = false;
+            saveToolStripMenuItem.Visible = false;
+            toolStripSeparator2.Visible = false;
+            printToolStripMenuItem.Visible = false;
+            printPreviewToolStripMenuItem.Visible = false;
+            toolStripSeparator8.Visible = false;
+            editToolStripMenuItem.Visible = false;
+            toolsToolStripMenuItem.Visible = false;
+            helpToolStripMenuItem.Visible = false;
+
+            // Hide the tool strip buttons we haven't implmented yet - not forgetting spurious separators.
+            printToolStripButton.Visible = false;
+            toolStripSeparator6.Visible = false;
+            cutToolStripButton.Visible = false;
+            copyToolStripButton.Visible = false;
+            pasteToolStripButton.Visible = false;
+            helpToolStripButton.Visible = false;
+            toolStripSeparator7.Visible = false;
 
             // Load recent documents.
             InitialseRecentDocuments( recentDocumentsToolStripMenuItem );
@@ -67,16 +91,6 @@ namespace HexViewer
 			this.FileSaveAsClick(sender, e);
 		}
 		
-		void PrintToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			
-		}
-		
-		void PrintPreviewToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			
-		}
-		
 		void ExitToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			this.FileExitClick(sender, e);
@@ -90,6 +104,11 @@ namespace HexViewer
         private void fileToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
         {
             this.OnParentMenuDropDownOpening( sender, e );
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FileCloseClick(sender, e);
         }
     }
 }
