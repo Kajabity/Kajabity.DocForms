@@ -18,30 +18,17 @@
  * http://www.kajabity.com
  */
 
-using System;
+using Kajabity.DocForms.Documents;
 using System.Diagnostics;
 using System.IO;
 
-namespace Kajabity.DocForms.Documents
+namespace PlainTextEditor
 {
     /// <summary>
     /// A Document Manager for Text Documents.
     /// </summary>
-    [Obsolete("Replaced by PlainDocumentManager in the PlainTextEditor sample.")]
-    public class TextDocumentManager: DocumentManager
+    public class PlainTextDocumentManager: SingleDocumentManager<PlainTextDocument>
     {
-        /// <summary>
-        /// Return the currently loaded document (cast to a TextDocument) or 
-        /// null if no document loaded.
-        /// </summary>
-        public TextDocument TextDocument
-        {
-            get
-            {
-                return (TextDocument) document;
-            }
-        }
-
         //  ---------------------------------------------------------------------
         //  Constructors.
         //  ---------------------------------------------------------------------
@@ -49,7 +36,7 @@ namespace Kajabity.DocForms.Documents
         /// <summary>
         /// Construct a TextDocumentManager setting the default document name and extension.
         /// </summary>
-        public TextDocumentManager()
+        public PlainTextDocumentManager()
         {
             DefaultName = "Text Document";
             DefaultExtension = "txt";
@@ -64,7 +51,7 @@ namespace Kajabity.DocForms.Documents
         /// </summary>
         public override void NewDocument()
         {
-            document = new TextDocument();
+            Document = new PlainTextDocument();
 
             base.NewDocument();
         }
@@ -79,11 +66,11 @@ namespace Kajabity.DocForms.Documents
 
             TextReader reader = new StreamReader( filename );
 
-            TextDocument td = new TextDocument();
+            PlainTextDocument td = new PlainTextDocument();
             td.Text = reader.ReadToEnd();
             reader.Close();
 
-            document = td;
+            Document = td;
             base.Load( filename );
         }
 
@@ -95,7 +82,7 @@ namespace Kajabity.DocForms.Documents
         {
             TextWriter writer = new StreamWriter( filename );
 
-            writer.Write( ((TextDocument) document).Text );
+            writer.Write( Document.Text );
             writer.Close();
 
             base.Save( filename );

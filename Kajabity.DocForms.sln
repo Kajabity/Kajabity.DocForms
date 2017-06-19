@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{81D09916-F2A4-4719-8AF9-3E9EABC3B65C}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,6 +24,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextEditor", "Samples\TextEditor\TextEditor.csproj", "{B9BBC2B3-4865-43A2-A13C-8687B5FDC5D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kajabity.DocForms", "Kajabity.DocForms\Kajabity.DocForms.csproj", "{15F2E1E6-D8B9-4AF1-85BB-7D28BD88B9BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlainTextEditor", "Samples\PlainTextEditor\PlainTextEditor.csproj", "{4559F86C-AC51-4B1D-9768-35529DADB963}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,14 @@ Global
 		{15F2E1E6-D8B9-4AF1-85BB-7D28BD88B9BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15F2E1E6-D8B9-4AF1-85BB-7D28BD88B9BD}.Release|x86.ActiveCfg = Release|x86
 		{15F2E1E6-D8B9-4AF1-85BB-7D28BD88B9BD}.Release|x86.Build.0 = Release|x86
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Debug|x86.ActiveCfg = Debug|x86
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Debug|x86.Build.0 = Debug|x86
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Release|x86.ActiveCfg = Release|x86
+		{4559F86C-AC51-4B1D-9768-35529DADB963}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +92,6 @@ Global
 		{04F13635-BD24-4311-8196-961C8B6D6519} = {81D09916-F2A4-4719-8AF9-3E9EABC3B65C}
 		{4B205C00-2DEB-4C02-9E2B-49F20B638942} = {81D09916-F2A4-4719-8AF9-3E9EABC3B65C}
 		{B9BBC2B3-4865-43A2-A13C-8687B5FDC5D6} = {81D09916-F2A4-4719-8AF9-3E9EABC3B65C}
+		{4559F86C-AC51-4B1D-9768-35529DADB963} = {81D09916-F2A4-4719-8AF9-3E9EABC3B65C}
 	EndGlobalSection
 EndGlobal

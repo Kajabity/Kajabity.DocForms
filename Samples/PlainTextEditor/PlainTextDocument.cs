@@ -18,20 +18,19 @@
  * http://www.kajabity.com
  */
 
-using System;
+using Kajabity.DocForms.Documents;
 
-namespace Kajabity.DocForms.Documents
+namespace PlainTextEditor
 {
     /// <summary>
     /// Description of TextDocument.
     /// </summary>
-    [Obsolete("Replaced by PlainDocument in the PlainTextEditor sample.")]
-    public class TextDocument : Document
+    public class PlainTextDocument : Document
     {
         /// <summary>
         /// A variable to hold the document's text - initialised to an empty string.
         /// </summary>
-        private string text = String.Empty;
+        private string _text = string.Empty;
 
         /// <summary>
         /// The document's text as a string. Initialised to an empty string.
@@ -40,11 +39,11 @@ namespace Kajabity.DocForms.Documents
         {
             get
             {
-                return text;
+                return _text;
             }
             set
             {
-                text = value;
+                _text = value;
                 Modified = true;
             }
         }
@@ -56,7 +55,7 @@ namespace Kajabity.DocForms.Documents
         /// <summary>
         /// Construct an empty TextDocument.
         /// </summary>
-        public TextDocument()
+        public PlainTextDocument()
         {
         }
 
@@ -64,7 +63,7 @@ namespace Kajabity.DocForms.Documents
         /// Construct an emtpy TextDocument specifying the filename.
         /// </summary>
         /// <param name="filename">the filename of the text document.</param>
-        public TextDocument( string filename )
+        public PlainTextDocument( string filename )
             : base( filename )
         {
         }
