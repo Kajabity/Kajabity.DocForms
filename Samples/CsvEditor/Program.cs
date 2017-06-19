@@ -33,7 +33,7 @@ namespace CsvEditor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
-            Application.Run( new CsvEditorForm() );
+            Application.Run( new CsvEditorMainForm() );
         }
     }
 }

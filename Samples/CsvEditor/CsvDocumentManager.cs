@@ -18,24 +18,14 @@
  * http://www.kajabity.com
  */
 
-using System.Diagnostics;
 using System.IO;
 using Kajabity.DocForms.Documents;
 using Kajabity.Tools.Csv;
 
 namespace CsvEditor
 {
-    public class CsvDocumentManager : DocumentManager
+    public class CsvDocumentManager: SingleDocumentManager<CsvDocument>
     {
-        
-        public CsvDocument CsvDocument
-        {
-            get
-            {
-                return (CsvDocument) document;
-            }
-        }
-
         public CsvDocumentManager()
         {
             DefaultName = "CsvDocument";
@@ -44,64 +34,36 @@ namespace CsvEditor
 
         public override void NewDocument()
         {
-            document = new CsvDocument();
-            ((CsvDocument)document).Rows = new string[0][];
-
+            Document = new CsvDocument();
             base.NewDocument();
         }
 
         public override void Load( string filename )
         {
-            Debug.WriteLine( "Loading " + filename );
-            CsvDocument csvDoc = new CsvDocument(filename);
 
-            FileStream fileStream = null;
-            try
+            using( FileStream fileStream = File.OpenRead( filename ) )
             {
-                //Console.WriteLine("Loading " + filename);
-                fileStream = File.OpenRead( filename );
                 CsvReader reader = new CsvReader( fileStream );
 
                 string[][] records = reader.ReadAll();
-                csvDoc.Rows = records;
-            }
-            finally
-            {
-                if( fileStream != null )
-                {
-                    fileStream.Close();
-                }
+                Document = new CsvDocument( filename, records );
             }
 
-            document = csvDoc;
             base.Load( filename );
         }
 
         public override void Save( string filename )
         {
-            //FileInfo info = new FileInfo( filename );
-            Debug.WriteLine("Saving " + filename);
+            using( FileStream outStream = File.OpenWrite( filename ) )
+            {
+                outStream.SetLength( 0L );  // Truncate the file if it exists.
 
-            FileStream outStream = null;
-                try
-                {
-                    outStream = File.OpenWrite(filename);
-                    outStream.SetLength( 0L );
+                CsvWriter writer = new CsvWriter( outStream );
 
-                    CsvWriter writer = new CsvWriter( outStream );
-                    //writer.QuoteLimit = -1;
-                    CsvDocument csvDoc = CsvDocument;
-
-                    writer.WriteAll( csvDoc.Rows );
-                    outStream.Flush();
-                }
-                finally
-                {
-                    if( outStream != null )
-                    {
-                        outStream.Close();
-                    }
-                }
+                //for( int row = 0; row < document.)
+                //writer.WriteAll( CsvDocument );
+                outStream.Flush();
+            }
 
             base.Save( filename );
         }
