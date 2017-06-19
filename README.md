@@ -11,7 +11,6 @@ putting together new applications.
 This repository contains several sub-projects:
 
 -	**Kajabity.DocForms** - a DLL project providing a collection of utilities for .NET projects.
--	**Kajabity.DocForms.Test** - NUnit tests for the Kajabity.DocForms utilities.
 -	**Samples** - a collection of sample Desktop application projects illustrating the use of some of Kajabity.DocForms utility classes, as well as other NuGets I have published.
 
 See the Releases section on GitHub to download copies of code, DLL exe's and NuGets.

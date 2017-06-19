@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  *
  * http://www.kajabity.com
  */
+
 using System;
 using System.Text;
 using System.Windows.Forms;
@@ -39,15 +40,14 @@ namespace CsvEditor
 
         public override void DocumentChanged()
         {
+            DocumentStatusChanged();
+
             // Clear the list.
-            this.listView.Items.Clear();
-            this.listView.Columns.Clear();
+            listView.Items.Clear();
+            listView.Columns.Clear();
 
             if( manager.Opened )
             {
-                //	Update main form heading.
-                this.Text = Application.ProductName + " - " + manager.Document.Name;
-
                 CsvDocument doc = (CsvDocument) manager.Document;
                 ListViewItem[] lvItems = new ListViewItem[ doc.Rows.Length ];
                 int counter = 0;
@@ -67,7 +67,7 @@ namespace CsvEditor
 
                 for( int col = 0; col < maxColumns; col++ )
                 {
-                    this.listView.Columns.Add( columnName( col ) );
+                    listView.Columns.Add( columnName( col ) );
                 }
 
                 listView.BeginUpdate();
@@ -75,14 +75,42 @@ namespace CsvEditor
                 listView.EndUpdate();
 
             }
-            else
-            {
-                //	Update main form heading.
-                this.Text = Application.ProductName;
-            }
+
+            saveToolStripButton.Enabled = manager.Opened;
+            saveToolStripMenuItem.Enabled = manager.Opened;
+
+            saveAsToolStripMenuItem.Enabled = manager.Opened;
+
+            printToolStripButton.Enabled = false; // manager.Opened;
+            printToolStripMenuItem.Enabled = false; //manager.Opened;
+            printPreviewToolStripMenuItem.Enabled = false; //manager.Opened;
+
+            DocumentStatusChanged();
 
             //	Force a display update.
             //this.Refresh();
+        }
+
+        /// <summary>
+        /// Update the displayed filename.
+        /// </summary>
+        public override void DocumentStatusChanged()
+        {
+            string title = Application.ProductName;
+
+            if( manager.Opened )
+            {
+                //	Update main form heading.
+                title += " - " + manager.Document.Name;
+            }
+
+            if( manager.Modified )
+            {
+                //	Update main form heading.
+                Text += "*";
+            }
+
+            Text = title;
         }
 
         /// <summary>
@@ -107,14 +135,14 @@ namespace CsvEditor
 
         private void newToolStripMenuItem_Click( object sender, EventArgs e )
         {
-            this.FileNewClick( sender, e );
+            FileNewClick( sender, e );
         }
 
         private void openToolStripMenuItem_Click( object sender, EventArgs e )
         {
             try
             {
-                this.FileOpenClick( sender, e );
+                FileOpenClick( sender, e );
             }
             catch( CsvParseException parseEx )
             {
@@ -128,17 +156,17 @@ namespace CsvEditor
 
         private void saveToolStripMenuItem_Click( object sender, EventArgs e )
         {
-            this.FileSaveClick( sender, e );
+            FileSaveClick( sender, e );
         }
 
         private void saveAsToolStripMenuItem_Click( object sender, EventArgs e )
         {
-            this.FileSaveAsClick( sender, e );
+            FileSaveAsClick( sender, e );
         }
 
         private void exitToolStripMenuItem_Click( object sender, EventArgs e )
         {
-            this.FileExitClick( sender, e );
+            FileExitClick( sender, e );
         }
 
         private void aboutToolStripMenuItem_Click( object sender, EventArgs e )

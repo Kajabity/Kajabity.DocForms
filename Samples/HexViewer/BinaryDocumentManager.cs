@@ -31,10 +31,17 @@ namespace HexViewer
     public class BinaryDocumentManager: DocumentManager
     {
         /// <summary>
+        /// Returns a reference to the current document.
+        /// </summary>
+		public BinaryDocument BinaryDocument => (BinaryDocument) document;
+
+        /// <summary>
         /// Construct a BinaryDocumentManager.
         /// </summary>
 	    public BinaryDocumentManager()
         {
+            DefaultName = "file";
+            DefaultExtension = "dat";
         }
 
         /// <summary>

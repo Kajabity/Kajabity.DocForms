@@ -166,6 +166,7 @@ namespace Kajabity.DocForms.Documents
             if (document != null)
             {
                 document.Name = documentName;
+                document.Modified = false;
             }
         }
 

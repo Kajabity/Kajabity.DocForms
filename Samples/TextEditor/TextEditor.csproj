@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Kajabity.DocForms\Kajabity.DocForms.csproj">

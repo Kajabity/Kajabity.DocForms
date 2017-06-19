@@ -122,8 +122,8 @@ namespace Kajabity.DocForms.Forms
 
         private void SDIForm_Load( object sender, EventArgs e )
         {
-            newDocument();
-            //DocumentChanged();
+            //newDocument();
+            DocumentChanged();
         }
 
         /// <summary>

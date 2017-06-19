@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ namespace CsvEditor
 
                     CsvWriter writer = new CsvWriter( outStream );
                     //writer.QuoteLimit = -1;
-                    CsvDocument csvDoc = this.CsvDocument;
+                    CsvDocument csvDoc = CsvDocument;
 
                     writer.WriteAll( csvDoc.Rows );
                     outStream.Flush();
