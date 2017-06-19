@@ -25,16 +25,11 @@ using System.IO;
 namespace HexViewer
 {
     /// <summary>
-    /// A DocumentManager for BinaryDocuments supporting file loading.
+    /// A SingleDocumentManager for BinaryDocuments supporting file loading.
     /// New and Save operations are unnecessary for this View Only application.
     /// </summary>
-    public class BinaryDocumentManager: DocumentManager
+    public class BinaryDocumentManager: SingleDocumentManager<BinaryDocument>
     {
-        /// <summary>
-        /// Returns a reference to the current document.
-        /// </summary>
-		public BinaryDocument BinaryDocument => (BinaryDocument) document;
-
         /// <summary>
         /// Construct a BinaryDocumentManager.
         /// </summary>
@@ -64,7 +59,7 @@ namespace HexViewer
                     sum += count;  // sum is a buffer offset for next reading
                 }
 
-                document = new BinaryDocument( buffer );
+                Document = new BinaryDocument( buffer );
             }
             finally
             {

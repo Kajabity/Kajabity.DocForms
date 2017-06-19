@@ -17,23 +17,25 @@
  *
  * http://www.kajabity.com
  */
+
 using System;
+using System.Windows.Forms;
 using Kajabity.DocForms.Forms;
 
 namespace HexViewer
 {
     /// <summary>
-    /// Description of HexViewerMainForm.
+    /// The HexViewer MainForm.
     /// </summary>
-    public partial class HexViewerMainForm : SDIForm
-	{
-		public HexViewerMainForm()
-			: base( new BinaryDocumentManager() )
-		{
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
-			InitializeComponent();
+    public partial class HexViewerMainForm: SingleDocumentForm<BinaryDocument>
+    {
+        public HexViewerMainForm()
+            : base( new BinaryDocumentManager() )
+        {
+            //
+            // The InitializeComponent() call is required for Windows Forms designer support.
+            //
+            InitializeComponent();
 
             // Hide the menu items we haven't implmented yet - not forgetting spurious separators.
             newToolStripButton.Visible = false;
@@ -63,52 +65,91 @@ namespace HexViewer
             InitialseRecentDocuments( recentDocumentsToolStripMenuItem );
         }
 
-        public override void DocumentChanged()
-		{
-			panel.BinaryDocument = (BinaryDocument) Manager.Document;
-
-			//	Force a display update.
-			base.Refresh();
-		}
-
-		void NewToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			this.FileNewClick(sender, e);
-		}
-		
-		void OpenToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			this.FileOpenClick(sender, e);
-		}
-		
-		void SaveToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			this.FileSaveClick(sender, e);
-		}
-		
-		void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			this.FileSaveAsClick(sender, e);
-		}
-		
-		void ExitToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			this.FileExitClick(sender, e);
-		}
-
-        private void recentDocumentsToolStripMenuItem_Click( object sender, EventArgs e )
+        /// <summary>
+        /// Update the view to show the changed document.
+        /// </summary>
+        private void HexViewerMainForm_DocumentChanged( object sender, EventArgs e )
         {
-            this.OnRecentDocumentMenuItemClicked( sender, e );
+            panel.BinaryDocument = Manager.Document;
+            Refresh();
         }
 
-        private void fileToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
+
+        /// <summary>
+        /// Update the displayed filename.
+        /// </summary>
+        private void HexViewerMainForm_DocumentStatusChanged( object sender, EventArgs e )
         {
-            this.OnParentMenuDropDownOpening( sender, e );
+            string title = Application.ProductName;
+
+            if( Manager.Opened )
+            {
+                //	Update main form heading.
+                title += " - " + Manager.Document.Name;
+            }
+
+            if( Manager.Modified )
+            {
+                //	Update main form heading.
+                title += @"*";
+            }
+
+            Text = title;
+
+            UpdateCommands();
         }
 
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UpdateCommands()
         {
-            FileCloseClick(sender, e);
+            // Some commands depend on whether or not the document is open.
+            closeToolStripMenuItem.Enabled = Manager.Opened;
         }
+
+        void OpenToolStripMenuItemClick( object sender, EventArgs e )
+        {
+            FileOpenClick( sender, e );
+        }
+
+        void ExitToolStripMenuItemClick( object sender, EventArgs e )
+        {
+            FileExitClick( sender, e );
+        }
+
+        private void FileToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
+        {
+            OnParentMenuDropDownOpening( sender, e );
+        }
+
+        private void MainForm_DragEnter( object sender, DragEventArgs e )
+        {
+            // Allow if a single file.
+            if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
+            {
+                string[] files = (string[]) e.Data.GetData( DataFormats.FileDrop );
+                if( files.Length == 1 )
+                {
+                    e.Effect = DragDropEffects.Copy;
+                }
+            }
+        }
+
+        private void MainForm_DragDrop( object sender, DragEventArgs e )
+        {
+            // Open the file, if a single file.
+            if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
+            {
+                string[] files = (string[]) e.Data.GetData( DataFormats.FileDrop );
+                if( files.Length == 1 )
+                {
+                    LoadDocument( files[ 0 ] );
+                }
+            }
+        }
+
+        private void CloseToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            FileCloseClick( sender, e );
+        }
+
     }
 }

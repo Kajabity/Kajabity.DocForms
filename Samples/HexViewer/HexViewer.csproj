@@ -113,7 +113,7 @@
       <DependentUpon>HexPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HexViewerMainForm.resx">
-      <DependentUpon>HexViewerMainForm.Designer.cs</DependentUpon>
+      <DependentUpon>HexViewerMainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -142,5 +142,8 @@
       <Project>{15f2e1e6-d8b9-4af1-85bb-7d28bd88b9bd}</Project>
       <Name>Kajabity.DocForms</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="screenshot.png" />
   </ItemGroup>
 </Project>

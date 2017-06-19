@@ -80,7 +80,7 @@ namespace CsvEditor
             if( Manager.Modified )
             {
                 //	Update main form heading.
-                Text += "*";
+                title += "*";
             }
 
             Text = title;
