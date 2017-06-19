@@ -19,6 +19,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.IO;
 
 namespace Kajabity.DocForms.Documents
@@ -30,8 +31,7 @@ namespace Kajabity.DocForms.Documents
     /// 
     /// Extend this class to implement methods to handle specific document types.
     /// </summary>
-    [Obsolete("Replaced by SingleDocumentManager.")]
-    public abstract class DocumentManager
+    public abstract class SingleDocumentManager<TDocument> where TDocument : Document
     {
         /// <summary>
         /// The filename extension (without the dot) for the type of files managed by this class.
@@ -59,42 +59,52 @@ namespace Kajabity.DocForms.Documents
         /// </summary>
         private int _docCount;
 
+        private TDocument _document;
         /// <summary>
-        /// Holds a reference to the currently loaded document - or null if none loaded.
+        /// A reference to the currently loaded document - or null if none loaded.
         /// </summary>
-        protected Document document;
+        public TDocument Document
+        {
+            get { return _document; }
+            protected set
+            {
+                if( _document != null )
+                {
+                    _document.StatusChanged -= Document_OnStatusChanged;
+                }
+
+                _document = value;
+
+                if( _document != null )
+                {
+                    _document.StatusChanged += Document_OnStatusChanged;
+                }
+            }
+        }
 
         /// <summary>
-        /// Get the currently loaded document - or null if no document loaded.
+        /// Handle the Document StatusChanged event and bubble up to the SingleDocumentForm
         /// </summary>
-        public Document Document
+        /// <param name="sender">unused.</param>
+        /// <param name="eventArgs">event arguments from the document passed through.</param>
+        private void Document_OnStatusChanged( object sender, EventArgs eventArgs )
         {
-            get
-            {
-                return document;
-            }
+            OnDocumentStatusChanged( eventArgs );
         }
 
         /// <summary>
         /// Returns true this instance has a document.
         /// </summary>
-        public bool Opened => document != null;
+        public bool Opened => Document != null;
 
         /// <summary>
         /// Tests if a document is both Opened and modified.
         /// </summary>
-        public bool Modified => Opened && document.Modified;
+        public bool Modified => Opened && Document.Modified;
 
         //  ---------------------------------------------------------------------
         //  Constructors.
         //  ---------------------------------------------------------------------
-
-        /// <summary>
-        /// Construct an empty DocumentManager instance.
-        /// </summary>
-        public DocumentManager()
-        {
-        }
 
         //  ---------------------------------------------------------------------
         //  Methods.
@@ -108,14 +118,14 @@ namespace Kajabity.DocForms.Documents
         /// </summary>
         public virtual void NewDocument()
         {
-            string documentName = String.Format(DefaultName + "." + DefaultExtension, ++_docCount);
+            string documentName = string.Format(DefaultName + "{0}." + DefaultExtension, ++_docCount);
             Filename = documentName;
             NewFile = true;
 
-            if (document != null)
+            if( Document != null )
             {
-                document.Name = documentName;
-                document.Modified = false;
+                Document.Name = documentName;
+                Document.Modified = false;
             }
         }
 
@@ -125,17 +135,19 @@ namespace Kajabity.DocForms.Documents
         /// once document set (<code>base.Load(filename);</code>).
         /// </summary>
         /// <param name="filename">filename and path loaded</param>
-        public virtual void Load(string filename)
+        public virtual void Load( string filename )
         {
-            this.Filename = filename;
+            Filename = filename;
             NewFile = false;
 
-            if (document != null)
+            if( Document != null )
             {
                 FileInfo fileInfo = new FileInfo(filename);
-                document.Name = fileInfo.Name;
-                document.Modified = false;
+                Document.Name = fileInfo.Name;
+                Document.Modified = false;
             }
+
+            OnDocumentStatusChanged( new EventArgs() );
         }
 
         /// <summary>
@@ -144,16 +156,16 @@ namespace Kajabity.DocForms.Documents
         /// (<code>base.Save(filename);</code>).
         /// </summary>
         /// <param name="filename">filename and path to save to</param>
-        public virtual void Save(string filename)
+        public virtual void Save( string filename )
         {
-            this.Filename = filename;
+            Filename = filename;
             NewFile = false;
 
-            if (document != null)
+            if( Document != null )
             {
                 FileInfo fileInfo = new FileInfo(filename);
-                document.Name = fileInfo.Name;
-                document.Modified = false;
+                Document.Name = fileInfo.Name;
+                Document.Modified = false;
             }
         }
 
@@ -165,9 +177,30 @@ namespace Kajabity.DocForms.Documents
         /// </summary>
         public virtual void Close()
         {
-            document = null;
+            Document = null;
             NewFile = false;
             Filename = null;
         }
+
+        /// <summary>
+        /// An event that clients can use to be notified whenever a document's
+        /// name or modified status are changed.
+        /// Handle this event to provide specific Forms handling; for example 
+        /// update window title with filename or status display.
+        /// </summary>
+        [
+        Category( "Document" ),
+        Description( "Notifies whenever a document's name or modified status are changed." )
+        ]
+        public event EventHandler<EventArgs> DocumentStatusChanged;
+
+        /// <summary>
+        /// Called whenever a document name or modified status is or may have been changed.
+        /// </summary>
+        protected virtual void OnDocumentStatusChanged( EventArgs args )
+        {
+            DocumentStatusChanged?.Invoke( this, args );
+        }
+
     }
 }

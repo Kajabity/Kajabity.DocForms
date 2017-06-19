@@ -65,7 +65,7 @@ namespace HexViewer
 
         public override void DocumentChanged()
 		{
-			panel.BinaryDocument = (BinaryDocument) manager.Document;
+			panel.BinaryDocument = (BinaryDocument) Manager.Document;
 
 			//	Force a display update.
 			base.Refresh();

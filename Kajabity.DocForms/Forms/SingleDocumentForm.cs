@@ -21,11 +21,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
 using Kajabity.DocForms.Documents;
@@ -37,19 +36,45 @@ namespace Kajabity.DocForms.Forms
     /// Extends System.Windows.Forms.Form to implement support for handling 
     /// Documents in a Single Document Interface (SDI) style.
     /// </summary>
-    [Obsolete("Replaced by SingleDocumentForm.")]
-    public class SDIForm: Form
+    public class SingleDocumentForm<TDocument>: Form where TDocument : Document
     {
         //  ---------------------------------------------------------------------
         //  Attributes.
         //  ---------------------------------------------------------------------
 
+        private SingleDocumentManager<TDocument> _manager;
+
         /// <summary>
-        /// A reference to an instance of the DocumentManager used to load and save
+        /// A reference to an instance of the SingleDocumentManager used to load and save
         /// documents for the application.
         /// </summary>
-        protected DocumentManager Manager;
+        protected SingleDocumentManager<TDocument> Manager
+        {
+            get
+            {
+                return _manager;
+            }
 
+            set
+            {
+                if( _manager != null )
+                {
+                    _manager.DocumentStatusChanged -= Manager_OnDocumentStatusChanged;
+                }
+
+                _manager = value;
+
+                if( _manager != null )
+                {
+                    _manager.DocumentStatusChanged += Manager_OnDocumentStatusChanged;
+                }
+            }
+        }
+
+        private void Manager_OnDocumentStatusChanged( object sender, EventArgs eventArgs )
+        {
+            OnDocumentStatusChanged( eventArgs );
+        }
 
         /// <summary>
         /// If true, when saving a document any existing file with the same name 
@@ -103,45 +128,58 @@ namespace Kajabity.DocForms.Forms
         /// Default constructor - required to enable the Visual Editor for Forms
         /// in Visual Studio to work.
         /// </summary>
-        public SDIForm()
+        public SingleDocumentForm()
         {
-            Load += SDIForm_Load;
         }
 
         /// <summary>
-        /// Construct an SDIForm providing an instance of a document manager.
+        /// Construct an SingleDocumentForm providing an instance of a document manager.
         /// </summary>
-        /// <param name="manager">the DocumentManager to be used by this form.</param>
-        public SDIForm( DocumentManager manager )
+        /// <param name="manager">the SingleDocumentManager to be used by this form.</param>
+        public SingleDocumentForm( SingleDocumentManager<TDocument> manager )
         {
             Manager = manager;
-            Load += SDIForm_Load;
         }
 
         //  ---------------------------------------------------------------------
         //  Events
         //  ---------------------------------------------------------------------
 
-        private void SDIForm_Load( object sender, EventArgs e )
-        {
-            DocumentChanged();
-        }
-
         /// <summary>
-        /// Called whenever a document is created or loaded (or closed).
-        /// Override, calling the base class implementation, to provide specific Forms handling when the document is changed.
+        /// An event that clients can use to be notified whenever the Document is created, loaded or closed.
         /// </summary>
-        public virtual void DocumentChanged()
+        [
+        Category("Document"),
+        Description("Notifies whenever the Document is created, loaded or closed.")
+        ]
+        public event EventHandler<EventArgs> DocumentChanged;
+
+        /// <summary>
+        /// Called whenever a document is created, loaded or closed.
+        /// </summary>
+        protected virtual void OnDocumentChanged( EventArgs args )
         {
+            DocumentChanged?.Invoke( this, args );
         }
 
         /// <summary>
-        /// Called whenever a document is saved - only the filename and modified status will need updating.
-        /// Override, calling the base class implementation, to provide specific Forms handling; for example
+        /// An event that clients can use to be notified whenever a document 
+        /// name or modified status is (or may have been) changed.
+        /// Handle this event to provide specific Forms handling; for example 
         /// update window title with filename or status display.
         /// </summary>
-        public virtual void DocumentStatusChanged()
+        [
+        Category( "Document" ),
+        Description( "Notifies whenever a document name or modified status is (or may have been) changed." )
+        ]
+        public event EventHandler<EventArgs> DocumentStatusChanged;
+
+        /// <summary>
+        /// Called whenever a document name or modified status is or may have been changed.
+        /// </summary>
+        protected virtual void OnDocumentStatusChanged( EventArgs args )
         {
+            DocumentStatusChanged?.Invoke( this, args );
         }
 
         //  ---------------------------------------------------------------------
@@ -274,13 +312,14 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         protected void NewDocument()
         {
+            Debug.WriteLine( "==== NewDocument() ====" );
             if( Manager != null )
             {
                 Manager.NewDocument();
             }
 
-            //	Refresh display.
-            DocumentChanged();
+            OnDocumentChanged( new EventArgs() );
+            OnDocumentStatusChanged( new EventArgs() );
         }
 
         /// <summary>
@@ -289,6 +328,7 @@ namespace Kajabity.DocForms.Forms
         /// <param name="filename">the path of the file to be loaded.</param>
         protected virtual void LoadDocument( string filename )
         {
+            Debug.WriteLine( "==== LoadDocument() ====" );
             try
             {
                 //	load the file
@@ -298,7 +338,7 @@ namespace Kajabity.DocForms.Forms
                 AddFileHistory( filename );
 
                 //	Refresh display.
-                DocumentChanged();
+                OnDocumentChanged( new EventArgs() );
             }
             catch( Exception ex )
             {
@@ -318,6 +358,7 @@ namespace Kajabity.DocForms.Forms
         /// <param name="filename">the filename and path to save the document into</param>
         private void SaveDocument( string filename )
         {
+            Debug.WriteLine( "==== SaveDocument() ====" );
             try
             {
                 if( Backup && File.Exists( filename ) )
@@ -337,9 +378,6 @@ namespace Kajabity.DocForms.Forms
 
                 // add successfully opened file to MRU list
                 AddFileHistory( filename );
-
-                //	Refresh display of document status.
-                DocumentStatusChanged();
             }
             catch( Exception ex )
             {
@@ -358,10 +396,11 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         private void CloseDocument()
         {
+            Debug.WriteLine( "==== CloseDocument() ====");
             Manager.Close();
 
             //	Refresh display.
-            DocumentChanged();
+            OnDocumentChanged( new EventArgs() );
         }
 
         /// <summary>
@@ -414,7 +453,7 @@ namespace Kajabity.DocForms.Forms
             // Read any previously stored recent documents.
             try
             {
-                // Set registry path from Application Settings.
+                // Set registry path from Application Settings (the 'Entry Assembly').
                 Assembly assembly = Assembly.GetEntryAssembly();
                 string companyName = ( (AssemblyCompanyAttribute) Attribute.GetCustomAttribute( assembly, typeof( AssemblyCompanyAttribute ), false ) ).Company;
                 string appName = assembly.GetName().Name;
@@ -472,7 +511,7 @@ namespace Kajabity.DocForms.Forms
             {
                 string path = _recentFiles[ rd ];
 
-                ToolStripMenuItem menuItem = new ToolStripMenuItem( GetShortPath( path ) );
+                ToolStripMenuItem menuItem = new ToolStripMenuItem( WindowsHelper.GetShortPath( path, MaximumDisplayNameLength ) );
                 menuItem.Tag = path;
                 menuItem.ToolTipText = path;
                 menuItem.Click += OnRecentDocumentMenuItemClicked;
@@ -481,31 +520,6 @@ namespace Kajabity.DocForms.Forms
             }
         }
 
-        /// <summary>
-        /// Truncates a path to fit within a certain number of characters by replacing path components with ellipses.
-        /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb773578(v=vs.85).aspx"/>
-        /// </summary>
-        /// <param name="pszOut">The address of the string that has been altered.</param>
-        /// <param name="pszSrc">A pointer to a null-terminated string of length MAX_PATH that contains the path to be altered.</param>
-        /// <param name="cchMax">
-        /// The maximum number of characters to be contained in the new string, including the terminating null character. 
-        /// For example, if cchMax = 8, the resulting string can contain a maximum of 7 characters plus the terminating null character.
-        /// </param>
-        /// <param name="dwFlags">Reserved</param>
-        /// <returns>Returns TRUE if successful, or FALSE otherwise.</returns>
-        [DllImport( "shlwapi.dll", CharSet = CharSet.Auto )]
-        static extern bool PathCompactPathEx( [Out] StringBuilder pszOut, string pszSrc, int cchMax, int dwFlags );
-
-        private string GetShortPath( string longPath )
-        {
-            StringBuilder shortPath = new StringBuilder( MaximumDisplayNameLength );
-            if( PathCompactPathEx( shortPath, longPath, shortPath.Capacity, 0 ) )
-            {
-                return shortPath.ToString();
-            }
-
-            return longPath;
-        }
 
         /// <summary>
         /// When the for closes, save the recent documents in the Registry.

@@ -166,6 +166,7 @@ ClientBin/
 *.publishsettings
 node_modules/
 *.bak
+*.old/
 
 # RIA/Silverlight projects
 Generated_Code/
