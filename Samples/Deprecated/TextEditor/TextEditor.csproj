@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{B9BBC2B3-4865-43A2-A13C-8687B5FDC5D6}</ProjectGuid>
+    <ProjectGuid>{20486631-F257-458C-A7C0-702828714134}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
@@ -120,7 +120,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Kajabity.DocForms\Kajabity.DocForms.csproj">
+    <ProjectReference Include="..\..\..\Kajabity.DocForms\Kajabity.DocForms.csproj">
       <Project>{15f2e1e6-d8b9-4af1-85bb-7d28bd88b9bd}</Project>
       <Name>Kajabity.DocForms</Name>
     </ProjectReference>

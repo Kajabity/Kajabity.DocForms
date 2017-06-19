@@ -21,7 +21,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace TextEditor
+namespace PlainTextEditor
 {
 	/// <summary>
 	/// Class with program entry point.

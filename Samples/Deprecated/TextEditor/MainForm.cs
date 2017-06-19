@@ -22,7 +22,7 @@ using Kajabity.DocForms.Documents;
 using Kajabity.DocForms.Forms;
 using System;
 
-namespace TextEditor
+namespace PlainTextEditor
 {
     /// <summary>
     /// Description of MainForm.
@@ -61,94 +61,94 @@ namespace TextEditor
 			}
 		}
 
-	    private void NewToolStripMenuItemClick(object sender, EventArgs e)
+		void NewToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			FileNewClick( sender, e );
 		}
-
-	    private void OpenToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void OpenToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			FileOpenClick( sender, e );
 		}
-
-	    private void SaveToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void SaveToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 			FileSaveClick( sender, e );
 		}
-
-	    private void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 			FileSaveAsClick( sender, e );
 		}
-
-	    private void PageSetupToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void PageSetupToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 		}
-
-	    private void PrintToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void PrintToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 		}
-
-	    private void PrintPreviewToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void PrintPreviewToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 		}
-
-	    private void ExitToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void ExitToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateDocument();
 			FileExitClick( sender, e );
 		}
-
-	    private void PrintToolStripButtonClick(object sender, EventArgs e)
+		
+		void PrintToolStripButtonClick(object sender, EventArgs e)
 		{
 			
 		}
-
-	    private void CutToolStripButtonClick(object sender, EventArgs e)
+		
+		void CutToolStripButtonClick(object sender, EventArgs e)
 		{
 			textBox.Cut();
 		}
-
-	    private void CopyToolStripButtonClick(object sender, EventArgs e)
+		
+		void CopyToolStripButtonClick(object sender, EventArgs e)
 		{
 			textBox.Copy();
 		}
-
-	    private void PasteToolStripButtonClick(object sender, EventArgs e)
+		
+		void PasteToolStripButtonClick(object sender, EventArgs e)
 		{
 			textBox.Paste();
 		}
-
-	    private void UndoToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void UndoToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			textBox.Undo();
 		}
-
-	    private void RedoToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void RedoToolStripMenuItemClick(object sender, EventArgs e)
 		{
 		}
-
-	    private void SelectAllToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void SelectAllToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			textBox.SelectAll();
 		}
-
-	    private void DeleteToolStripMenuItemClick(object sender, EventArgs e)
+		
+		void DeleteToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			textBox.SelectedText = "";
 		}
-
-	    private void EditToolStripMenuItemDropDownOpening(object sender, EventArgs e)
+		
+		void EditToolStripMenuItemDropDownOpening(object sender, EventArgs e)
 		{
 			undoToolStripMenuItem.Enabled = textBox.CanUndo;
 		}
-
-	    private void BottomToolStripPanelClick(object sender, EventArgs e)
+		
+		void BottomToolStripPanelClick(object sender, System.EventArgs e)
 		{
 			
 		}
