@@ -28,7 +28,7 @@ namespace JavaPropertiesEditor
     /// <summary>
     /// Description of MainForm.
     /// </summary>
-    public partial class MainForm : SDIForm
+    public partial class MainForm : SingleDocumentForm<JavaPropertiesDocument>
 	{
 		public MainForm()
             : base( new JavaPropertiesDocumentManager() )
@@ -69,43 +69,60 @@ namespace JavaPropertiesEditor
 			}
 		}
 
-        public override void DocumentChanged()
+        //      public override void DocumentChanged()
+        //      {
+        //}
+
+        private void MainForm_DocumentChanged( object sender, EventArgs e )
         {
             // Clear the list.
             listView1.Items.Clear();
-			
-			if( Manager.Opened )
-			{
+
+            if( Manager.Opened )
+            {
                 //	Update main form heading.
-                Text = Application.ProductName + " - " + Manager.Document.Name;
-				JavaProperties properties = ((JavaPropertiesDocument) Manager.Document).Properties;
-				
-				//	Update the content window.
-				foreach( String key in properties.Keys )
-				{
-					ListViewItem item = new ListViewItem( key );
-					String text = properties.GetProperty( key );
-					item.SubItems.Add( new ListViewItem.ListViewSubItem( item, text ) );
+                JavaProperties properties = Manager.Document.Properties;
+
+                //	Update the content window.
+                foreach( String key in properties.Keys )
+                {
+                    ListViewItem item = new ListViewItem( key );
+                    String text = properties.GetProperty( key );
+                    item.SubItems.Add( new ListViewItem.ListViewSubItem( item, text ) );
 
                     listView1.Items.Add( item );
-				}
-			}
-			else
-			{
-                //	Update main form heading.
-                Text = Application.ProductName;
-			}
+                }
+            }
 
             //	Force a display update.
             Refresh();
-		}
+        }
 
-		void OnFileNew(object sender, System.EventArgs e)
+        private void MainForm_DocumentStatusChanged( object sender, EventArgs e )
+        {
+            string title = Application.ProductName;
+
+            if( Manager.Opened )
+            {
+                //	Update main form heading.
+                title += " - " + Manager.Document.Name;
+            }
+
+            if( Manager.Modified )
+            {
+                //	Update main form heading.
+                Text += @"*";
+            }
+
+            Text = title;
+        }
+
+        void OnFileNew(object sender, EventArgs e)
 		{
             FileNewClick( sender, e );
         }
 		
-		void OnFileOpen(object sender, System.EventArgs e)
+		void OnFileOpen(object sender, EventArgs e)
 		{
             FileOpenClick( sender, e );
         }
@@ -129,5 +146,5 @@ namespace JavaPropertiesEditor
 		{
             FileExitClick( sender, e );
         }
-	}
+    }
 }

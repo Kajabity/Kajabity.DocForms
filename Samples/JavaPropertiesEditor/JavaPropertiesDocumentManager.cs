@@ -21,13 +21,12 @@
 using System.IO;
 using Kajabity.DocForms.Documents;
 
-
 namespace JavaPropertiesEditor
 {
     /// <summary>
     /// Description of JavaPropertiesDocumentManager.
     /// </summary>
-    public class JavaPropertiesDocumentManager : DocumentManager
+    public class JavaPropertiesDocumentManager : SingleDocumentManager<JavaPropertiesDocument>
 	{
 		public JavaPropertiesDocumentManager()
 		{
@@ -37,16 +36,16 @@ namespace JavaPropertiesEditor
 		
 		public override void NewDocument()
 		{
-			document = new JavaPropertiesDocument( Filename );
+            Document = new JavaPropertiesDocument( Filename );
 
 			base.NewDocument();
 		}
 
 		public override void Load( string filename )
 		{
-			document = new JavaPropertiesDocument( filename );
+            Document = new JavaPropertiesDocument( filename );
 			Stream stream = new FileStream( filename, FileMode.Open );
-			((JavaPropertiesDocument) document).Properties.Load( stream );
+			Document.Properties.Load( stream );
 			stream.Close();
 
 			base.Load( filename );
@@ -55,7 +54,7 @@ namespace JavaPropertiesEditor
 		public override void Save( string filename )
 		{
 			Stream stream = new FileStream( filename, FileMode.Create );
-			((JavaPropertiesDocument) document).Properties.Store( stream, "Testing 'Store' method." );
+			Document.Properties.Store( stream, "Testing 'Store' method." );
 			stream.Close();
 
 			base.Save( filename );

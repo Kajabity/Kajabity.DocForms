@@ -28,16 +28,9 @@ namespace JavaPropertiesEditor
 	/// </summary>
 	public class JavaPropertiesDocument : Document
 	{
-		private JavaProperties properties = new JavaProperties();
-		public JavaProperties Properties
-		{
-			get
-			{
-				return properties;
-			}
-		}
+	    public JavaProperties Properties { get; } = new JavaProperties();
 
-		public JavaPropertiesDocument( string name )
+	    public JavaPropertiesDocument( string name )
 			: base( name )
 		{
 		}
