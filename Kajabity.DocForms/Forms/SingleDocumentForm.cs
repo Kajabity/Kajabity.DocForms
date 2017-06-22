@@ -36,7 +36,7 @@ namespace Kajabity.DocForms.Forms
     /// Extends System.Windows.Forms.Form to implement support for handling 
     /// Documents in a Single Document Interface (SDI) style.
     /// </summary>
-    public class SingleDocumentForm<TDocument>: Form where TDocument : Document
+    public class SingleDocumentForm<TDocument> : Form where TDocument : Document
     {
         //  ---------------------------------------------------------------------
         //  Attributes.
@@ -57,23 +57,23 @@ namespace Kajabity.DocForms.Forms
 
             set
             {
-                if( _manager != null )
+                if (_manager != null)
                 {
                     _manager.DocumentStatusChanged -= Manager_OnDocumentStatusChanged;
                 }
 
                 _manager = value;
 
-                if( _manager != null )
+                if (_manager != null)
                 {
                     _manager.DocumentStatusChanged += Manager_OnDocumentStatusChanged;
                 }
             }
         }
 
-        private void Manager_OnDocumentStatusChanged( object sender, EventArgs eventArgs )
+        private void Manager_OnDocumentStatusChanged(object sender, EventArgs eventArgs)
         {
-            OnDocumentStatusChanged( eventArgs );
+            OnDocumentStatusChanged(eventArgs);
         }
 
         /// <summary>
@@ -81,7 +81,11 @@ namespace Kajabity.DocForms.Forms
         /// will be renamed with a trailing '~' character as a backup.  Any 
         /// previous backup (i.e. with the same backup filename) will be deleted.
         /// </summary>
-        protected bool Backup { get; set; } = false;
+        [
+        Category("Document Handling"),
+        Description("Indicates whether to backup documents on save.")
+        ]
+        public bool Backup { get; set; } = false;
 
         //  ---------------------------------------------------------------------
         //  Recent Document Attributes.
@@ -93,15 +97,23 @@ namespace Kajabity.DocForms.Forms
         private const string RecentDocumentRegistryEntryName = "RecentDocument-";
 
         /// <summary>
-        /// Maximum number of documents to remember in the recent files list.
+        /// Maximum number of documents to store in the recent files list.
         /// </summary>
+        [
+        Category("Document Handling"),
+        Description("The maximum number of recent documents to store in the recent files list.")
+        ]
         public int MaximumRecentDocumentCount { get; set; } = 20;
 
         /// <summary>
         /// Maximum length of each document name and path entry in the recent documents menu.
         /// Longer names will be shortened to fit. 
         /// </summary>
-        public int MaximumDisplayNameLength { get; set; } = 100;
+        [
+        Category("Document Handling"),
+        Description("Maximum length of each document name and path entry in the recent documents menu.")
+        ]
+        public int MaximumRecentDocumentDisplayLength { get; set; } = 100;
 
         /// <summary>
         /// Holds a list of the most recent filenames used by the application.
@@ -136,7 +148,7 @@ namespace Kajabity.DocForms.Forms
         /// Construct an SingleDocumentForm providing an instance of a document manager.
         /// </summary>
         /// <param name="manager">the SingleDocumentManager to be used by this form.</param>
-        public SingleDocumentForm( SingleDocumentManager<TDocument> manager )
+        public SingleDocumentForm(SingleDocumentManager<TDocument> manager)
         {
             Manager = manager;
         }
@@ -149,7 +161,7 @@ namespace Kajabity.DocForms.Forms
         /// An event that clients can use to be notified whenever the Document is created, loaded or closed.
         /// </summary>
         [
-        Category("Document"),
+        Category("Document Handling"),
         Description("Notifies whenever the Document is created, loaded or closed.")
         ]
         public event EventHandler<EventArgs> DocumentChanged;
@@ -157,9 +169,9 @@ namespace Kajabity.DocForms.Forms
         /// <summary>
         /// Called whenever a document is created, loaded or closed.
         /// </summary>
-        protected virtual void OnDocumentChanged( EventArgs args )
+        protected virtual void OnDocumentChanged(EventArgs args)
         {
-            DocumentChanged?.Invoke( this, args );
+            DocumentChanged?.Invoke(this, args);
         }
 
         /// <summary>
@@ -169,17 +181,17 @@ namespace Kajabity.DocForms.Forms
         /// update window title with filename or status display.
         /// </summary>
         [
-        Category( "Document" ),
-        Description( "Notifies whenever a document name or modified status is (or may have been) changed." )
+        Category("Document Handling"),
+        Description("Notifies whenever a document name or modified status is (or may have been) changed.")
         ]
         public event EventHandler<EventArgs> DocumentStatusChanged;
 
         /// <summary>
         /// Called whenever a document name or modified status is or may have been changed.
         /// </summary>
-        protected virtual void OnDocumentStatusChanged( EventArgs args )
+        protected virtual void OnDocumentStatusChanged(EventArgs args)
         {
-            DocumentStatusChanged?.Invoke( this, args );
+            DocumentStatusChanged?.Invoke(this, args);
         }
 
         //  ---------------------------------------------------------------------
@@ -194,9 +206,9 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileNewClick( object sender, EventArgs e )
+        public void FileNewClick(object sender, EventArgs e)
         {
-            if( AttemptCloseDocument( sender, e ) )
+            if (AttemptCloseDocument(sender, e))
             {
                 NewDocument();
             }
@@ -210,7 +222,7 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileOpenClick( object sender, EventArgs e )
+        public void FileOpenClick(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "Open " + Application.ProductName + " file";
@@ -225,11 +237,11 @@ namespace Kajabity.DocForms.Forms
             //dialog.InitialDirectory = @"C:\";
             //dialog.ShowHelp = true; // Need to handle 'HelpRequest' event.
 
-            if( dialog.ShowDialog() == DialogResult.OK && AttemptCloseDocument( sender, e ) )
+            if (dialog.ShowDialog() == DialogResult.OK && AttemptCloseDocument(sender, e))
             {
-                Debug.WriteLine( Manager.DefaultExtension + " file: " + dialog.FileName );
+                Debug.WriteLine(Manager.DefaultExtension + " file: " + dialog.FileName);
 
-                LoadDocument( dialog.FileName );
+                LoadDocument(dialog.FileName);
             }
         }
 
@@ -240,9 +252,9 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileCloseClick( object sender, EventArgs e )
+        public void FileCloseClick(object sender, EventArgs e)
         {
-            AttemptCloseDocument( sender, e );
+            AttemptCloseDocument(sender, e);
         }
 
         /// <summary>
@@ -252,15 +264,15 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileSaveClick( object sender, EventArgs e )
+        public void FileSaveClick(object sender, EventArgs e)
         {
-            if( Manager.NewFile )
+            if (Manager.NewFile)
             {
-                FileSaveAsClick( sender, e );
+                FileSaveAsClick(sender, e);
             }
             else
             {
-                SaveDocument( Manager.Filename );
+                SaveDocument(Manager.Filename);
             }
         }
 
@@ -271,7 +283,7 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileSaveAsClick( object sender, EventArgs e )
+        public void FileSaveAsClick(object sender, EventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.DefaultExt = Manager.DefaultExtension;
@@ -280,11 +292,11 @@ namespace Kajabity.DocForms.Forms
                 "|All files (*.*)|*.*";
             dialog.FileName = Manager.Filename;
 
-            if( dialog.ShowDialog( this ) == DialogResult.OK )
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                Debug.WriteLine( Manager.DefaultExtension + " file: " + dialog.FileName );
+                Debug.WriteLine(Manager.DefaultExtension + " file: " + dialog.FileName);
 
-                SaveDocument( dialog.FileName );
+                SaveDocument(dialog.FileName);
             }
         }
 
@@ -295,9 +307,9 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
-        public void FileExitClick( object sender, EventArgs e )
+        public void FileExitClick(object sender, EventArgs e)
         {
-            if( AttemptCloseDocument( sender, e ) )
+            if (AttemptCloseDocument(sender, e))
             {
                 Application.Exit();
             }
@@ -312,43 +324,43 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         protected void NewDocument()
         {
-            Debug.WriteLine( "==== NewDocument() ====" );
-            if( Manager != null )
+            Debug.WriteLine("==== NewDocument() ====");
+            if (Manager != null)
             {
                 Manager.NewDocument();
             }
 
-            OnDocumentChanged( new EventArgs() );
-            OnDocumentStatusChanged( new EventArgs() );
+            OnDocumentChanged(new EventArgs());
+            OnDocumentStatusChanged(new EventArgs());
         }
 
         /// <summary>
         /// Helper to load a document - triggers DocumentChanged().  
         /// </summary>
         /// <param name="filename">the path of the file to be loaded.</param>
-        protected virtual void LoadDocument( string filename )
+        protected virtual void LoadDocument(string filename)
         {
-            Debug.WriteLine( "==== LoadDocument() ====" );
+            Debug.WriteLine("==== LoadDocument() ====");
             try
             {
                 //	load the file
-                Manager.Load( filename );
+                Manager.Load(filename);
 
                 // add successfully opened file to MRU list
-                AddFileHistory( filename );
+                AddFileHistory(filename);
 
                 //	Refresh display.
-                OnDocumentChanged( new EventArgs() );
+                OnDocumentChanged(new EventArgs());
             }
-            catch( Exception ex )
+            catch (Exception ex)
             {
                 // Report the error
-                Debug.WriteLine( "Exception in LoadDocument: " + ex );
+                Debug.WriteLine("Exception in LoadDocument: " + ex);
 
                 // Remove file from MRU list - if it exists
-                RemoveFileHistory( filename );
+                RemoveFileHistory(filename);
 
-                MessageBox.Show( this, ex.Message, "Error opening file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show(this, ex.Message, "Error opening file", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -356,38 +368,38 @@ namespace Kajabity.DocForms.Forms
         /// Helper to save a document - triggers DocumentStatusChanged().
         /// </summary>
         /// <param name="filename">the filename and path to save the document into</param>
-        private void SaveDocument( string filename )
+        private void SaveDocument(string filename)
         {
-            Debug.WriteLine( "==== SaveDocument() ====" );
+            Debug.WriteLine("==== SaveDocument() ====");
             try
             {
-                if( Backup && File.Exists( filename ) )
+                if (Backup && File.Exists(filename))
                 {
                     string backupFilename = filename + "~";
 
-                    if( File.Exists( backupFilename ) )
+                    if (File.Exists(backupFilename))
                     {
-                        File.Delete( backupFilename );
+                        File.Delete(backupFilename);
                     }
 
-                    File.Move( filename, backupFilename );
+                    File.Move(filename, backupFilename);
                 }
 
                 //	Save the file
-                Manager.Save( filename );
+                Manager.Save(filename);
 
                 // add successfully opened file to MRU list
-                AddFileHistory( filename );
+                AddFileHistory(filename);
             }
-            catch( Exception ex )
+            catch (Exception ex)
             {
                 // Report the error
-                Debug.WriteLine( "Exception in SaveDocument: " + ex );
+                Debug.WriteLine("Exception in SaveDocument: " + ex);
 
                 // Remove file from MRU list - if it exists
-                RemoveFileHistory( filename );
+                RemoveFileHistory(filename);
 
-                MessageBox.Show( this, ex.Message, "Error Saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show(this, ex.Message, "Error Saving file", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -396,11 +408,11 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         private void CloseDocument()
         {
-            Debug.WriteLine( "==== CloseDocument() ====");
+            Debug.WriteLine("==== CloseDocument() ====");
             Manager.Close();
 
             //	Refresh display.
-            OnDocumentChanged( new EventArgs() );
+            OnDocumentChanged(new EventArgs());
         }
 
         /// <summary>
@@ -410,20 +422,20 @@ namespace Kajabity.DocForms.Forms
         /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
         /// <param name="e">Any additional arguments to the event.</param>
         /// <returns>returns true if the document is closed.</returns>
-        protected bool AttemptCloseDocument( object sender, EventArgs e )
+        protected bool AttemptCloseDocument(object sender, EventArgs e)
         {
-            if( Manager.Modified )
+            if (Manager.Modified)
             {
-                DialogResult result = MessageBox.Show( this, Application.ProductName + " file " + Manager.Filename + " has been modified!\n\nDo you want to save it?",
+                DialogResult result = MessageBox.Show(this, Application.ProductName + " file " + Manager.Filename + " has been modified!\n\nDo you want to save it?",
                                                       Application.ProductName,
                                                       MessageBoxButtons.YesNoCancel,
-                                                      MessageBoxIcon.Exclamation );
+                                                      MessageBoxIcon.Exclamation);
 
-                if( result == DialogResult.Yes )
+                if (result == DialogResult.Yes)
                 {
-                    FileSaveClick( sender, e );
+                    FileSaveClick(sender, e);
                 }
-                else if( result == DialogResult.Cancel )
+                else if (result == DialogResult.Cancel)
                 {
                     return false;
                 }
@@ -446,7 +458,7 @@ namespace Kajabity.DocForms.Forms
         /// HKEY_CURRENT_USER\Software\(company-name)\(application-name)\Recent Documents
         /// </summary>
         /// <param name="recentItemsMenuItem">a reference to the "Recent Documents..." menu item</param>
-        public void InitialseRecentDocuments( ToolStripMenuItem recentItemsMenuItem )
+        public void InitialseRecentDocuments(ToolStripMenuItem recentItemsMenuItem)
         {
             _recentItemsMenuItem = recentItemsMenuItem;
 
@@ -455,28 +467,28 @@ namespace Kajabity.DocForms.Forms
             {
                 // Set registry path from Application Settings (the 'Entry Assembly').
                 Assembly assembly = Assembly.GetEntryAssembly();
-                string companyName = ( (AssemblyCompanyAttribute) Attribute.GetCustomAttribute( assembly, typeof( AssemblyCompanyAttribute ), false ) ).Company;
+                string companyName = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyCompanyAttribute), false)).Company;
                 string appName = assembly.GetName().Name;
 
                 RegistryPath = "Software\\" + companyName + "\\" + appName + "\\Recent Documents";
-                Debug.WriteLine( "Registry Path = " + RegistryPath );
+                Debug.WriteLine("Registry Path = " + RegistryPath);
 
-                RegistryKey key = Registry.CurrentUser.OpenSubKey( RegistryPath );
-                if( key != null )
+                RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath);
+                if (key != null)
                 {
-                    for( int rd = 0; rd < MaximumRecentDocumentCount; rd++ )
+                    for (int rd = 0; rd < MaximumRecentDocumentCount; rd++)
                     {
-                        string path = (string) key.GetValue( RecentDocumentRegistryEntryName + rd, "" );
-                        if( !string.IsNullOrEmpty( path ) )
+                        string path = (string)key.GetValue(RecentDocumentRegistryEntryName + rd, "");
+                        if (!string.IsNullOrEmpty(path))
                         {
                             // Convert to a canonical, none relative format.
-                            string fullPath = Path.GetFullPath( path );
+                            string fullPath = Path.GetFullPath(path);
 
                             // Ensure unique entries only.
-                            RemoveFileHistory( fullPath );
+                            RemoveFileHistory(fullPath);
 
                             // Now add this to the head of the list.
-                            _recentFiles.Add( fullPath );
+                            _recentFiles.Add(fullPath);
                         }
                         else
                         {
@@ -485,10 +497,10 @@ namespace Kajabity.DocForms.Forms
                     }
                 }
             }
-            catch( Exception ex )
+            catch (Exception ex)
             {
-                Debug.WriteLine( "Error loading recent documents from registry key " + RegistryPath );
-                Debug.Write( ex.Message );
+                Debug.WriteLine("Error loading recent documents from registry key " + RegistryPath);
+                Debug.Write(ex.Message);
             }
         }
 
@@ -497,26 +509,26 @@ namespace Kajabity.DocForms.Forms
         /// This handler will populate the recent file entries in your Recent documents menu item,
         /// or disable it if there are no recent documents.
         /// </summary>
-        protected void OnParentMenuDropDownOpening( object sender, EventArgs e )
+        protected void OnParentMenuDropDownOpening(object sender, EventArgs e)
         {
-            if( _recentItemsMenuItem.DropDownItems.Count > 0 )
+            if (_recentItemsMenuItem.DropDownItems.Count > 0)
             {
                 _recentItemsMenuItem.DropDownItems.Clear();
             }
 
             _recentItemsMenuItem.Enabled = _recentFiles.Count > 0;
 
-            int maxRd = Math.Min( _recentFiles.Count, MaximumRecentDocumentCount );
-            for( int rd = 0; rd < maxRd; rd++ )
+            int maxRd = Math.Min(_recentFiles.Count, MaximumRecentDocumentCount);
+            for (int rd = 0; rd < maxRd; rd++)
             {
-                string path = _recentFiles[ rd ];
+                string path = _recentFiles[rd];
 
-                ToolStripMenuItem menuItem = new ToolStripMenuItem( WindowsHelper.GetShortPath( path, MaximumDisplayNameLength ) );
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(WindowsHelper.GetShortPath(path, MaximumRecentDocumentDisplayLength));
                 menuItem.Tag = path;
                 menuItem.ToolTipText = path;
                 menuItem.Click += OnRecentDocumentMenuItemClicked;
 
-                _recentItemsMenuItem.DropDownItems.Add( menuItem );
+                _recentItemsMenuItem.DropDownItems.Add(menuItem);
             }
         }
 
@@ -525,28 +537,28 @@ namespace Kajabity.DocForms.Forms
         /// When the for closes, save the recent documents in the Registry.
         /// </summary>
         /// <param name="e"></param>
-        protected override void OnFormClosing( FormClosingEventArgs e )
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if( AttemptCloseDocument( this, e ) )
+            if (AttemptCloseDocument(this, e))
             {
                 // Now, store recent document paths in registry.
                 try
                 {
-                    RegistryKey key = Registry.CurrentUser.CreateSubKey( RegistryPath );
-                    if( key != null )
+                    RegistryKey key = Registry.CurrentUser.CreateSubKey(RegistryPath);
+                    if (key != null)
                     {
-                        int maxRd = Math.Min( _recentFiles.Count, MaximumRecentDocumentCount );
+                        int maxRd = Math.Min(_recentFiles.Count, MaximumRecentDocumentCount);
 
-                        for( int rd = 0; rd < maxRd; rd++ )
+                        for (int rd = 0; rd < maxRd; rd++)
                         {
-                            key.SetValue( RecentDocumentRegistryEntryName + rd, _recentFiles[ rd ] );
+                            key.SetValue(RecentDocumentRegistryEntryName + rd, _recentFiles[rd]);
                         }
                     }
                 }
-                catch( Exception ex )
+                catch (Exception ex)
                 {
-                    Debug.WriteLine( "Error writing recent documents from registry key " + RegistryPath );
-                    Debug.WriteLine( ex.Message );
+                    Debug.WriteLine("Error writing recent documents from registry key " + RegistryPath);
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }
@@ -557,11 +569,11 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         /// <param name="sender">unused.</param>
         /// <param name="e">unused.</param>
-        protected virtual void OnRecentDocumentMenuItemClicked( object sender, EventArgs e )
+        protected virtual void OnRecentDocumentMenuItemClicked(object sender, EventArgs e)
         {
-            string path = (string) ( (ToolStripMenuItem) sender ).Tag;
+            string path = (string)((ToolStripMenuItem)sender).Tag;
 
-            LoadDocument( path );
+            LoadDocument(path);
         }
 
         /// <summary>
@@ -570,16 +582,16 @@ namespace Kajabity.DocForms.Forms
         /// If file already exists in the list, it is moved to the first place.
         /// </summary>
         /// <param name="file">The filename to be added.</param>
-        public void AddFileHistory( string file )
+        public void AddFileHistory(string file)
         {
-            RemoveFileHistory( file );
+            RemoveFileHistory(file);
 
             // if array has maximum length, remove last element
-            if( _recentFiles.Count == MaximumRecentDocumentCount )
-                _recentFiles.RemoveAt( MaximumRecentDocumentCount - 1 );
+            if (_recentFiles.Count == MaximumRecentDocumentCount)
+                _recentFiles.RemoveAt(MaximumRecentDocumentCount - 1);
 
             // add new file name to the start of array
-            _recentFiles.Insert( 0, file );
+            _recentFiles.Insert(0, file);
         }
 
         /// <summary>
@@ -587,16 +599,16 @@ namespace Kajabity.DocForms.Forms
         /// Call this function when File - Open operation failed.
         /// </summary>
         /// <param name="file">File Name</param>
-        public void RemoveFileHistory( string file )
+        public void RemoveFileHistory(string file)
         {
             IEnumerator myEnumerator = _recentFiles.GetEnumerator();
             int i = 0;
 
-            while( myEnumerator.MoveNext() )
+            while (myEnumerator.MoveNext())
             {
-                if( (string) myEnumerator.Current == file )
+                if ((string)myEnumerator.Current == file)
                 {
-                    _recentFiles.RemoveAt( i );
+                    _recentFiles.RemoveAt(i);
                     return;
                 }
 
