@@ -50,8 +50,10 @@ namespace PlainTextEditor
             printToolStripButton.Enabled = false;
             helpToolStripButton.Enabled = false;
 
-            // There will always be a document.
+            // There will always be a document for this application.
             NewDocument();
+
+            InitialseRecentDocuments(recentFilesToolStripMenuItem);
         }
 
         /// <summary>
@@ -145,6 +147,11 @@ namespace PlainTextEditor
         #endregion
 
         #region File Menu Handlers
+        private void FileToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            OnParentMenuDropDownOpening(sender, e);
+        }
+
         private void NewToolStripMenuItemClick(object sender, EventArgs e)
         {
             FileNewClick(sender, e);
@@ -214,7 +221,7 @@ namespace PlainTextEditor
         /// </summary>
         /// <param name="sender">The window or control originating the event.</param>
         /// <param name="e">Event details.</param>
-        private void textBox_TextChanged(object sender, EventArgs e)
+        private void TextBox_TextChanged(object sender, EventArgs e)
         {
             Manager.Document.Text = textBox.Text;
         }

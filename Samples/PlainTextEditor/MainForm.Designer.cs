@@ -68,6 +68,8 @@ namespace PlainTextEditor
             this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.recentFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -169,7 +171,7 @@ namespace PlainTextEditor
             this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox.Size = new System.Drawing.Size(689, 258);
             this.textBox.TabIndex = 0;
-            this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBox.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // menuStrip1
             // 
@@ -198,10 +200,13 @@ namespace PlainTextEditor
             this.printToolStripMenuItem,
             this.printPreviewToolStripMenuItem,
             this.toolStripSeparator2,
+            this.recentFilesToolStripMenuItem,
+            this.toolStripSeparator8,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
+            this.fileToolStripMenuItem.DropDownOpening += new System.EventHandler(this.FileToolStripMenuItem_DropDownOpening);
             // 
             // newToolStripMenuItem
             // 
@@ -277,6 +282,17 @@ namespace PlainTextEditor
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            // 
+            // recentFilesToolStripMenuItem
+            // 
+            this.recentFilesToolStripMenuItem.Name = "recentFilesToolStripMenuItem";
+            this.recentFilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.recentFilesToolStripMenuItem.Text = "Recent Files";
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -638,5 +654,7 @@ namespace PlainTextEditor
 		private System.Windows.Forms.TextBox textBox;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.ToolStripMenuItem recentFilesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
     }
 }
