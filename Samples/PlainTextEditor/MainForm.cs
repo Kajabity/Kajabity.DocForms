@@ -29,14 +29,14 @@ namespace PlainTextEditor
     /// Description of MainForm.
     /// </summary>
     public partial class MainForm : SingleDocumentForm<PlainTextDocument>
-	{
-		public MainForm() :
-			base( new PlainTextDocumentManager() )
-		{
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
-			InitializeComponent();
+    {
+        public MainForm() :
+            base(new PlainTextDocumentManager())
+        {
+            //
+            // The InitializeComponent() call is required for Windows Forms designer support.
+            //
+            InitializeComponent();
 
             // Hide the menu items we haven't implmented yet - not forgetting spurious separators.
             toolsToolStripMenuItem.Visible = false;
@@ -99,9 +99,15 @@ namespace PlainTextEditor
         private void UpdateCommands()
         {
             // Some commands depend on whether or not the document is open.
-            undoToolStripMenuItem.Enabled = textBox.CanUndo;
+            undoToolStripMenuItem.Enabled = textBox.Modified;
         }
 
+        #region Drag & Drop Handlers
+        /// <summary>
+        /// When something is dragged onto the application, allow drop only if its a single file.
+        /// </summary>
+        /// <param name="sender">The window or control originating the event.</param>
+        /// <param name="e">Drag event details.</param>
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
             // Allow if a single file.
@@ -115,6 +121,11 @@ namespace PlainTextEditor
             }
         }
 
+        /// <summary>
+        /// When a single file is dropped onto the application, treat it as a File Open and load the file.
+        /// </summary>
+        /// <param name="sender">The window or control originating the event.</param>
+        /// <param name="e">Drag event details.</param>
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
             // Open the file, if a single file.
@@ -123,83 +134,90 @@ namespace PlainTextEditor
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 if (files.Length == 1)
                 {
-                    LoadDocument(files[0]);
+                    // The same method used by the FileOpenClick method once the user has selected a file.
+                    if (AttemptCloseDocument(sender, e))
+                    {
+                        LoadDocument(files[0]);
+                    }
                 }
             }
         }
+        #endregion
 
+        #region File Menu Handlers
         private void NewToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			FileNewClick( sender, e );
-		}
-
-	    private void OpenToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			FileOpenClick( sender, e );
-		}
-
-	    private void SaveToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			FileSaveClick( sender, e );
-		}
-
-	    private void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			FileSaveAsClick( sender, e );
-		}
-
-        private void ExitToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			FileExitClick( sender, e );
-		}
-
-        private void CutToolStripButtonClick(object sender, EventArgs e)
-		{
-			textBox.Cut();
-            UpdateCommands();
+        {
+            FileNewClick(sender, e);
         }
 
-        private void CopyToolStripButtonClick(object sender, EventArgs e)
-		{
-			textBox.Copy();
-            UpdateCommands();
+        private void OpenToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            FileOpenClick(sender, e);
         }
-
-        private void PasteToolStripButtonClick(object sender, EventArgs e)
-		{
-			textBox.Paste();
-            UpdateCommands();
-        }
-
-        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			textBox.Undo();
-            UpdateCommands();
-		}
-
-        private void SelectAllToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			textBox.SelectAll();
-		}
-
-	    private void DeleteToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			textBox.SelectedText = "";
-		}
-
-	    private void EditToolStripMenuItemDropDownOpening(object sender, EventArgs e)
-		{
-			undoToolStripMenuItem.Enabled = textBox.CanUndo;
-		}
-
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FileCloseClick(sender, e);
         }
 
+        private void SaveToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            FileSaveClick(sender, e);
+        }
+
+        private void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            FileSaveAsClick(sender, e);
+        }
+
+        private void ExitToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            FileExitClick(sender, e);
+        }
+        #endregion
+
+        #region Edit Menu Handlers
+        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            textBox.Undo();
+        }
+
+        private void CutToolStripButtonClick(object sender, EventArgs e)
+        {
+            textBox.Cut();
+        }
+
+        private void CopyToolStripButtonClick(object sender, EventArgs e)
+        {
+            textBox.Copy();
+        }
+
+        private void PasteToolStripButtonClick(object sender, EventArgs e)
+        {
+            textBox.Paste();
+        }
+
+        private void SelectAllToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            textBox.SelectAll();
+        }
+
+        private void DeleteToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            textBox.SelectedText = "";
+        }
+        #endregion
+
+        #region TextBox Event Handlers
+        /// <summary>
+        /// Update the model (Document) each time the text box contents are modified.
+        /// This updates Manager.Document.Modified and triggers the DocumentStatusChanged event, handled above.
+        /// </summary>
+        /// <param name="sender">The window or control originating the event.</param>
+        /// <param name="e">Event details.</param>
         private void textBox_TextChanged(object sender, EventArgs e)
         {
-            Manager.Document.Modified = true;
+            Manager.Document.Text = textBox.Text;
         }
+        #endregion
     }
 }
