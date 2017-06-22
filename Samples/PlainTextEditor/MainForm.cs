@@ -18,7 +18,6 @@
  * http://www.kajabity.com
  */
 
-using Kajabity.DocForms.Documents;
 using Kajabity.DocForms.Forms;
 using System;
 using System.Windows.Forms;
@@ -26,7 +25,7 @@ using System.Windows.Forms;
 namespace PlainTextEditor
 {
     /// <summary>
-    /// Description of MainForm.
+    /// The main window of the application.
     /// </summary>
     public partial class MainForm : SingleDocumentForm<PlainTextDocument>
     {
@@ -104,7 +103,10 @@ namespace PlainTextEditor
             undoToolStripMenuItem.Enabled = textBox.Modified;
         }
 
+        //  ---------------------------------------------------------------------
         #region Drag & Drop Handlers
+        //  ---------------------------------------------------------------------
+
         /// <summary>
         /// When something is dragged onto the application, allow drop only if its a single file.
         /// </summary>
@@ -146,7 +148,10 @@ namespace PlainTextEditor
         }
         #endregion
 
+        //  ---------------------------------------------------------------------
         #region File Menu Handlers
+        //  ---------------------------------------------------------------------
+
         private void FileToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             OnParentMenuDropDownOpening(sender, e);
@@ -182,7 +187,10 @@ namespace PlainTextEditor
         }
         #endregion
 
+        //  ---------------------------------------------------------------------
         #region Edit Menu Handlers
+        //  ---------------------------------------------------------------------
+
         private void UndoToolStripMenuItemClick(object sender, EventArgs e)
         {
             textBox.Undo();
@@ -214,7 +222,10 @@ namespace PlainTextEditor
         }
         #endregion
 
+        //  ---------------------------------------------------------------------
         #region TextBox Event Handlers
+        //  ---------------------------------------------------------------------
+
         /// <summary>
         /// Update the model (Document) each time the text box contents are modified.
         /// This updates Manager.Document.Modified and triggers the DocumentStatusChanged event, handled above.
@@ -226,5 +237,7 @@ namespace PlainTextEditor
             Manager.Document.Text = textBox.Text;
         }
         #endregion
+ 
+        //  ---------------------------------------------------------------------
     }
 }
