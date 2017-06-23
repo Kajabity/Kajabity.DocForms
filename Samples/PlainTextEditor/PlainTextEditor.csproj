@@ -130,4 +130,7 @@
       <Name>Kajabity.DocForms</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="screenshot.png" />
+  </ItemGroup>
 </Project>
