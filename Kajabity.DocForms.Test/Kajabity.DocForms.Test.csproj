@@ -37,6 +37,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Documents\DocumentTest.cs" />
+    <Compile Include="Documents\SingleDocumentManagerTest.cs" />
+    <Compile Include="Documents\TestableDocument.cs" />
+    <Compile Include="Documents\TestableSingleDocumentManager.cs" />
     <Compile Include="WindowsHelperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

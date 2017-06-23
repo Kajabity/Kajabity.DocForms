@@ -185,16 +185,5 @@ namespace Kajabity.DocForms.Test.Documents
             Assert.AreEqual(newValue, underTest.Modified);
             Assert.AreEqual(false, called);
         }
-
-        public class TestableDocument : Document
-        {
-            public TestableDocument()
-            {
-            }
-
-            public TestableDocument(string name) : base(name)
-            {
-            }
-        }
     }
 }

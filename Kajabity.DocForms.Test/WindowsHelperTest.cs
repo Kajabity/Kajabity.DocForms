@@ -26,7 +26,7 @@ namespace Kajabity.DocForms.Test
     public class WindowsHelperTest
     {
         [Test]
-        public void TestGetShortPathShortStrings()
+        public void TestWindowsHelperGetShortPathShortStrings()
         {
             const int length = 50;
             string[] short_strings =
@@ -53,7 +53,7 @@ namespace Kajabity.DocForms.Test
         }
 
         [Test]
-        public void TestGetShortPathLongStrings()
+        public void TestWindowsHelperGetShortPathLongStrings()
         {
             const int length = 50;
             string[] short_strings =
