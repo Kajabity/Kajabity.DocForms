@@ -27,9 +27,9 @@ namespace PlainTextEditor
     /// <summary>
     /// The main window of the application.
     /// </summary>
-    public partial class MainForm : SingleDocumentForm<PlainTextDocument>
+    public partial class PlainTextEditorMainForm : SingleDocumentForm<PlainTextDocument>
     {
-        public MainForm() :
+        public PlainTextEditorMainForm() :
             base(new PlainTextDocumentManager())
         {
             //

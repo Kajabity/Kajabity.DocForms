@@ -22,7 +22,7 @@ using System;
 
 namespace PlainTextEditor
 {
-	partial class MainForm
+	partial class PlainTextEditorMainForm
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
@@ -50,7 +50,7 @@ namespace PlainTextEditor
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlainTextEditorMainForm));
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
