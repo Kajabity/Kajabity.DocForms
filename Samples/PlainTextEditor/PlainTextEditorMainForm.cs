@@ -49,9 +49,6 @@ namespace PlainTextEditor
             printToolStripButton.Enabled = false;
             helpToolStripButton.Enabled = false;
 
-            // There will always be a document for this application.
-            NewDocument();
-
             InitialseRecentDocuments(recentFilesToolStripMenuItem);
         }
 
@@ -62,8 +59,17 @@ namespace PlainTextEditor
         {
             if (Manager.Opened)
             {
+                textBox.Enabled = true;
+                textBox.BackColor = System.Drawing.SystemColors.Window;
+
                 textBox.Text = Manager.Document.Text;
                 Manager.Document.Modified = false;
+            }
+            else
+            {
+                textBox.Enabled = false;
+                textBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
+                textBox.Text = "";
             }
 
             UpdateCommands();
@@ -78,7 +84,8 @@ namespace PlainTextEditor
         /// </summary>
         private void MainForm_DocumentStatusChanged(object sender, EventArgs e)
         {
-            string title = Application.ProductName;
+            // Would use 'Application.ProductName' but this doesn't work with NUnit tests!
+            string title = "Plain Text Editor"; 
 
             if (Manager.Opened)
             {
@@ -104,51 +111,6 @@ namespace PlainTextEditor
         }
 
         //  ---------------------------------------------------------------------
-        #region Drag & Drop Handlers
-        //  ---------------------------------------------------------------------
-
-        /// <summary>
-        /// When something is dragged onto the application, allow drop only if its a single file.
-        /// </summary>
-        /// <param name="sender">The window or control originating the event.</param>
-        /// <param name="e">Drag event details.</param>
-        private void MainForm_DragEnter(object sender, DragEventArgs e)
-        {
-            // Allow if a single file.
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length == 1)
-                {
-                    e.Effect = DragDropEffects.Copy;
-                }
-            }
-        }
-
-        /// <summary>
-        /// When a single file is dropped onto the application, treat it as a File Open and load the file.
-        /// </summary>
-        /// <param name="sender">The window or control originating the event.</param>
-        /// <param name="e">Drag event details.</param>
-        private void MainForm_DragDrop(object sender, DragEventArgs e)
-        {
-            // Open the file, if a single file.
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length == 1)
-                {
-                    // The same method used by the FileOpenClick method once the user has selected a file.
-                    if (AttemptCloseDocument(sender, e))
-                    {
-                        LoadDocument(files[0]);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        //  ---------------------------------------------------------------------
         #region File Menu Handlers
         //  ---------------------------------------------------------------------
 
@@ -166,7 +128,8 @@ namespace PlainTextEditor
         {
             FileOpenClick(sender, e);
         }
-        private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void closeToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             FileCloseClick(sender, e);
         }
@@ -234,10 +197,13 @@ namespace PlainTextEditor
         /// <param name="e">Event details.</param>
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            Manager.Document.Text = textBox.Text;
+            if (Manager.Opened)
+            {
+                Manager.Document.Text = textBox.Text;
+            }
         }
         #endregion
- 
+
         //  ---------------------------------------------------------------------
     }
 }

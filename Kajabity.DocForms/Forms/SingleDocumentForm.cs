@@ -48,7 +48,7 @@ namespace Kajabity.DocForms.Forms
         /// A reference to an instance of the SingleDocumentManager used to load and save
         /// documents for the application.
         /// </summary>
-        protected SingleDocumentManager<TDocument> Manager
+        public SingleDocumentManager<TDocument> Manager
         {
             get
             {
@@ -215,14 +215,11 @@ namespace Kajabity.DocForms.Forms
         }
 
         /// <summary>
-        /// A handler for the File->Open command.   
-        /// Uses the OpenFileDialog to select and open a file.
-        /// Closes any currently open document (prompting the user to save it if modified).
-        /// Call this method your form's 'OnClick()' handler.
+        /// Create and configure an instance of <see cref="OpenFileDialog"/> in a <see cref="FileDocumentSelector"/>.
+        /// Override this method to use an alternative way of selecting a document.
         /// </summary>
-        /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
-        /// <param name="e">Any additional arguments to the event.</param>
-        public void FileOpenClick(object sender, EventArgs e)
+        /// <returns>An instance of <see cref="OpenFileDialog"/> ready to select a Document to open.</returns>
+        protected virtual IDocumentSelector GetOpenDocumentSelector()
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "Open " + Application.ProductName + " file";
@@ -237,7 +234,23 @@ namespace Kajabity.DocForms.Forms
             //dialog.InitialDirectory = @"C:\";
             //dialog.ShowHelp = true; // Need to handle 'HelpRequest' event.
 
-            if (dialog.ShowDialog() == DialogResult.OK && AttemptCloseDocument(sender, e))
+            return new FileDocumentSelector( dialog );
+        }
+
+
+        /// <summary>
+        /// A handler for the File->Open command.   
+        /// Uses the OpenFileDialog to select and open a file.
+        /// Closes any currently open document (prompting the user to save it if modified).
+        /// Call this method your form's 'OnClick()' handler.
+        /// </summary>
+        /// <param name="sender">the object that sent the event - e.g. menu item or tool bar button.</param>
+        /// <param name="e">Any additional arguments to the event.</param>
+        public void FileOpenClick(object sender, EventArgs e)
+        {
+            IDocumentSelector dialog = GetOpenDocumentSelector();
+
+            if (dialog.ShowDialog(this) == DialogResult.OK && AttemptCloseDocument(sender, e))
             {
                 Debug.WriteLine(Manager.DefaultExtension + " file: " + dialog.FileName);
 
@@ -277,6 +290,23 @@ namespace Kajabity.DocForms.Forms
         }
 
         /// <summary>
+        /// Create and configure an instance of <see cref="SaveFileDialog"/> in a <see cref="FileDocumentSelector"/>.
+        /// Override this method to use an alternative way of selecting a document.
+        /// </summary>
+        /// <returns>An instance of <see cref="OpenFileDialog"/> ready to select a filename to save the document to.</returns>
+        protected virtual IDocumentSelector GetSaveAsDocumentSelector()
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.DefaultExt = Manager.DefaultExtension;
+            dialog.Title = "Save " + Application.ProductName + " file";
+            dialog.Filter = Application.ProductName + " files (*." + Manager.DefaultExtension + ")|*." + Manager.DefaultExtension +
+                "|All files (*.*)|*.*";
+            dialog.FileName = Manager.Filename;
+
+            return new FileDocumentSelector(dialog);
+        }
+
+        /// <summary>
         /// A handler for the File->Save As command.  
         /// Prompts the user for a filename and path and saves the document to it.
         /// Call this method your form's 'OnClick()' handler.
@@ -285,12 +315,7 @@ namespace Kajabity.DocForms.Forms
         /// <param name="e">Any additional arguments to the event.</param>
         public void FileSaveAsClick(object sender, EventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.DefaultExt = Manager.DefaultExtension;
-            dialog.Title = "Save " + Application.ProductName + " file";
-            dialog.Filter = Application.ProductName + " files (*." + Manager.DefaultExtension + ")|*." + Manager.DefaultExtension +
-                "|All files (*.*)|*.*";
-            dialog.FileName = Manager.Filename;
+            IDocumentSelector dialog = GetSaveAsDocumentSelector();
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {

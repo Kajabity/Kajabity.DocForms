@@ -114,6 +114,8 @@
     <Compile Include="Documents\DocumentManager.cs" />
     <Compile Include="Documents\SingleDocumentManager.cs" />
     <Compile Include="Documents\DocumentType.cs" />
+    <Compile Include="Forms\FileDocumentSelector.cs" />
+    <Compile Include="Forms\IDocumentSelector.cs" />
     <Compile Include="Forms\SDIForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PlainTextEditor")]
+[assembly: AssemblyProduct("Plain Text Editor")]
 [assembly: AssemblyCopyright( "Copyright 2009-17 Williams Technologies Limited." )]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

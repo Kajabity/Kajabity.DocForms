@@ -195,6 +195,10 @@ namespace Kajabity.DocForms.Documents
             Filename = null;
         }
 
+        //  ---------------------------------------------------------------------
+        //  Events.
+        //  ---------------------------------------------------------------------
+
         /// <summary>
         /// An event that clients can use to be notified whenever a document's
         /// name or modified status are changed.
@@ -214,6 +218,5 @@ namespace Kajabity.DocForms.Documents
         {
             DocumentStatusChanged?.Invoke(this, args);
         }
-
     }
 }
