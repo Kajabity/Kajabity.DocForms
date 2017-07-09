@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Kajabity.DocForms" )]
-[assembly: AssemblyDescription( "A collection of WinForms classes to provide all those standard 'Boiler Plate' file handling features of a Windows Desktop application." )]
+[assembly: AssemblyDescription("Quickly develop file (Document) based WinForms applications using Kajabity.DocForms to handle all the boilerplate file handling.  Visit the project website for detailed usage instructions, or see the samples on GitHub.  Originally part of Kajabity.Tools.")]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "Williams Technologies Limited" )]
 [assembly: AssemblyProduct( "Kajabity.DocForms" )]
