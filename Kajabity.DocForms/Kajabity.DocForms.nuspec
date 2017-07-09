@@ -4,15 +4,20 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <authors>Kajabity.com</authors>
+    <owners>Williams Technologies Limited</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>http://www.kajabity.com/content/kajabity-tools/</projectUrl>
     <iconUrl>http://kajabity.com/images/logo-57x57.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Kajabity Tools Forms and Document classes extracted from the Kajabity.Tools nuget.</releaseNotes>
+    <releaseNotes>
+      Refactored and enhanced classes to SingleDocumentForm and SingleDocumentManager.
+      Original SDIForm and DocumentManager classes retained but deprecated.
+      Added document and document state changed events.
+      Added significant NUnit test coverage.
+    </releaseNotes>
     <copyright>Copyright © 2009-17 Williams Technologies Limited.</copyright>
-    <tags>Kajabity Tools Forms SDIForm Recent Documents MRU</tags>
+    <tags>Kajabity DocForms WinForms Tools Forms Single Document Interface SDI Recent Documents MRU</tags>
   </metadata>
 </package>

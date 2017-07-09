@@ -18,17 +18,20 @@
  * http://www.kajabity.com
  */
 
+using System;
+using System.ComponentModel;
+
 namespace Kajabity.DocForms.Documents
 {
     /// <summary>
     /// An abstract base class for all types of document that can be created, 
-    /// loaded, modified and saved by the SDIForm methods.  Extend this class
+    /// loaded, modified and saved by the SingleDocumentForm methods.  Extend this class
     /// to add properties and methods appropriate for your particular type of document
     /// or data.
     /// </summary>
     public abstract class Document
     {
-        private bool modified = false;
+        private bool _modified;
 
         /// <summary>
         /// Gets or sets a flag to indicate if the contents of the document
@@ -38,16 +41,20 @@ namespace Kajabity.DocForms.Documents
         {
             get
             {
-                return modified;
+                return _modified;
             }
             set
             {
-                modified = value;
+                if( _modified != value )
+                {
+                    _modified = value;
+                    OnStatusChanged( new EventArgs() );
+                }
             }
         }
 
-        private string name;
-        
+        private string _name;
+
         /// <summary>
         /// Gets or sets the name of the document - usually derived from the filename.
         /// </summary>
@@ -55,22 +62,26 @@ namespace Kajabity.DocForms.Documents
         {
             get
             {
-                return name;
+                return _name;
             }
             set
             {
-                name = value;
+                if( !string.Equals( _name, value ) )
+                {
+                    _name = value;
+                    OnStatusChanged( new EventArgs() );
+                }
             }
         }
 
         //  ---------------------------------------------------------------------
         //  Constructors.
         //  ---------------------------------------------------------------------
-            
+
         /// <summary>
         /// Empty contructor used to create an unnamed document - the name will be set later.
         /// </summary>
-        public Document()
+        protected Document()
         {
         }
 
@@ -78,9 +89,29 @@ namespace Kajabity.DocForms.Documents
         /// Construct a document providing a name.  The name may be changed later - e.g. when saved.
         /// </summary>
         /// <param name="name">The name of the document</param>
-        public Document( string name )
+        protected Document( string name )
         {
-            this.name = name;
+            _name = name;
+        }
+
+        /// <summary>
+        /// An event that clients can use to be notified whenever document
+        /// name or modified status are changed.
+        /// Handle this event to provide specific Forms handling; for example 
+        /// update window title with filename or status display.
+        /// </summary>
+        [
+        Category( "Document" ),
+        Description( "Notifies whenever document name or modified status are changed." )
+        ]
+        public event EventHandler<EventArgs> StatusChanged;
+
+        /// <summary>
+        /// Called whenever a document name or modified status is or may have been changed.
+        /// </summary>
+        protected virtual void OnStatusChanged( EventArgs args )
+        {
+            StatusChanged?.Invoke( this, args );
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,28 +23,31 @@ using Kajabity.DocForms.Documents;
 namespace HexViewer
 {
     /// <summary>
-    /// Description of PictureDocument.
+    /// A read-only document class which contains a file's contents as a byte array.
     /// </summary>
-    public class BinaryDocument : Document
-	{
-		private byte[] data;
-		public byte[] Data
-		{
-			get
-			{
-				return data;
-			}
-		}
+    public class BinaryDocument: Document
+    {
+        /// <summary>
+        /// The entire contents of a file.
+        /// </summary>
+        public byte[] Data { get; }
 
-		public BinaryDocument()
-		{
-			this.data = new byte[1];
-			data[ 0 ] = 0;
-		}
+        /// <summary>
+        /// Construct an empty instance with a dummy byte as content.
+        /// </summary>
+        public BinaryDocument()
+        {
+            Data = new byte[ 1 ];
+            Data[ 0 ] = 0;
+        }
 
-		public BinaryDocument( byte[] data )
-		{
-			this.data = data;
-		}
-	}
+        /// <summary>
+        /// Construct a BinaryDocument passing the contents of a file.
+        /// </summary>
+        /// <param name="data">the entire contents of a file.</param>
+        public BinaryDocument( byte[] data )
+        {
+            Data = data;
+        }
+    }
 }

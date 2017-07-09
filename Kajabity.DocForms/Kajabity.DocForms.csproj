@@ -112,19 +112,25 @@
   <ItemGroup>
     <Compile Include="Documents\Document.cs" />
     <Compile Include="Documents\DocumentManager.cs" />
+    <Compile Include="Documents\SingleDocumentManager.cs" />
     <Compile Include="Documents\DocumentType.cs" />
+    <Compile Include="Forms\FileDocumentSelector.cs" />
+    <Compile Include="Forms\IDocumentSelector.cs" />
     <Compile Include="Forms\SDIForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Documents\TextDocument.cs" />
     <Compile Include="Documents\TextDocumentManager.cs" />
+    <Compile Include="Forms\SingleDocumentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsHelper.cs" />
     <None Include="Kajabity.DocForms.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="Kajabity.DocForms.snk" />
     <None Include="license.rtf" />
-    <None Include="NOTICE.txt" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>

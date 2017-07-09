@@ -18,6 +18,7 @@
  * http://www.kajabity.com
  */
 
+using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -26,6 +27,7 @@ namespace Kajabity.DocForms.Documents
     /// <summary>
     /// A Document Manager for Text Documents.
     /// </summary>
+    [Obsolete("Replaced by PlainDocumentManager in the PlainTextEditor sample.")]
     public class TextDocumentManager: DocumentManager
     {
         /// <summary>

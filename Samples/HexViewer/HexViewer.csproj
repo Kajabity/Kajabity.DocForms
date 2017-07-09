@@ -95,21 +95,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Breadth.cs" />
     <Compile Include="HexPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="HexViewerMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="HexViewerMainForm.Designer.cs">
+      <DependentUpon>HexViewerMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BinaryDocument.cs" />
     <Compile Include="BinaryDocumentManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.Designer.cs</DependentUpon>
+    <EmbeddedResource Include="HexPanel.resx">
+      <DependentUpon>HexPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexViewerMainForm.resx">
+      <DependentUpon>HexViewerMainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -131,11 +135,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Kajabity.DocForms\Kajabity.DocForms.csproj">
       <Project>{15f2e1e6-d8b9-4af1-85bb-7d28bd88b9bd}</Project>
       <Name>Kajabity.DocForms</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="screenshot.png" />
   </ItemGroup>
 </Project>

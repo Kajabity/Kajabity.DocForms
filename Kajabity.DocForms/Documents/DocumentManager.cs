@@ -30,78 +30,39 @@ namespace Kajabity.DocForms.Documents
     /// 
     /// Extend this class to implement methods to handle specific document types.
     /// </summary>
+    [Obsolete("Replaced by SingleDocumentManager.")]
     public abstract class DocumentManager
     {
-        private string defaultExtension = "txt";
-
         /// <summary>
         /// The filename extension (without the dot) for the type of files managed by this class.
         /// </summary>
-        public string DefaultExtension
-        {
-            get
-            {
-                return defaultExtension;
-            }
-            set
-            {
-                defaultExtension = value;
-            }
-        }
-
-        private string defaultName = "Document";
+        public string DefaultExtension { get; set; }
 
         /// <summary>
         /// The default name or filename (without path or extension) for a file created by this class.
         /// </summary>
-        public string DefaultName
-        {
-            get
-            {
-                return defaultName;
-            }
-            set
-            {
-                defaultName = value;
-            }
-        }
-
-        private string filename = null;
+        public string DefaultName { get; set; } = "Document";
 
         /// <summary>
         /// The filename of the current document.  Will be null of no current document.
         /// </summary>
-        public string Filename
-        {
-            get
-            {
-                return filename;
-            }
-        }
-
-        private bool newfile = true;
+        public string Filename { get; private set; }
 
         /// <summary>
         ///	Returns true if the current document (if any) is new and unsaved.
         /// </summary>
-        public bool NewFile
-        {
-            get
-            {
-                return newfile;
-            }
-        }
+        public bool NewFile { get; private set; } = true;
 
         /// <summary>
         /// Counts the number of documents openned by this instance of the Document Manager to 
         /// allow default filenames to be a little more unique.
         /// </summary>
-        private int docCount = 0;
+        private int _docCount;
 
         /// <summary>
         /// Holds a reference to the currently loaded document - or null if none loaded.
         /// </summary>
-        protected Document document = null;
+        protected Document document;
 
         /// <summary>
         /// Get the currently loaded document - or null if no document loaded.
@@ -117,24 +78,12 @@ namespace Kajabity.DocForms.Documents
         /// <summary>
         /// Returns true this instance has a document.
         /// </summary>
-        public bool Opened
-        {
-            get
-            {
-                return document != null;
-            }
-        }
+        public bool Opened => document != null;
 
         /// <summary>
         /// Tests if a document is both Opened and modified.
         /// </summary>
-        public bool Modified
-        {
-            get
-            {
-                return Opened && document.Modified;
-            }
-        }
+        public bool Modified => Opened && document.Modified;
 
         //  ---------------------------------------------------------------------
         //  Constructors.
@@ -159,13 +108,14 @@ namespace Kajabity.DocForms.Documents
         /// </summary>
         public virtual void NewDocument()
         {
-            string documentName = String.Format(defaultName + "." + defaultExtension, ++docCount);
-            filename = documentName;
-            newfile = true;
+            string documentName = String.Format(DefaultName + "." + DefaultExtension, ++_docCount);
+            Filename = documentName;
+            NewFile = true;
 
             if (document != null)
             {
                 document.Name = documentName;
+                document.Modified = false;
             }
         }
 
@@ -177,8 +127,8 @@ namespace Kajabity.DocForms.Documents
         /// <param name="filename">filename and path loaded</param>
         public virtual void Load(string filename)
         {
-            this.filename = filename;
-            newfile = false;
+            this.Filename = filename;
+            NewFile = false;
 
             if (document != null)
             {
@@ -196,8 +146,8 @@ namespace Kajabity.DocForms.Documents
         /// <param name="filename">filename and path to save to</param>
         public virtual void Save(string filename)
         {
-            this.filename = filename;
-            newfile = false;
+            this.Filename = filename;
+            NewFile = false;
 
             if (document != null)
             {
@@ -216,8 +166,8 @@ namespace Kajabity.DocForms.Documents
         public virtual void Close()
         {
             document = null;
-            newfile = false;
-            filename = null;
+            NewFile = false;
+            Filename = null;
         }
     }
 }

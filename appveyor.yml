@@ -23,7 +23,7 @@
 #---------------------------------# 
  
 # version format 
-version: 0.1-{build}
+version: 0.2-{build}
 
 # branches to build - only build the master branch.
 #branches
@@ -80,11 +80,13 @@ artifacts:
 
     - path: Samples\HexViewer\bin\$(configuration)\HexViewer.exe
 
-    - path: Samples\TextEditor\bin\$(configuration)\TextEditor.exe
+    - path: Samples\PlainTextEditor\bin\$(configuration)\PlainTextEditor.exe
 
     - path: Samples\CsvEditor\bin\$(configuration)\CsvEditor.exe
 
     - path: Samples\JavaPropertiesEditor\bin\$(configuration)\JavaPropertiesEditor.exe
+
+    - path: Samples\Deprecated\TextEditor\bin\$(configuration)\TextEditor.exe
 
 #---------------------------------# 
 #     deployment configuration    # 

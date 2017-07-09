@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ namespace JavaPropertiesEditor
     /// <summary>
     /// Description of MainForm.
     /// </summary>
-    public partial class MainForm : SDIForm
+    public partial class MainForm : SingleDocumentForm<JavaPropertiesDocument>
 	{
 		public MainForm()
             : base( new JavaPropertiesDocumentManager() )
@@ -47,7 +47,7 @@ namespace JavaPropertiesEditor
 			//
 			InitializeComponent();
 
-            this.loadDocument( filename );
+            LoadDocument( filename );
 		}
 
 		public string Status
@@ -69,65 +69,82 @@ namespace JavaPropertiesEditor
 			}
 		}
 
-        public override void DocumentChanged()
+        //      public override void DocumentChanged()
+        //      {
+        //}
+
+        private void MainForm_DocumentChanged( object sender, EventArgs e )
         {
-			// Clear the list.
-			this.listView1.Items.Clear();
-			
-			if( manager.Opened )
-			{
-				//	Update main form heading.
-				this.Text = Application.ProductName + " - " + manager.Document.Name;
-				JavaProperties properties = ((JavaPropertiesDocument) manager.Document).Properties;
-				
-				//	Update the content window.
-				foreach( String key in properties.Keys )
-				{
-					ListViewItem item = new ListViewItem( key );
-					String text = properties.GetProperty( key );
-					item.SubItems.Add( new ListViewItem.ListViewSubItem( item, text ) );
-					
-					this.listView1.Items.Add( item );
-				}
-			}
-			else
-			{
-				//	Update main form heading.
-				this.Text = Application.ProductName;
-			}
+            // Clear the list.
+            listView1.Items.Clear();
 
-			//	Force a display update.
-			this.Refresh();
-		}
+            if( Manager.Opened )
+            {
+                //	Update main form heading.
+                JavaProperties properties = Manager.Document.Properties;
 
-		void OnFileNew(object sender, System.EventArgs e)
+                //	Update the content window.
+                foreach( String key in properties.Keys )
+                {
+                    ListViewItem item = new ListViewItem( key );
+                    String text = properties.GetProperty( key );
+                    item.SubItems.Add( new ListViewItem.ListViewSubItem( item, text ) );
+
+                    listView1.Items.Add( item );
+                }
+            }
+
+            //	Force a display update.
+            Refresh();
+        }
+
+        private void MainForm_DocumentStatusChanged( object sender, EventArgs e )
+        {
+            string title = Application.ProductName;
+
+            if( Manager.Opened )
+            {
+                //	Update main form heading.
+                title += " - " + Manager.Document.Name;
+            }
+
+            if( Manager.Modified )
+            {
+                //	Update main form heading.
+                Text += @"*";
+            }
+
+            Text = title;
+        }
+
+        void OnFileNew(object sender, EventArgs e)
 		{
-            this.FileNewClick( sender, e );
+            FileNewClick( sender, e );
         }
 		
-		void OnFileOpen(object sender, System.EventArgs e)
+		void OnFileOpen(object sender, EventArgs e)
 		{
-            this.FileOpenClick( sender, e );
+            FileOpenClick( sender, e );
         }
 		
 		void OnFileClose(object sender, EventArgs e)
 		{
-            this.FileCloseClick( sender, e );
+            FileCloseClick( sender, e );
 		}
 		
 		void OnFileSave(object sender, EventArgs e)
 		{
-            this.FileSaveClick( sender, e );
+            FileSaveClick( sender, e );
         }
 		
 		void OnFileSaveAs(object sender, EventArgs e)
 		{
-            this.FileSaveAsClick( sender, e );
+            FileSaveAsClick( sender, e );
         }
 		
 		void OnFileExit(object sender, EventArgs e)
 		{
-            this.FileExitClick( sender, e );
+            FileExitClick( sender, e );
         }
-	}
+    }
 }

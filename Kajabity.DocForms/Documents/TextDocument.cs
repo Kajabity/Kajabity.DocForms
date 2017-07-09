@@ -25,6 +25,7 @@ namespace Kajabity.DocForms.Documents
     /// <summary>
     /// Description of TextDocument.
     /// </summary>
+    [Obsolete("Replaced by PlainDocument in the PlainTextEditor sample.")]
     public class TextDocument : Document
     {
         /// <summary>

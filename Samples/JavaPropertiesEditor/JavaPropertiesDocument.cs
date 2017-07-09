@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  *
  * http://www.kajabity.com
  */
-using System;
+
 using Kajabity.DocForms.Documents;
 using Kajabity.Tools.Java;
 
@@ -28,16 +28,9 @@ namespace JavaPropertiesEditor
 	/// </summary>
 	public class JavaPropertiesDocument : Document
 	{
-		private JavaProperties properties = new JavaProperties();
-		public JavaProperties Properties
-		{
-			get
-			{
-				return properties;
-			}
-		}
+	    public JavaProperties Properties { get; } = new JavaProperties();
 
-		public JavaPropertiesDocument( string name )
+	    public JavaPropertiesDocument( string name )
 			: base( name )
 		{
 		}

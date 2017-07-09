@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@
  *
  * http://www.kajabity.com
  */
+
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "CsvEditor" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyDescription( "Open and edit CSV format files." )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "" )]
+[assembly: AssemblyCompany( "Williams Technologies" )]
 [assembly: AssemblyProduct( "CsvEditor" )]
 [assembly: AssemblyCopyright( "Copyright 2009-17 Williams Technologies Limited." )]
-[assembly: AssemblyTrademark( "" )]
+[assembly: AssemblyTrademark( "Kajabity.com" )]
 [assembly: AssemblyCulture( "" )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -39,7 +39,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible( false )]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid( "13f2ea86-e994-410b-ba77-695d05f036e3" )]
+[assembly: Guid( "29dbaf6e-5b02-4994-b17a-a2fdfa24758c" )]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -51,5 +51,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "1.0.0.0" )]
-[assembly: AssemblyFileVersion( "1.0.0.0" )]
+[assembly: AssemblyVersion("0.2.*")]
+[assembly: AssemblyFileVersion("0.2.0.0")]

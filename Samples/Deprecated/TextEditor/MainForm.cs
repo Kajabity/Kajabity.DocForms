@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-15 Williams Technologies Limited.
+ * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ using Kajabity.DocForms.Documents;
 using Kajabity.DocForms.Forms;
 using System;
 
-namespace TextEditor
+namespace PlainTextEditor
 {
     /// <summary>
     /// Description of MainForm.
@@ -44,9 +44,9 @@ namespace TextEditor
 
 		public override void DocumentChanged()
 		{
-			if( manager.Opened )
+			if( Manager.Opened )
 			{
-				textBox.Text = ((TextDocumentManager) manager).TextDocument.Text;
+				textBox.Text = ((TextDocumentManager) Manager).TextDocument.Text;
 			}
 
 			//	Force a display update.
@@ -57,7 +57,7 @@ namespace TextEditor
 		{
 			if( textBox.Modified)
 			{
-				((TextDocumentManager) manager).TextDocument.Text = textBox.Text;
+				((TextDocumentManager) Manager).TextDocument.Text = textBox.Text;
 			}
 		}
 
