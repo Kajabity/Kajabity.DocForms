@@ -72,6 +72,7 @@ namespace PlainTextEditor
                 textBox.Text = "";
             }
 
+            UpdateForm();
             UpdateCommands();
 
             //	Force a display update.
@@ -84,8 +85,20 @@ namespace PlainTextEditor
         /// </summary>
         private void MainForm_DocumentStatusChanged(object sender, EventArgs e)
         {
+            UpdateForm();
+            UpdateCommands();
+        }
+
+        private void UpdateForm()
+        {
+            // Some commands depend on whether or not the document is open.
+            undoToolStripMenuItem.Enabled = textBox.Modified;
+        }
+
+        private void UpdateCommands()
+        {
             // Would use 'Application.ProductName' but this doesn't work with NUnit tests!
-            string title = "Plain Text Editor"; 
+            string title = "Plain Text Editor";
 
             if (Manager.Opened)
             {
@@ -100,14 +113,6 @@ namespace PlainTextEditor
             }
 
             Text = title;
-
-            UpdateCommands();
-        }
-
-        private void UpdateCommands()
-        {
-            // Some commands depend on whether or not the document is open.
-            undoToolStripMenuItem.Enabled = textBox.Modified;
         }
 
         //  ---------------------------------------------------------------------

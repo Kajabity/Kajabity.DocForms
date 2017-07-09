@@ -10,8 +10,9 @@ putting together new applications.
 
 This repository contains several sub-projects:
 
--	**Kajabity.DocForms** - a DLL project providing a collection of utilities for .NET projects.
--	**Samples** - a collection of sample Desktop application projects illustrating the use of some of Kajabity.DocForms utility classes, as well as other NuGets I have published.
+-	**[Kajabity.DocForms](./Kajabity.DocForms)** - a DLL project providing a collection of utilities for .NET projects.
+-	**[Kajabity.DocForms.Test](./Kajabity.DocForms.Test)** - a suite of NUnit tests for Kajabity.DocForms.
+-	**[Samples](./Samples)** - a collection of sample Desktop application projects illustrating the use of some of Kajabity.DocForms utility classes, as well as other NuGets I have published.
 
 See the Releases section on GitHub to download copies of code, DLL exe's and NuGets.
 
@@ -23,8 +24,8 @@ Full documentation is available at [http://www.kajabity.com/kajabity-tools/](htt
 Features
 --------
 
--	``SingleDocumentForm`` is an extension of ``System.Windows.Forms.Form`` supporting standard file handling functionality linked to a document type.
--	``Document`` abstract base class to extend to represent each file (document) type.
+-	``SingleDocumentForm`` is an extension of ``System.Windows.Forms.Form`` providing standard file handling functionality linked to a document type.
+-	``Document`` extend this abstract base class to represent each file (document) type.
 -	``SingleDocumentManager`` abstract base class to extend to implement Load/Save/New document functionality.
 
 File handling:
