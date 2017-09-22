@@ -73,7 +73,6 @@ namespace PlainTextEditor
             }
 
             UpdateForm();
-            UpdateCommands();
 
             //	Force a display update.
             Refresh();
@@ -86,17 +85,14 @@ namespace PlainTextEditor
         private void MainForm_DocumentStatusChanged(object sender, EventArgs e)
         {
             UpdateForm();
-            UpdateCommands();
         }
 
         private void UpdateForm()
         {
-            // Some commands depend on whether or not the document is open.
+            // Some commands depend on whether or not the document is open or modified.
             undoToolStripMenuItem.Enabled = textBox.Modified;
-        }
-
-        private void UpdateCommands()
-        {
+            // Close, Save and Save As menu items are used to test validation so are not disabled.
+ 
             // Would use 'Application.ProductName' but this doesn't work with NUnit tests!
             string title = "Plain Text Editor";
 
