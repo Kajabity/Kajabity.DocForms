@@ -66,7 +66,7 @@ namespace PlainTextEditor
 
             TextReader reader = new StreamReader( filename );
 
-            PlainTextDocument td = new PlainTextDocument();
+            PlainTextDocument td = new PlainTextDocument(filename);
             td.Text = reader.ReadToEnd();
             reader.Close();
 
