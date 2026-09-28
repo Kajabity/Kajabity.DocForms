@@ -6,9 +6,9 @@
     <title>$title$</title>
     <authors>Kajabity.com</authors>
     <owners>Williams Technologies Limited</owners>
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <projectUrl>http://www.kajabity.com/content/kajabity-tools/</projectUrl>
-    <iconUrl>http://kajabity.com/images/logo-57x57.png</iconUrl>
+    <readme>README.md</readme>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
@@ -20,4 +20,7 @@
     <copyright>Copyright © 2009-17 Williams Technologies Limited.</copyright>
     <tags>Kajabity DocForms WinForms Tools Forms Single Document Interface SDI Recent Documents MRU</tags>
   </metadata>
+  <files>
+    <file src="README.md" target="README.md" />
+  </files>
 </package>

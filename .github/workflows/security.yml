@@ -1,0 +1,190 @@
+name: Security scans
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v4
+
+  codeql:
+    name: CodeQL analysis
+    runs-on: windows-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          build-mode: manual
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore packages
+        shell: pwsh
+        run: ./.github/scripts/restore-packages.ps1
+
+      - name: Build solution for analysis
+        run: msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /v:minimal /nologo
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
+
+  secret-scan:
+    name: Gitleaks secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out full history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install Gitleaks
+        env:
+          GITLEAKS_VERSION: 8.30.1
+        run: |
+          curl --fail --location --silent --show-error \
+            --output gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo install gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: Scan repository history
+        id: gitleaks
+        continue-on-error: true
+        run: gitleaks git --redact --report-format json --report-path gitleaks-report.json
+
+      - name: Upload Gitleaks report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+          if-no-files-found: warn
+
+      - name: Fail if secrets were detected
+        if: steps.gitleaks.outcome == 'failure'
+        run: exit 1
+
+  nuget-audit:
+    name: NuGet vulnerability audit
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Audit PackageReference dependencies
+        id: audit
+        shell: pwsh
+        run: |
+          $reportDirectory = Join-Path $PWD 'vulnerability-reports'
+          New-Item -ItemType Directory -Path $reportDirectory -Force | Out-Null
+
+          $projectFiles = Get-ChildItem -Path . -Recurse -Filter '*.csproj' |
+            Where-Object { ([xml](Get-Content $_.FullName -Raw)).SelectNodes("//*[local-name()='PackageReference']").Count -gt 0 }
+
+          if (-not $projectFiles) {
+            throw 'No PackageReference projects were found to audit.'
+          }
+
+          foreach ($project in $projectFiles) {
+            dotnet restore $project.FullName
+            if ($LASTEXITCODE -ne 0) {
+              throw "NuGet restore failed for $($project.Name)."
+            }
+          }
+
+          function Test-NodeForVulnerabilities {
+            param($Node)
+
+            if ($null -eq $Node -or $Node -is [string] -or $Node -is [ValueType]) {
+              return $false
+            }
+
+            if ($Node -is [System.Collections.IEnumerable]) {
+              foreach ($item in $Node) {
+                if (Test-NodeForVulnerabilities $item) { return $true }
+              }
+              return $false
+            }
+
+            $properties = $Node.PSObject.Properties
+            $vulnerabilityProperty = $properties | Where-Object Name -EQ 'vulnerabilities'
+            if ($vulnerabilityProperty -and $vulnerabilityProperty.Value -and $vulnerabilityProperty.Value.Count -gt 0) {
+              return $true
+            }
+
+            foreach ($property in $properties) {
+              if (Test-NodeForVulnerabilities $property.Value) { return $true }
+            }
+
+            return $false
+          }
+
+          $vulnerabilitiesFound = $false
+          foreach ($project in $projectFiles) {
+            $output = dotnet list $project.FullName package --vulnerable --include-transitive --format json --no-restore
+            if ($LASTEXITCODE -ne 0) {
+              throw "NuGet vulnerability audit failed for $($project.Name)."
+            }
+
+            $report = ($output -join "`n") | ConvertFrom-Json
+            $reportPath = Join-Path $reportDirectory ($project.BaseName + '.json')
+            $report | ConvertTo-Json -Depth 100 | Set-Content -Path $reportPath -Encoding utf8
+            Write-Host "Audited $($project.Name)."
+
+            if (Test-NodeForVulnerabilities $report) {
+              $vulnerabilitiesFound = $true
+            }
+          }
+
+          Write-Warning 'JavaPropertiesEditor uses packages.config, which dotnet list package cannot audit. Its dependencies are not covered by this workflow.'
+          if ($vulnerabilitiesFound) {
+            throw 'Vulnerable PackageReference dependencies were found. See the uploaded reports.'
+          }
+
+          Write-Host 'No known vulnerabilities found in audited PackageReference projects.'
+
+      - name: Upload vulnerability reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget-vulnerability-reports
+          path: vulnerability-reports/*.json
+          if-no-files-found: warn

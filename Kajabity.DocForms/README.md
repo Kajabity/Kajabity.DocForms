@@ -14,3 +14,22 @@ Kajabity.DocForms is available in several different forms:
 See the Releases section on GitHub to download copies of code, DLL exe's and NuGets.
 
 Full documentation is available at [http://www.kajabity.com/kajabity-tools/](http://www.kajabity.com/kajabity-tools/).
+
+Versioning
+----------
+
+Release tags use `X.Y.Z` (for example, `0.3.0`). The release workflow passes the
+tag as `ReleaseVersion` to MSBuild and as the NuGet package version. The DLL file
+version becomes `X.Y.Z.0` and its informational/product version becomes `X.Y.Z`.
+To build the same versions locally, use Visual Studio MSBuild:
+
+```powershell
+msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /p:ReleaseVersion=0.3.0
+```
+
+Without `ReleaseVersion`, builds use file version `0.3.0.0` and product version
+`0.3.0-dev`. Version attributes are generated under `obj`; no source stamping is
+required. The strong-name assembly version stays at `0.3.0.0` for compatible
+`0.3.x` releases. Review it when making an incompatible release. This replaces
+the old automatically changing `0.2.*` identity; existing .NET Framework
+consumers may need rebuilding or a binding redirect when upgrading.

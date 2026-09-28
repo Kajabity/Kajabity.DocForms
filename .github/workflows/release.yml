@@ -1,0 +1,143 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    environment: nuget-publish
+
+    steps:
+      - name: Check out source and tags
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate release tag
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF_NAME -notmatch '^(?<version>\d+\.\d+\.\d+)$') {
+            throw "Release tag '$env:GITHUB_REF_NAME' must use X.Y.Z format (for example, 0.3.0)."
+          }
+
+          git fetch origin main
+          git merge-base --is-ancestor $env:GITHUB_SHA origin/main
+          if ($LASTEXITCODE -ne 0) {
+            throw "Release tag '$env:GITHUB_REF_NAME' does not point to a commit on main."
+          }
+
+          "ReleaseVersion=$($Matches.version)" >> $env:GITHUB_ENV
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore packages
+        shell: pwsh
+        run: ./.github/scripts/restore-packages.ps1
+
+      - name: Build solution
+        run: msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /p:ReleaseVersion=$env:ReleaseVersion /v:minimal /nologo
+
+      - name: Run NUnit tests
+        shell: pwsh
+        run: |
+          $testAssembly = 'Kajabity.DocForms.Test\bin\Release\Kajabity.DocForms.Test.dll'
+          $adapterPath = 'packages\NUnit3TestAdapter.6.3.0\build\net462'
+          $discoveredTests = dotnet vstest $testAssembly "/TestAdapterPath:$adapterPath" /ListTests
+          if ($LASTEXITCODE -ne 0 -or ($discoveredTests -join "`n") -notmatch 'The following Tests are available:') {
+            throw 'NUnit test discovery failed.'
+          }
+
+          dotnet vstest $testAssembly "/TestAdapterPath:$adapterPath" /Platform:x64 /Logger:Console
+          if ($LASTEXITCODE -ne 0) {
+            throw 'NUnit test execution failed.'
+          }
+
+      - name: Pack NuGet package
+        shell: pwsh
+        run: |
+          $assemblyPath = (Resolve-Path 'Kajabity.DocForms\bin\Release\Kajabity.DocForms.dll').Path
+          $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($assemblyPath)
+          if ($versionInfo.FileVersion -ne "$env:ReleaseVersion.0" -or $versionInfo.ProductVersion -ne $env:ReleaseVersion) {
+            throw 'The DLL file/product versions do not match the release tag.'
+          }
+
+          New-Item -ItemType Directory -Path artifacts -Force | Out-Null
+          nuget pack Kajabity.DocForms\Kajabity.DocForms.csproj `
+            -Version $env:ReleaseVersion `
+            -Properties Configuration=Release `
+            -OutputDirectory artifacts `
+            -NonInteractive
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'NuGet pack failed.'
+          }
+
+          $package = Get-ChildItem artifacts -Filter '*.nupkg'
+          if ($package.Count -ne 1) {
+            throw "Expected one NuGet package; found $($package.Count)."
+          }
+
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [System.IO.Compression.ZipFile]::OpenRead($package.FullName)
+          try {
+            $entries = $archive.Entries.FullName
+            if ($entries -notcontains 'lib/net48/Kajabity.DocForms.dll') {
+              throw 'Package is missing lib/net48/Kajabity.DocForms.dll.'
+            }
+            if ($entries -notcontains 'README.md') {
+              throw 'Package is missing README.md.'
+            }
+          }
+          finally {
+            $archive.Dispose()
+          }
+
+      - name: Authenticate to NuGet.org
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Publish package to NuGet.org
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:NUGET_API_KEY)) {
+            throw 'NuGet Trusted Publishing login did not return an API key. Check NUGET_USER and the NuGet.org policy for this repository, workflow, and environment.'
+          }
+
+          $package = Get-ChildItem artifacts -Filter '*.nupkg' | Select-Object -First 1
+          nuget push $package.FullName `
+            -ApiKey $env:NUGET_API_KEY `
+            -Source https://api.nuget.org/v3/index.json `
+            -NonInteractive
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'NuGet.org package publishing failed.'
+          }
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Kajabity.DocForms ${{ github.ref_name }}
+          generate_release_notes: true
+          files: artifacts/*.nupkg
+          fail_on_unmatched_files: true
+          token: ${{ github.token }}
