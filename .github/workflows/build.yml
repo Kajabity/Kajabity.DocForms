@@ -30,7 +30,8 @@ jobs:
         uses: NuGet/setup-nuget@v2
 
       - name: Restore packages
-        run: nuget restore Kajabity.DocForms.sln -NonInteractive
+        shell: pwsh
+        run: ./.github/scripts/restore-packages.ps1
 
       - name: Build solution
         run: msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /v:minimal /nologo
