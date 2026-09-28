@@ -51,7 +51,7 @@ jobs:
         run: ./.github/scripts/restore-packages.ps1
 
       - name: Build solution
-        run: msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /v:minimal /nologo
+        run: msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /p:ReleaseVersion=$env:ReleaseVersion /v:minimal /nologo
 
       - name: Run NUnit tests
         shell: pwsh
@@ -71,6 +71,12 @@ jobs:
       - name: Pack NuGet package
         shell: pwsh
         run: |
+          $assemblyPath = (Resolve-Path 'Kajabity.DocForms\bin\Release\Kajabity.DocForms.dll').Path
+          $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($assemblyPath)
+          if ($versionInfo.FileVersion -ne "$env:ReleaseVersion.0" -or $versionInfo.ProductVersion -ne $env:ReleaseVersion) {
+            throw 'The DLL file/product versions do not match the release tag.'
+          }
+
           New-Item -ItemType Directory -Path artifacts -Force | Out-Null
           nuget pack Kajabity.DocForms\Kajabity.DocForms.csproj `
             -Version $env:ReleaseVersion `
