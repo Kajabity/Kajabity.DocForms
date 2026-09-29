@@ -1,19 +1,51 @@
 ﻿using NUnit.Framework;
 using PlainTextEditor;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.IO;
 
 namespace Kajabity.DocForms.Test.Forms
 {
     [TestFixture]
+    [Apartment(ApartmentState.STA)]
+    [NonParallelizable]
     public class SingleDocumentFormTest
     {
-        private static string APPLICATION_NAME = "Plain Text Editor";
+        private const string APPLICATION_NAME = "Plain Text Editor";
+        private readonly List<PlainTextEditorMainForm> _forms = new List<PlainTextEditorMainForm>();
+        private string _testDirectory;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _testDirectory = Path.Combine(Path.GetTempPath(), "DocFormsTests-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(_testDirectory);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            foreach (var form in _forms)
+                form.Dispose();
+            _forms.Clear();
+            Directory.Delete(_testDirectory, true);
+        }
+
+        private PlainTextEditorMainForm CreateForm(string filename = null)
+        {
+            var form = filename == null
+                ? new PlainTextEditorMainForm()
+                : new TestablePlainDocumentMainForm(filename);
+            _forms.Add(form);
+            return form;
+        }
+
         [Test]
         public void TestSglDocFrmVisible()
         {
-            PlainTextEditorMainForm underTest = new PlainTextEditorMainForm();
+            PlainTextEditorMainForm underTest = CreateForm();
             underTest.Show();
 
             Assert.AreEqual(true, underTest.Visible);
@@ -30,7 +62,7 @@ namespace Kajabity.DocForms.Test.Forms
         [Test]
         public void TestSglDocFrmNewDocument()
         {
-            PlainTextEditorMainForm underTest = new PlainTextEditorMainForm();
+            PlainTextEditorMainForm underTest = CreateForm();
             underTest.Show();
 
             ToolStripMenuItem newToolStripMenuItem = findMenuItem(underTest, "&New");
@@ -61,7 +93,7 @@ namespace Kajabity.DocForms.Test.Forms
         {
             string filename = Path.Combine(TestContext.CurrentContext.TestDirectory, "Forms\\test.txt");
 
-            PlainTextEditorMainForm underTest = new TestablePlainDocumentMainForm(filename);
+            PlainTextEditorMainForm underTest = CreateForm(filename);
             underTest.Show();
 
             ToolStripMenuItem menuItem = findMenuItem(underTest, "&Open");
@@ -89,14 +121,9 @@ namespace Kajabity.DocForms.Test.Forms
         [Test]
         public void TestSglDocFrmSaveDocument()
         {
-            string filename = Path.Combine(TestContext.CurrentContext.TestDirectory, "Forms\\test-save.txt");
-            FileInfo fileInfo = new FileInfo(filename);
-            if (fileInfo.Exists)
-            {
-                fileInfo.Delete();
-            }
+            string filename = Path.Combine(_testDirectory, "test-save.txt");
 
-            PlainTextEditorMainForm underTest = new TestablePlainDocumentMainForm(filename);
+            PlainTextEditorMainForm underTest = CreateForm(filename);
             underTest.Show();
 
             ToolStripMenuItem newToolStripMenuItem = findMenuItem(underTest, "&New");
@@ -115,10 +142,7 @@ namespace Kajabity.DocForms.Test.Forms
             Assert.AreNotEqual(null, underTest.Manager.Document);
             Assert.AreEqual(filename, underTest.Manager.Filename);
 
-            if (fileInfo.Exists)
-            {
-                fileInfo.Delete();
-            }
+            Assert.AreEqual("Add some text to be saved.", File.ReadAllText(filename));
         }
 
         // Save As
@@ -128,7 +152,7 @@ namespace Kajabity.DocForms.Test.Forms
         {
             string filename = Path.Combine(TestContext.CurrentContext.TestDirectory, "Forms\\test.txt");
 
-            PlainTextEditorMainForm underTest = new TestablePlainDocumentMainForm(filename);
+            PlainTextEditorMainForm underTest = CreateForm(filename);
             underTest.Show();
 
             ToolStripMenuItem menuItem = findMenuItem(underTest, "&Open");
@@ -157,9 +181,9 @@ namespace Kajabity.DocForms.Test.Forms
         [Test]
         public void TestSglDocFrmNoDocument()
         {
-            string filename = Path.Combine(TestContext.CurrentContext.TestDirectory, "Forms\\test-no-document.txt");
+            string filename = Path.Combine(_testDirectory, "test-no-document.txt");
 
-            PlainTextEditorMainForm underTest = new TestablePlainDocumentMainForm(filename);
+            PlainTextEditorMainForm underTest = CreateForm(filename);
             underTest.Show();
 
             // Should do nothing.  Defect - they try to save a null document - fixed.

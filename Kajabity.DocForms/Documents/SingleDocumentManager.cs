@@ -20,6 +20,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 
 namespace Kajabity.DocForms.Documents
@@ -54,6 +55,7 @@ namespace Kajabity.DocForms.Documents
         public string Filename { get; private set; }
 
         private bool _newFile = false;
+        private bool _savingToTemporaryFile;
 
         /// <summary>
         ///	Returns true if the current document (if any) is new and unsaved.
@@ -170,6 +172,67 @@ namespace Kajabity.DocForms.Documents
         /// </summary>
         /// <param name="filename">filename and path to save to</param>
         public virtual void Save(string filename)
+        {
+            // SaveSafely commits the document status only after the destination is replaced.
+            if (!_savingToTemporaryFile)
+                SetSavedFilename(filename);
+        }
+
+        /// <summary>
+        /// Uses the existing Save override to write beside the destination, then commits
+        /// the file and document status. Save overrides must call base.Save after writing.
+        /// </summary>
+        internal void SaveSafely(string filename, bool backup)
+        {
+            string destination = Path.GetFullPath(filename);
+            string temporaryFilename = Path.Combine(Path.GetDirectoryName(destination),
+                Guid.NewGuid().ToString("N") + ".tmp" + Path.GetExtension(destination));
+            bool temporaryFileCreated = false;
+
+            try
+            {
+                // Reserve a unique path without touching any pre-existing temporary file.
+                using (new FileStream(temporaryFilename, FileMode.CreateNew, FileAccess.Write))
+                    temporaryFileCreated = true;
+
+                _savingToTemporaryFile = true;
+                try
+                {
+                    Save(temporaryFilename);
+                }
+                finally
+                {
+                    _savingToTemporaryFile = false;
+                }
+
+                if (File.Exists(destination))
+                    File.Replace(temporaryFilename, destination, backup ? destination + "~" : null);
+                else
+                    File.Move(temporaryFilename, destination);
+
+                SetSavedFilename(filename);
+            }
+            finally
+            {
+                if (temporaryFileCreated)
+                {
+                    try
+                    {
+                        File.Delete(temporaryFilename);
+                    }
+                    catch (IOException ex)
+                    {
+                        Debug.WriteLine("Could not remove temporary document: " + ex);
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        Debug.WriteLine("Could not remove temporary document: " + ex);
+                    }
+                }
+            }
+        }
+
+        private void SetSavedFilename(string filename)
         {
             Filename = filename;
             _newFile = false;
