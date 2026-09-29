@@ -12,10 +12,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
-      Refactored and enhanced classes to SingleDocumentForm and SingleDocumentManager.
-      Original SDIForm and DocumentManager classes retained but deprecated.
-      Added document and document state changed events.
-      Added significant NUnit test coverage.
+      Preserve unsaved documents when Save As is cancelled or saving fails before closing.
+      Save through a unique sibling temporary file, preserving the original and backup on write failure.
+      Commit document filename and modified state only after successful file replacement.
+      Honour window-close cancellation from the save prompt and retain WinForms click-handler signatures.
+      Expand regression coverage to 77 tests and fix filtered NUnit test execution.
     </releaseNotes>
     <copyright>Copyright © 2009-17 Williams Technologies Limited.</copyright>
     <tags>Kajabity DocForms WinForms Tools Forms Single Document Interface SDI Recent Documents MRU</tags>

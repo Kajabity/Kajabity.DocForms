@@ -154,7 +154,7 @@
     <Error Condition="'$(ReleaseVersion)' != '' and !$([System.Text.RegularExpressions.Regex]::IsMatch('$(ReleaseVersion)', '^[0-9]+\.[0-9]+\.[0-9]+$'))"
            Text="ReleaseVersion must use X.Y.Z format (for example, 0.3.0)." />
     <PropertyGroup>
-      <_DocFormsVersion Condition="'$(ReleaseVersion)' == ''">0.3.0</_DocFormsVersion>
+      <_DocFormsVersion Condition="'$(ReleaseVersion)' == ''">0.3.1</_DocFormsVersion>
       <_DocFormsVersion Condition="'$(ReleaseVersion)' != ''">$(ReleaseVersion)</_DocFormsVersion>
       <_DocFormsInformationalVersion>$(_DocFormsVersion)</_DocFormsInformationalVersion>
       <_DocFormsInformationalVersion Condition="'$(ReleaseVersion)' == ''">$(_DocFormsVersion)-dev</_DocFormsInformationalVersion>

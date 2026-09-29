@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <TreatNoTestsAsError>true</TreatNoTestsAsError>
+  </RunConfiguration>
+  <NUnit>
+    <!-- NUnit 3.7.1 needs legacy discovery for filtered runs with adapter 6.3.0. -->
+    <DiscoveryMethod>Legacy</DiscoveryMethod>
+  </NUnit>
+</RunSettings>
