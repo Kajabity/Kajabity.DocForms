@@ -41,12 +41,13 @@ jobs:
         run: |
           $testAssembly = 'Kajabity.DocForms.Test\bin\Release\Kajabity.DocForms.Test.dll'
           $adapterPath = 'packages\NUnit3TestAdapter.6.3.0\build\net462'
-          $discoveredTests = dotnet vstest $testAssembly "/TestAdapterPath:$adapterPath" /ListTests
+          $settingsPath = 'Kajabity.DocForms.Test\DocForms.runsettings'
+          $discoveredTests = dotnet vstest $testAssembly "/TestAdapterPath:$adapterPath" "/Settings:$settingsPath" /ListTests
           if ($LASTEXITCODE -ne 0 -or ($discoveredTests -join "`n") -notmatch 'The following Tests are available:') {
             throw 'NUnit test discovery failed.'
           }
 
-          dotnet vstest $testAssembly "/TestAdapterPath:$adapterPath" /Platform:x64 /Logger:Console
+          dotnet vstest $testAssembly "/TestAdapterPath:$adapterPath" "/Settings:$settingsPath" /Platform:x64 /Logger:Console
           if ($LASTEXITCODE -ne 0) {
             throw 'NUnit test execution failed.'
           }
