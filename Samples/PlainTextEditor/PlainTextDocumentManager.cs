@@ -34,7 +34,7 @@ namespace PlainTextEditor
         //  ---------------------------------------------------------------------
 
         /// <summary>
-        /// Construct a TextDocumentManager setting the default document name and extension.
+        /// Construct a PlainTextDocumentManager setting the default document name and extension.
         /// </summary>
         public PlainTextDocumentManager()
         {
