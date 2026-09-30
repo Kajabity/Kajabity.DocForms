@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Kajabity.DocForms.Test")]
-[assembly: AssemblyDescription("NUnit 3 tests for Kajabity.DocForms")]
+[assembly: AssemblyDescription("NUnit 4 tests for Kajabity.DocForms")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Williams Technologies Limited")]
 [assembly: AssemblyProduct("nunit.tests")]
@@ -49,5 +49,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "0.2.*" )]
+[assembly: AssemblyVersion( "0.2.0.0" )]
 [assembly: AssemblyFileVersion( "0.2.0.0" )]

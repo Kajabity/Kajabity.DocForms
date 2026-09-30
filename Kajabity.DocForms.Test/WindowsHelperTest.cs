@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
  */
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Kajabity.DocForms.Test
 {
@@ -48,7 +49,7 @@ namespace Kajabity.DocForms.Test
             {
                 string result = WindowsHelper.GetShortPath(s, length);
 
-                Assert.AreEqual(s, result);
+                ClassicAssert.AreEqual(s, result);
             }
         }
 
@@ -70,7 +71,7 @@ namespace Kajabity.DocForms.Test
             {
                 string result = WindowsHelper.GetShortPath(s, length);
 
-                Assert.AreEqual(length-1, result.Length);
+                ClassicAssert.AreEqual(length-1, result.Length);
             }
         }
     }

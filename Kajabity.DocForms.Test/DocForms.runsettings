@@ -3,8 +3,4 @@
   <RunConfiguration>
     <TreatNoTestsAsError>true</TreatNoTestsAsError>
   </RunConfiguration>
-  <NUnit>
-    <!-- NUnit 3.7.1 needs legacy discovery for filtered runs with adapter 6.3.0. -->
-    <DiscoveryMethod>Legacy</DiscoveryMethod>
-  </NUnit>
 </RunSettings>

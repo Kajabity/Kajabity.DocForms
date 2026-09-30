@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using PlainTextEditor;
 using System;
 using System.Collections.Generic;
@@ -48,15 +49,15 @@ namespace Kajabity.DocForms.Test.Forms
             PlainTextEditorMainForm underTest = CreateForm();
             underTest.Show();
 
-            Assert.AreEqual(true, underTest.Visible);
-            Assert.AreEqual(APPLICATION_NAME, underTest.Text);
-            Assert.AreEqual(false, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreEqual(null, underTest.Manager.Document);
-            Assert.AreEqual("Text Document", underTest.Manager.DefaultName);
-            Assert.AreEqual("txt", underTest.Manager.DefaultExtension);
-            Assert.AreEqual(null, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(true, underTest.Visible);
+            ClassicAssert.AreEqual(APPLICATION_NAME, underTest.Text);
+            ClassicAssert.AreEqual(false, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual("Text Document", underTest.Manager.DefaultName);
+            ClassicAssert.AreEqual("txt", underTest.Manager.DefaultExtension);
+            ClassicAssert.AreEqual(null, underTest.Manager.Filename);
         }
 
         [Test]
@@ -68,24 +69,24 @@ namespace Kajabity.DocForms.Test.Forms
             ToolStripMenuItem newToolStripMenuItem = findMenuItem(underTest, "&New");
             newToolStripMenuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME + " - Text Document1.txt", underTest.Text);
-            Assert.AreEqual(true, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(true, underTest.Manager.NewFile);
-            Assert.AreNotEqual(null, underTest.Manager.Document);
-            Assert.AreEqual("Text Document", underTest.Manager.DefaultName);
-            Assert.AreEqual("txt", underTest.Manager.DefaultExtension);
-            Assert.AreEqual("Text Document1.txt", underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME + " - Text Document1.txt", underTest.Text);
+            ClassicAssert.AreEqual(true, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(true, underTest.Manager.NewFile);
+            ClassicAssert.AreNotEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual("Text Document", underTest.Manager.DefaultName);
+            ClassicAssert.AreEqual("txt", underTest.Manager.DefaultExtension);
+            ClassicAssert.AreEqual("Text Document1.txt", underTest.Manager.Filename);
 
             Control ctrl = findControl(underTest, "textBox");
             ctrl.Text = "Add some text to the control.";
 
-            Assert.AreEqual(APPLICATION_NAME + " - Text Document1.txt*", underTest.Text);
-            Assert.AreEqual(true, underTest.Manager.Opened);
-            Assert.AreEqual(true, underTest.Manager.Modified);
-            Assert.AreEqual(true, underTest.Manager.NewFile);
-            Assert.AreNotEqual(null, underTest.Manager.Document);
-            Assert.AreEqual("Text Document1.txt", underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME + " - Text Document1.txt*", underTest.Text);
+            ClassicAssert.AreEqual(true, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(true, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(true, underTest.Manager.NewFile);
+            ClassicAssert.AreNotEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual("Text Document1.txt", underTest.Manager.Filename);
         }
 
         [Test]
@@ -99,22 +100,22 @@ namespace Kajabity.DocForms.Test.Forms
             ToolStripMenuItem menuItem = findMenuItem(underTest, "&Open");
             menuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME + " - test.txt", underTest.Text);
-            Assert.AreEqual(true, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreNotEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(filename, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME + " - test.txt", underTest.Text);
+            ClassicAssert.AreEqual(true, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreNotEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(filename, underTest.Manager.Filename);
 
             Control ctrl = findControl(underTest, "textBox");
             ctrl.Text = "Add some text to the control.";
 
-            Assert.AreEqual(APPLICATION_NAME + " - test.txt*", underTest.Text);
-            Assert.AreEqual(true, underTest.Manager.Opened);
-            Assert.AreEqual(true, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreNotEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(filename, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME + " - test.txt*", underTest.Text);
+            ClassicAssert.AreEqual(true, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(true, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreNotEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(filename, underTest.Manager.Filename);
         }
 
 
@@ -135,14 +136,14 @@ namespace Kajabity.DocForms.Test.Forms
             ToolStripMenuItem menuItem = findMenuItem(underTest, "&Save");
             menuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME + " - test-save.txt", underTest.Text);
-            Assert.AreEqual(true, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreNotEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(filename, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME + " - test-save.txt", underTest.Text);
+            ClassicAssert.AreEqual(true, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreNotEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(filename, underTest.Manager.Filename);
 
-            Assert.AreEqual("Add some text to be saved.", File.ReadAllText(filename));
+            ClassicAssert.AreEqual("Add some text to be saved.", File.ReadAllText(filename));
         }
 
         // Save As
@@ -158,22 +159,22 @@ namespace Kajabity.DocForms.Test.Forms
             ToolStripMenuItem menuItem = findMenuItem(underTest, "&Open");
             menuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME + " - test.txt", underTest.Text);
-            Assert.AreEqual(true, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreNotEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(filename, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME + " - test.txt", underTest.Text);
+            ClassicAssert.AreEqual(true, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreNotEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(filename, underTest.Manager.Filename);
 
             menuItem = findMenuItem(underTest, "&Close");
             menuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME, underTest.Text);
-            Assert.AreEqual(false, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(null, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME, underTest.Text);
+            ClassicAssert.AreEqual(false, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(null, underTest.Manager.Filename);
         }
 
         // Save As
@@ -190,32 +191,32 @@ namespace Kajabity.DocForms.Test.Forms
             ToolStripMenuItem menuItem = findMenuItem(underTest, "&Save");
             menuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME, underTest.Text);
-            Assert.AreEqual(false, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(null, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME, underTest.Text);
+            ClassicAssert.AreEqual(false, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(null, underTest.Manager.Filename);
 
             menuItem = findMenuItem(underTest, "Save &As");
             menuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME, underTest.Text);
-            Assert.AreEqual(false, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(null, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME, underTest.Text);
+            ClassicAssert.AreEqual(false, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(null, underTest.Manager.Filename);
 
             menuItem = findMenuItem(underTest, "&Close");
             menuItem.PerformClick();
 
-            Assert.AreEqual(APPLICATION_NAME, underTest.Text);
-            Assert.AreEqual(false, underTest.Manager.Opened);
-            Assert.AreEqual(false, underTest.Manager.Modified);
-            Assert.AreEqual(false, underTest.Manager.NewFile);
-            Assert.AreEqual(null, underTest.Manager.Document);
-            Assert.AreEqual(null, underTest.Manager.Filename);
+            ClassicAssert.AreEqual(APPLICATION_NAME, underTest.Text);
+            ClassicAssert.AreEqual(false, underTest.Manager.Opened);
+            ClassicAssert.AreEqual(false, underTest.Manager.Modified);
+            ClassicAssert.AreEqual(false, underTest.Manager.NewFile);
+            ClassicAssert.AreEqual(null, underTest.Manager.Document);
+            ClassicAssert.AreEqual(null, underTest.Manager.Filename);
         }
 
         // Modified, New - causes popup prompt to save, not modified.

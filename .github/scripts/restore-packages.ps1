@@ -2,11 +2,8 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $packagesDirectory = Join-Path $repositoryRoot 'packages'
 
-# Solution restore ignores packages.config in projects that also use PackageReference.
-# Restore these manifests explicitly so a clean checkout has the legacy assemblies
-# and the NUnit adapter in the repository's packages directory.
+# Restore the sample projects that still use packages.config explicitly.
 $packageManifests = @(
-    'Kajabity.DocForms.Test/packages.config'
     'Samples/CsvEditor/packages.config'
     'Samples/JavaPropertiesEditor/packages.config'
 )
