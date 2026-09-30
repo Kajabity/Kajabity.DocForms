@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2009-17 Williams Technologies Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@
 
 using Kajabity.DocForms.Documents;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 
 namespace Kajabity.DocForms.Test.Documents
@@ -31,8 +32,8 @@ namespace Kajabity.DocForms.Test.Documents
         public void TestDocumentConstructionWithoutName()
         {
             Document underTest = new TestableDocument();
-            Assert.AreEqual(null, underTest.Name);
-            Assert.AreEqual(false, underTest.Modified);
+            ClassicAssert.AreEqual(null, underTest.Name);
+            ClassicAssert.AreEqual(false, underTest.Modified);
         }
 
         [Test]
@@ -40,8 +41,8 @@ namespace Kajabity.DocForms.Test.Documents
         {
             const String name = "test document name";
             Document underTest = new TestableDocument(name);
-            Assert.AreEqual(name, underTest.Name );
-            Assert.AreEqual(false, underTest.Modified);
+            ClassicAssert.AreEqual(name, underTest.Name );
+            ClassicAssert.AreEqual(false, underTest.Modified);
         }
 
         [Test]
@@ -58,11 +59,11 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Name = name;
 
-            Assert.AreEqual(name, underTest.Name);
-            Assert.AreEqual(true, called);
+            ClassicAssert.AreEqual(name, underTest.Name);
+            ClassicAssert.AreEqual(true, called);
 
             // Changing the name doesn't count as changing the document.
-            Assert.AreEqual(false, underTest.Modified);
+            ClassicAssert.AreEqual(false, underTest.Modified);
         }
 
         [Test]
@@ -79,11 +80,11 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Name = name;
 
-            Assert.AreEqual(name, underTest.Name);
-            Assert.AreEqual(true, called);
+            ClassicAssert.AreEqual(name, underTest.Name);
+            ClassicAssert.AreEqual(true, called);
 
             // Changing the name doesn't count as changing the document.
-            Assert.AreEqual(false, underTest.Modified);
+            ClassicAssert.AreEqual(false, underTest.Modified);
         }
 
         [Test]
@@ -100,11 +101,11 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Name = name;
 
-            Assert.AreEqual(name, underTest.Name);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(name, underTest.Name);
+            ClassicAssert.AreEqual(false, called);
 
             // Changing the name doesn't count as changing the document.
-            Assert.AreEqual(false, underTest.Modified);
+            ClassicAssert.AreEqual(false, underTest.Modified);
         }
 
         [Test]
@@ -121,11 +122,11 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Name = name;
 
-            Assert.AreEqual(name, underTest.Name);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(name, underTest.Name);
+            ClassicAssert.AreEqual(false, called);
 
             // Changing the name doesn't count as changing the document.
-            Assert.AreEqual(false, underTest.Modified);
+            ClassicAssert.AreEqual(false, underTest.Modified);
         }
 
         [Test]
@@ -142,8 +143,8 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Modified = newValue;
 
-            Assert.AreEqual(newValue, underTest.Modified);
-            Assert.AreEqual(true, called);
+            ClassicAssert.AreEqual(newValue, underTest.Modified);
+            ClassicAssert.AreEqual(true, called);
 
             // Now set it back again.
 
@@ -152,8 +153,8 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Modified = newValue;
 
-            Assert.AreEqual(newValue, underTest.Modified);
-            Assert.AreEqual(true, called);
+            ClassicAssert.AreEqual(newValue, underTest.Modified);
+            ClassicAssert.AreEqual(true, called);
         }
 
         [Test]
@@ -170,8 +171,8 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Modified = newValue;
 
-            Assert.AreEqual(newValue, underTest.Modified);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(newValue, underTest.Modified);
+            ClassicAssert.AreEqual(false, called);
 
             // Now try true to true.
 
@@ -182,8 +183,8 @@ namespace Kajabity.DocForms.Test.Documents
 
             underTest.Modified = newValue;
 
-            Assert.AreEqual(newValue, underTest.Modified);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(newValue, underTest.Modified);
+            ClassicAssert.AreEqual(false, called);
         }
     }
 }

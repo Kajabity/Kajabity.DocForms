@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,11 @@ namespace Kajabity.DocForms.Test.Documents
         {
             TestableSingleDocumentManager manager = new TestableSingleDocumentManager();
 
-            Assert.AreEqual(false, manager.NewFile);
-            Assert.AreEqual(false, manager.Opened);
-            Assert.AreEqual(null, manager.Document);
-            Assert.AreEqual(false, manager.Modified);
-            Assert.AreEqual(null, manager.Filename);
+            ClassicAssert.AreEqual(false, manager.NewFile);
+            ClassicAssert.AreEqual(false, manager.Opened);
+            ClassicAssert.AreEqual(null, manager.Document);
+            ClassicAssert.AreEqual(false, manager.Modified);
+            ClassicAssert.AreEqual(null, manager.Filename);
         }
 
         //* Can get and set default extension property.
@@ -28,19 +29,19 @@ namespace Kajabity.DocForms.Test.Documents
         {
             TestableSingleDocumentManager manager = new TestableSingleDocumentManager();
 
-            Assert.AreEqual(null, manager.DefaultExtension);
+            ClassicAssert.AreEqual(null, manager.DefaultExtension);
 
             string changedExtension = "abc";
             manager.DefaultExtension = changedExtension;
 
-            Assert.AreEqual(changedExtension, manager.DefaultExtension);
+            ClassicAssert.AreEqual(changedExtension, manager.DefaultExtension);
 
             manager.NewDocument();
 
             string expectedFilename = TestableSingleDocumentManager.DEFAULT_DOCUMENT_NAME + "1." + changedExtension;
 
-            Assert.AreEqual(expectedFilename, manager.Document.Name);
-            Assert.AreEqual(expectedFilename, manager.Filename);
+            ClassicAssert.AreEqual(expectedFilename, manager.Document.Name);
+            ClassicAssert.AreEqual(expectedFilename, manager.Filename);
         }
 
         //* Can get and set default name property
@@ -49,12 +50,12 @@ namespace Kajabity.DocForms.Test.Documents
         {
             TestableSingleDocumentManager manager = new TestableSingleDocumentManager();
 
-            Assert.AreEqual(TestableSingleDocumentManager.DEFAULT_DOCUMENT_NAME, manager.DefaultName);
+            ClassicAssert.AreEqual(TestableSingleDocumentManager.DEFAULT_DOCUMENT_NAME, manager.DefaultName);
 
             string changedName = "a-name";
             manager.DefaultName = changedName;
 
-            Assert.AreEqual(changedName, manager.DefaultName);
+            ClassicAssert.AreEqual(changedName, manager.DefaultName);
         }
 
         //* new document - default name and extension
@@ -72,17 +73,17 @@ namespace Kajabity.DocForms.Test.Documents
                 called = true;
             };
 
-            Assert.AreEqual(false, manager.NewFile);
-            Assert.AreEqual(false, manager.Opened);
-            Assert.AreEqual(null, manager.Document);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(false, manager.NewFile);
+            ClassicAssert.AreEqual(false, manager.Opened);
+            ClassicAssert.AreEqual(null, manager.Document);
+            ClassicAssert.AreEqual(false, called);
 
             manager.NewDocument();
 
-            Assert.AreEqual(true, manager.NewFile);
-            Assert.AreEqual(true, manager.Opened);
-            Assert.AreNotEqual(null, manager.Document);
-            Assert.AreEqual(true, called);
+            ClassicAssert.AreEqual(true, manager.NewFile);
+            ClassicAssert.AreEqual(true, manager.Opened);
+            ClassicAssert.AreNotEqual(null, manager.Document);
+            ClassicAssert.AreEqual(true, called);
         }
 
         //* Load document
@@ -104,13 +105,13 @@ namespace Kajabity.DocForms.Test.Documents
 
             manager.Load(documentName);
 
-            Assert.AreEqual(false, manager.NewFile);
-            Assert.AreEqual(true, manager.Opened);
-            Assert.AreNotEqual(null, manager.Document);
-            Assert.AreEqual(false, manager.Modified);
-            Assert.AreEqual(documentName, manager.Document.Name);
-            Assert.AreEqual(documentName, manager.Filename);
-            Assert.AreEqual(true, called);
+            ClassicAssert.AreEqual(false, manager.NewFile);
+            ClassicAssert.AreEqual(true, manager.Opened);
+            ClassicAssert.AreNotEqual(null, manager.Document);
+            ClassicAssert.AreEqual(false, manager.Modified);
+            ClassicAssert.AreEqual(documentName, manager.Document.Name);
+            ClassicAssert.AreEqual(documentName, manager.Filename);
+            ClassicAssert.AreEqual(true, called);
         }
 
         //* Save document
@@ -132,23 +133,23 @@ namespace Kajabity.DocForms.Test.Documents
                 called = true;
             };
 
-            Assert.AreEqual(true, manager.NewFile);
-            Assert.AreEqual(true, manager.Opened);
-            Assert.AreNotEqual(null, manager.Document);
-            Assert.AreEqual(true, manager.Modified);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(true, manager.NewFile);
+            ClassicAssert.AreEqual(true, manager.Opened);
+            ClassicAssert.AreNotEqual(null, manager.Document);
+            ClassicAssert.AreEqual(true, manager.Modified);
+            ClassicAssert.AreEqual(false, called);
 
             string documentName = "example.txt";
 
             manager.Save(documentName);
 
-            Assert.AreEqual(false, manager.NewFile);
-            Assert.AreEqual(true, manager.Opened);
-            Assert.AreNotEqual(null, manager.Document);
-            Assert.AreEqual(false, manager.Modified);
-            Assert.AreEqual(documentName, manager.Document.Name);
-            Assert.AreEqual(documentName, manager.Filename);
-            Assert.AreEqual(true, called);
+            ClassicAssert.AreEqual(false, manager.NewFile);
+            ClassicAssert.AreEqual(true, manager.Opened);
+            ClassicAssert.AreNotEqual(null, manager.Document);
+            ClassicAssert.AreEqual(false, manager.Modified);
+            ClassicAssert.AreEqual(documentName, manager.Document.Name);
+            ClassicAssert.AreEqual(documentName, manager.Filename);
+            ClassicAssert.AreEqual(true, called);
         }
 
         //* Close document
@@ -170,20 +171,20 @@ namespace Kajabity.DocForms.Test.Documents
                 called = true;
             };
 
-            Assert.AreEqual(true, manager.NewFile);
-            Assert.AreEqual(true, manager.Opened);
-            Assert.AreNotEqual(null, manager.Document);
-            Assert.AreEqual(true, manager.Modified);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(true, manager.NewFile);
+            ClassicAssert.AreEqual(true, manager.Opened);
+            ClassicAssert.AreNotEqual(null, manager.Document);
+            ClassicAssert.AreEqual(true, manager.Modified);
+            ClassicAssert.AreEqual(false, called);
 
             manager.Close();
 
-            Assert.AreEqual(false, manager.NewFile);
-            Assert.AreEqual(false, manager.Opened);
-            Assert.AreEqual(null, manager.Document);
-            Assert.AreEqual(false, manager.Modified);
-            Assert.AreEqual(null, manager.Filename);
-            Assert.AreEqual(false, called);
+            ClassicAssert.AreEqual(false, manager.NewFile);
+            ClassicAssert.AreEqual(false, manager.Opened);
+            ClassicAssert.AreEqual(null, manager.Document);
+            ClassicAssert.AreEqual(false, manager.Modified);
+            ClassicAssert.AreEqual(null, manager.Filename);
+            ClassicAssert.AreEqual(false, called);
         }
     }
 }

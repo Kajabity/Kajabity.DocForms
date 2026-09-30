@@ -1,35 +1,28 @@
 Kajabity.DocForms.Test
 ======================
 
-A suite of NUnit 3 tests for Kajabity.DocForms, targeting .NET Framework 4.8 on Windows.
+A suite of NUnit 4 tests for Kajabity.DocForms, targeting .NET Framework 4.8 on Windows.
 
 ## Running the tests
 
-Build before running: `vstest` executes the compiled assembly. From a Visual Studio
-Developer PowerShell at the repository root, with the NuGet packages restored:
+From PowerShell at the repository root, with a .NET SDK and the .NET Framework 4.8
+targeting pack installed:
 
 ```powershell
-msbuild Kajabity.DocForms.sln /p:Configuration=Release
-dotnet vstest Kajabity.DocForms.Test\bin\Release\Kajabity.DocForms.Test.dll /TestAdapterPath:packages\NUnit3TestAdapter.6.3.0\build\net462 /Platform:x64 /Settings:Kajabity.DocForms.Test\DocForms.runsettings
+dotnet test Kajabity.DocForms.Test\Kajabity.DocForms.Test.csproj -c Release --settings Kajabity.DocForms.Test\DocForms.runsettings
 ```
 
-For the save/close fixture, append `/TestCaseFilter:TestCategory=Issue3` (54 cases).
-For just the disk safety cases, append `/TestCaseFilter:TestCategory=SaveSafety`
-(12 cases). The full suite currently has 77 cases.
+For the save/close fixture, append `--filter TestCategory=Issue3` (54 cases).
+For just the disk safety cases, append `--filter TestCategory=SaveSafety`
+(12 cases). The full suite currently has 77 cases. `DocForms.runsettings` makes
+zero-test runs an error, including filtered runs.
 
-Select `DocForms.runsettings` in Visual Studio if it is not picked up from the
-project automatically. NUnit 3.7.1 with adapter 6.3.0 needs `DiscoveryMethod=Legacy`
-for filtered execution here; without it, discovered tests can produce a successful
-command with zero tests executed. The settings also make zero-test runs an error.
-Always check the executed count.
-
-The review build used separate output directories because an existing generated
-Release file was not writable. This command also bypasses the legacy NuGet runtime
-resolver, using the project's explicit references to already-restored packages:
+The production library and sample projects still use their existing .NET Framework
+project files. To build the full solution, restore the legacy sample packages first:
 
 ```powershell
-msbuild Kajabity.DocForms.sln /p:Configuration=Release /p:IntermediateOutputPath=obj\Review\ /p:OutputPath=bin\Review\ /p:ResolveNuGetPackages=false /p:NuGetPackageRoot="$env:USERPROFILE\.nuget\packages\"
-dotnet vstest Kajabity.DocForms.Test\bin\Review\Kajabity.DocForms.Test.dll /TestAdapterPath:packages\NUnit3TestAdapter.6.3.0\build\net462 /Platform:x64 /Settings:Kajabity.DocForms.Test\DocForms.runsettings /ResultsDirectory:Kajabity.DocForms.Test\bin\Review\TestResults
+./.github/scripts/restore-packages.ps1
+msbuild Kajabity.DocForms.sln /p:Configuration=Release
 ```
 
 ## Save and close coverage

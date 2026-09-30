@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Kajabity.DocForms.Documents;
 using Kajabity.DocForms.Forms;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Kajabity.DocForms.Test.Forms
 {
@@ -51,10 +52,10 @@ namespace Kajabity.DocForms.Test.Forms
             RunCommand(command);
 
             AssertPreserved();
-            Assert.AreEqual(1, _form.PromptCount);
-            Assert.AreEqual(1, _form.SaveAsCount);
-            Assert.AreEqual(0, _manager.SaveCount);
-            Assert.IsNull(_form.SaveError);
+            ClassicAssert.AreEqual(1, _form.PromptCount);
+            ClassicAssert.AreEqual(1, _form.SaveAsCount);
+            ClassicAssert.AreEqual(0, _manager.SaveCount);
+            ClassicAssert.IsNull(_form.SaveError);
         }
 
         [Test]
@@ -68,10 +69,10 @@ namespace Kajabity.DocForms.Test.Forms
             RunCommand(command);
 
             AssertPreserved();
-            Assert.AreEqual(1, _manager.SaveCount);
-            Assert.AreEqual(newFile ? 1 : 0, _form.SaveAsCount);
-            Assert.AreSame(_manager.SaveException, _form.SaveError);
-            Assert.AreEqual(1, _form.ErrorCount);
+            ClassicAssert.AreEqual(1, _manager.SaveCount);
+            ClassicAssert.AreEqual(newFile ? 1 : 0, _form.SaveAsCount);
+            ClassicAssert.AreSame(_manager.SaveException, _form.SaveError);
+            ClassicAssert.AreEqual(1, _form.ErrorCount);
         }
 
         [Test]
@@ -84,9 +85,9 @@ namespace Kajabity.DocForms.Test.Forms
             RunCommand(command);
 
             AssertPreserved();
-            Assert.AreEqual(1, _form.PromptCount);
-            Assert.AreEqual(0, _form.SaveAsCount);
-            Assert.AreEqual(0, _manager.SaveCount);
+            ClassicAssert.AreEqual(1, _form.PromptCount);
+            ClassicAssert.AreEqual(0, _form.SaveAsCount);
+            ClassicAssert.AreEqual(0, _manager.SaveCount);
         }
 
         [Test]
@@ -98,16 +99,16 @@ namespace Kajabity.DocForms.Test.Forms
 
             RunCommand(command);
 
-            Assert.AreEqual(1, _manager.SaveCount);
-            Assert.AreEqual("Unsaved edits", _manager.SavedText);
+            ClassicAssert.AreEqual(1, _manager.SaveCount);
+            ClassicAssert.AreEqual("Unsaved edits", _manager.SavedText);
             string destination = newFile ? _form.SavePath : _originalFilename;
-            Assert.AreEqual("Unsaved edits", File.ReadAllText(destination));
-            Assert.AreNotEqual(destination, _manager.SavedFilename, "Write to a temporary file first.");
-            Assert.AreEqual(Path.GetDirectoryName(destination), Path.GetDirectoryName(_manager.SavedFilename));
-            Assert.IsFalse(File.Exists(_manager.SavedFilename));
-            Assert.AreEqual(newFile ? 1 : 0, _form.SaveAsCount);
-            Assert.IsFalse(_original.Modified);
-            Assert.IsNull(_form.SaveError);
+            ClassicAssert.AreEqual("Unsaved edits", File.ReadAllText(destination));
+            ClassicAssert.AreNotEqual(destination, _manager.SavedFilename, "Write to a temporary file first.");
+            ClassicAssert.AreEqual(Path.GetDirectoryName(destination), Path.GetDirectoryName(_manager.SavedFilename));
+            ClassicAssert.IsFalse(File.Exists(_manager.SavedFilename));
+            ClassicAssert.AreEqual(newFile ? 1 : 0, _form.SaveAsCount);
+            ClassicAssert.IsFalse(_original.Modified);
+            ClassicAssert.IsNull(_form.SaveError);
             AssertCommandCompleted(command);
         }
 
@@ -120,9 +121,9 @@ namespace Kajabity.DocForms.Test.Forms
 
             RunCommand(command);
 
-            Assert.AreEqual(1, _form.PromptCount);
-            Assert.AreEqual(0, _manager.SaveCount);
-            Assert.AreEqual(0, _form.SaveAsCount);
+            ClassicAssert.AreEqual(1, _form.PromptCount);
+            ClassicAssert.AreEqual(0, _manager.SaveCount);
+            ClassicAssert.AreEqual(0, _form.SaveAsCount);
             AssertCommandCompleted(command);
         }
 
@@ -135,8 +136,8 @@ namespace Kajabity.DocForms.Test.Forms
 
             RunCommand(command);
 
-            Assert.AreEqual(0, _form.PromptCount);
-            Assert.AreEqual(0, _manager.SaveCount);
+            ClassicAssert.AreEqual(0, _form.PromptCount);
+            ClassicAssert.AreEqual(0, _manager.SaveCount);
             AssertCommandCompleted(command);
         }
 
@@ -159,7 +160,7 @@ namespace Kajabity.DocForms.Test.Forms
 
             bool closed = _form.AttemptClose();
 
-            Assert.AreEqual(expectedClosed, closed, "The caller must know whether it may continue.");
+            ClassicAssert.AreEqual(expectedClosed, closed, "The caller must know whether it may continue.");
             if (expectedClosed)
                 AssertCommandCompleted("Close");
             else
@@ -199,7 +200,7 @@ namespace Kajabity.DocForms.Test.Forms
             if (saveFails)
                 _manager.SaveException = new IOException("Simulated write failure.");
 
-            Assert.IsFalse(_form.AttemptWindowClose());
+            ClassicAssert.IsFalse(_form.AttemptWindowClose());
             AssertPreserved();
         }
 
@@ -216,7 +217,7 @@ namespace Kajabity.DocForms.Test.Forms
             _form.FileSaveClick(_form, EventArgs.Empty);
 
             AssertSuccessfulSave(_originalFilename, "Unsaved edits");
-            Assert.AreEqual(backup ? "Original contents" : "Older backup",
+            ClassicAssert.AreEqual(backup ? "Original contents" : "Older backup",
                 File.ReadAllText(_originalFilename + "~"));
             _original.Text = "Second edit";
             _original.Modified = true;
@@ -224,9 +225,9 @@ namespace Kajabity.DocForms.Test.Forms
             _form.FileSaveClick(_form, EventArgs.Empty);
 
             AssertSuccessfulSave(_originalFilename, "Second edit");
-            Assert.AreEqual(backup ? "Unsaved edits" : "Older backup",
+            ClassicAssert.AreEqual(backup ? "Unsaved edits" : "Older backup",
                 File.ReadAllText(_originalFilename + "~"));
-            Assert.AreEqual("Unrelated temporary file", File.ReadAllText(_originalFilename + ".tmp"));
+            ClassicAssert.AreEqual("Unrelated temporary file", File.ReadAllText(_originalFilename + ".tmp"));
         }
 
         [TestCase(false, false)]
@@ -244,16 +245,16 @@ namespace Kajabity.DocForms.Test.Forms
             // Observers must never see a temporary filename or a prematurely clean document.
             _manager.DocumentStatusChanged += (sender, args) =>
             {
-                Assert.AreEqual(_form.SavePath, _manager.Filename);
-                Assert.AreEqual("Unsaved edits", File.ReadAllText(_form.SavePath));
+                ClassicAssert.AreEqual(_form.SavePath, _manager.Filename);
+                ClassicAssert.AreEqual("Unsaved edits", File.ReadAllText(_form.SavePath));
             };
 
             _form.FileSaveAsClick(_form, EventArgs.Empty);
 
             AssertSuccessfulSave(_form.SavePath, "Unsaved edits");
-            Assert.AreEqual(backup && destinationExists, File.Exists(_form.SavePath + "~"));
+            ClassicAssert.AreEqual(backup && destinationExists, File.Exists(_form.SavePath + "~"));
             if (backup && destinationExists)
-                Assert.AreEqual("Previous destination", File.ReadAllText(_form.SavePath + "~"));
+                ClassicAssert.AreEqual("Previous destination", File.ReadAllText(_form.SavePath + "~"));
         }
 
         [TestCase(false)]
@@ -269,10 +270,10 @@ namespace Kajabity.DocForms.Test.Forms
             _form.FileSaveClick(_form, EventArgs.Empty);
 
             AssertPreserved();
-            Assert.AreSame(_manager.SaveException, _form.SaveError);
-            Assert.AreEqual("Original contents", File.ReadAllText(_originalFilename));
-            Assert.AreEqual("Previous backup", File.ReadAllText(_originalFilename + "~"));
-            Assert.IsFalse(File.Exists(_manager.SavedFilename), "Clean up the partial temporary file.");
+            ClassicAssert.AreSame(_manager.SaveException, _form.SaveError);
+            ClassicAssert.AreEqual("Original contents", File.ReadAllText(_originalFilename));
+            ClassicAssert.AreEqual("Previous backup", File.ReadAllText(_originalFilename + "~"));
+            ClassicAssert.IsFalse(File.Exists(_manager.SavedFilename), "Clean up the partial temporary file.");
         }
 
         [TestCase(false, false)]
@@ -292,15 +293,15 @@ namespace Kajabity.DocForms.Test.Forms
 
             using (new FileStream(destination, FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                Assert.IsFalse(_form.AttemptClose());
+                ClassicAssert.IsFalse(_form.AttemptClose());
                 AssertPreserved();
-                Assert.IsInstanceOf<IOException>(_form.SaveError);
-                Assert.AreEqual(0, statusChanges, "Do not report a successful save before replacement.");
-                Assert.IsFalse(File.Exists(_manager.SavedFilename));
+                ClassicAssert.IsInstanceOf<IOException>(_form.SaveError);
+                ClassicAssert.AreEqual(0, statusChanges, "Do not report a successful save before replacement.");
+                ClassicAssert.IsFalse(File.Exists(_manager.SavedFilename));
             }
 
-            Assert.AreEqual("Original contents", File.ReadAllText(destination));
-            Assert.AreEqual("Previous backup", File.ReadAllText(destination + "~"));
+            ClassicAssert.AreEqual("Original contents", File.ReadAllText(destination));
+            ClassicAssert.AreEqual("Previous backup", File.ReadAllText(destination + "~"));
             _form.SaveError = null;
             _form.FileSaveClick(_form, EventArgs.Empty);
             AssertSuccessfulSave(destination, "Unsaved edits");
@@ -308,14 +309,14 @@ namespace Kajabity.DocForms.Test.Forms
 
         private void AssertSuccessfulSave(string filename, string text)
         {
-            Assert.IsNull(_form.SaveError);
-            Assert.AreEqual(text, File.ReadAllText(filename));
-            Assert.AreSame(_original, _manager.Document);
-            Assert.AreEqual(filename, _manager.Filename);
-            Assert.AreEqual(Path.GetFileName(filename), _original.Name);
-            Assert.IsFalse(_manager.Modified);
-            Assert.IsFalse(_manager.NewFile);
-            Assert.IsFalse(File.Exists(_manager.SavedFilename));
+            ClassicAssert.IsNull(_form.SaveError);
+            ClassicAssert.AreEqual(text, File.ReadAllText(filename));
+            ClassicAssert.AreSame(_original, _manager.Document);
+            ClassicAssert.AreEqual(filename, _manager.Filename);
+            ClassicAssert.AreEqual(Path.GetFileName(filename), _original.Name);
+            ClassicAssert.IsFalse(_manager.Modified);
+            ClassicAssert.IsFalse(_manager.NewFile);
+            ClassicAssert.IsFalse(File.Exists(_manager.SavedFilename));
         }
 
         private void RunCommand(string command)
@@ -332,37 +333,37 @@ namespace Kajabity.DocForms.Test.Forms
 
         private void AssertPreserved()
         {
-            Assert.Multiple(() =>
+            Assert.Multiple((Action)(() =>
             {
-                Assert.AreSame(_original, _manager.Document, "Keep the same in-memory document.");
-                Assert.IsTrue(_manager.Opened);
-                Assert.IsTrue(_manager.Modified, "Unsaved changes must remain marked as modified.");
-                Assert.AreEqual("Unsaved edits", _original.Text);
-                Assert.AreEqual(_originalFilename, _manager.Filename);
-                Assert.AreEqual(_originalName, _original.Name);
-                Assert.AreEqual(_originalNewFile, _manager.NewFile);
-                Assert.AreEqual(0, _manager.CloseCount);
-                Assert.AreEqual(0, _manager.NewCount, "Do not replace the document with a new one.");
-                Assert.AreEqual(0, _manager.LoadCount, "Do not load the requested replacement.");
-                Assert.AreEqual(0, _form.DocumentChangedCount);
-            });
+                ClassicAssert.AreSame(_original, _manager.Document, "Keep the same in-memory document.");
+                ClassicAssert.IsTrue(_manager.Opened);
+                ClassicAssert.IsTrue(_manager.Modified, "Unsaved changes must remain marked as modified.");
+                ClassicAssert.AreEqual("Unsaved edits", _original.Text);
+                ClassicAssert.AreEqual(_originalFilename, _manager.Filename);
+                ClassicAssert.AreEqual(_originalName, _original.Name);
+                ClassicAssert.AreEqual(_originalNewFile, _manager.NewFile);
+                ClassicAssert.AreEqual(0, _manager.CloseCount);
+                ClassicAssert.AreEqual(0, _manager.NewCount, "Do not replace the document with a new one.");
+                ClassicAssert.AreEqual(0, _manager.LoadCount, "Do not load the requested replacement.");
+                ClassicAssert.AreEqual(0, _form.DocumentChangedCount);
+            }));
         }
 
         private void AssertCommandCompleted(string command)
         {
-            Assert.AreEqual(1, _manager.CloseCount);
-            Assert.AreEqual(command == "New" ? 1 : 0, _manager.NewCount);
-            Assert.AreEqual(command == "Open" || command == "Recent" ? 1 : 0, _manager.LoadCount);
+            ClassicAssert.AreEqual(1, _manager.CloseCount);
+            ClassicAssert.AreEqual(command == "New" ? 1 : 0, _manager.NewCount);
+            ClassicAssert.AreEqual(command == "Open" || command == "Recent" ? 1 : 0, _manager.LoadCount);
             if (command == "Close")
-                Assert.IsFalse(_manager.Opened);
+                ClassicAssert.IsFalse(_manager.Opened);
             else
             {
-                Assert.AreNotSame(_original, _manager.Document);
-                Assert.IsTrue(_manager.Opened);
+                ClassicAssert.AreNotSame(_original, _manager.Document);
+                ClassicAssert.IsTrue(_manager.Opened);
                 if (command == "New")
-                    Assert.IsTrue(_manager.NewFile);
+                    ClassicAssert.IsTrue(_manager.NewFile);
                 else
-                    Assert.AreEqual(_form.OpenPath, _manager.Filename);
+                    ClassicAssert.AreEqual(_form.OpenPath, _manager.Filename);
             }
         }
 
