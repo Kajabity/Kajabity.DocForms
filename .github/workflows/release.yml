@@ -71,14 +71,16 @@ jobs:
           }
 
           New-Item -ItemType Directory -Path artifacts -Force | Out-Null
-          nuget pack Kajabity.DocForms\Kajabity.DocForms.csproj `
-            -Version $env:ReleaseVersion `
-            -Properties Configuration=Release `
-            -OutputDirectory artifacts `
-            -NonInteractive
+          dotnet pack Kajabity.DocForms\Kajabity.DocForms.csproj `
+            --configuration Release `
+            --no-build `
+            --no-restore `
+            -p:ReleaseVersion=$env:ReleaseVersion `
+            -p:PackageVersion=$env:ReleaseVersion `
+            --output artifacts
 
           if ($LASTEXITCODE -ne 0) {
-            throw 'NuGet pack failed.'
+            throw 'Package creation failed.'
           }
 
           $package = Get-ChildItem artifacts -Filter '*.nupkg'

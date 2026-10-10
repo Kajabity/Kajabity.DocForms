@@ -33,9 +33,13 @@ To build the same versions locally, use Visual Studio MSBuild:
 msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /p:ReleaseVersion=0.3.0
 ```
 
-Without `ReleaseVersion`, builds use file version `0.3.0.0` and product version
-`0.3.0-dev`. Version attributes are generated under `obj`; no source stamping is
+Without `ReleaseVersion`, builds use file version `0.3.1.0` and product version
+`0.3.1-dev`. Version attributes are generated under `obj`; no source stamping is
 required. The strong-name assembly version stays at `0.3.0.0` for compatible
 `0.3.x` releases. Review it when making an incompatible release. This replaces
 the old automatically changing `0.2.*` identity; existing .NET Framework
 consumers may need rebuilding or a binding redirect when upgrading.
+
+The SDK-style project still targets .NET Framework 4.8. Package identity and
+metadata are declared in the project file. Create a package with `dotnet pack`;
+the release workflow passes `ReleaseVersion` and `PackageVersion` from the tag.
