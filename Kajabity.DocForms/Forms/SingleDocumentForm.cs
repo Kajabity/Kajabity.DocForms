@@ -47,6 +47,7 @@ namespace Kajabity.DocForms.Forms
         /// A reference to an instance of the SingleDocumentManager used to load and save
         /// documents for the application.
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SingleDocumentManager<TDocument> Manager
         {
             get { return _manager; }
@@ -79,7 +80,8 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         [
             Category("Document Handling"),
-            Description("Indicates whether to backup documents on save.")
+            Description("Indicates whether to backup documents on save."),
+            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
         ]
         public bool Backup { get; set; } = false;
 
@@ -97,7 +99,8 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         [
             Category("Document Handling"),
-            Description("The maximum number of recent documents to store in the recent files list.")
+            Description("The maximum number of recent documents to store in the recent files list."),
+            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
         ]
         public int MaximumRecentDocumentCount { get; set; } = 20;
 
@@ -107,7 +110,8 @@ namespace Kajabity.DocForms.Forms
         /// </summary>
         [
             Category("Document Handling"),
-            Description("Maximum length of each document name and path entry in the recent documents menu.")
+            Description("Maximum length of each document name and path entry in the recent documents menu."),
+            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
         ]
         public int MaximumRecentDocumentDisplayLength { get; set; } = 100;
 

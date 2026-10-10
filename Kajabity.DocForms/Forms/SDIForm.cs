@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -70,12 +71,14 @@ namespace Kajabity.DocForms.Forms
         /// <summary>
         /// Maximum number of documents to remember in the recent files list.
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int MaximumRecentDocumentCount { get; set; } = 20;
 
         /// <summary>
         /// Maximum length of each document name and path entry in the recent documents menu.
         /// Longer names will be shortened to fit. 
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int MaximumDisplayNameLength { get; set; } = 100;
 
         /// <summary>

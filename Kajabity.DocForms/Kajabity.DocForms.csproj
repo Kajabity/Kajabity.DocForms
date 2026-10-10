@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFrameworks>net48;net10.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>Library</OutputType>
     <RootNamespace>Kajabity.DocForms</RootNamespace>
     <AssemblyName>Kajabity.DocForms</AssemblyName>
     <ProjectGuid>{15F2E1E6-D8B9-4AF1-85BB-7D28BD88B9BD}</ProjectGuid>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendTargetFrameworkToOutputPath Condition="'$(TargetFramework)' == 'net48'">false</AppendTargetFrameworkToOutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Kajabity.DocForms.snk</AssemblyOriginatorKeyFile>
@@ -68,10 +68,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' or '$(Configuration)' == 'Release'">
     <DocumentationFile>bin\$(Configuration)\Kajabity.DocForms.xml</DocumentationFile>
+    <DocumentationFile Condition="'$(TargetFramework)' == 'net10.0-windows'">bin\$(Configuration)\net10.0-windows\Kajabity.DocForms.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Forms\SDIForm.cs;Forms\SingleDocumentForm.cs" SubType="Form" />
     <None Update="README.md" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" Condition="'$(TargetFramework)' == ''" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
+    <Compile Include="..\WindowsOnlyAssemblyInfo.cs" Link="Properties\WindowsOnlyAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
