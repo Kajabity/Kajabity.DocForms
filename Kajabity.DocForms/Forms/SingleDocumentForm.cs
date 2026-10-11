@@ -585,11 +585,19 @@ namespace Kajabity.DocForms.Forms
 
 
         /// <summary>
-        /// When the form closes, save the recent documents in the Registry.
+        /// Honour window-close cancellation before closing the document and saving recent files.
         /// </summary>
         /// <param name="e"></param>
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            // Let application handlers veto closure while the document is still available.
+            // An existing cancellation must also survive handlers that clear e.Cancel.
+            bool alreadyCancelled = e.Cancel;
+            base.OnFormClosing(e);
+            e.Cancel |= alreadyCancelled;
+            if (e.Cancel)
+                return;
+
             if (AttemptCloseDocument(this, e))
             {
                 // Now, store recent document paths in registry.
@@ -616,8 +624,6 @@ namespace Kajabity.DocForms.Forms
             {
                 e.Cancel = true;
             }
-
-            base.OnFormClosing(e);
         }
 
         /// <summary>
