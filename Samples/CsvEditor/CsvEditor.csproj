@@ -30,7 +30,7 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Kajabity.Tools.Csv" Version="0.1.6264.42631" />
+    <PackageReference Include="Kajabity.Tools.Csv" Version="0.2.1" />
     <ProjectReference Include="..\..\Kajabity.DocForms\Kajabity.DocForms.csproj" />
   </ItemGroup>
   <ItemGroup>
