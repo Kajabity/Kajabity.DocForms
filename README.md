@@ -44,3 +44,5 @@ In addition, these features easily support:
 
 -	Standard file handling menu items and tool strip items.
 -	Drag and drop files onto application.
+-	Opt-in window placement restoration for independent top-level forms; see the
+    [library guide](./Kajabity.DocForms/README.md#window-placement-opt-in).

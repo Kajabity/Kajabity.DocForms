@@ -45,3 +45,63 @@ consumers may need rebuilding or a binding redirect when upgrading.
 The SDK-style project targets .NET Framework 4.8 and .NET 10 for Windows. Package identity and
 metadata are declared in the project file. Create a package with `dotnet pack`;
 the release workflow passes `ReleaseVersion` and `PackageVersion` from the tag.
+
+Window placement (opt in)
+-------------------------
+
+`WindowPlacementManager` in `Kajabity.DocForms.Forms` restores an independent
+top-level form to its former display and working area, including its maximised
+state. It is separate from `SingleDocumentForm<TDocument>`: merely using that
+base class does not move a window. The host owns storage; KDF does not read or
+write application settings. `WindowPlacement` is a serialisable data object
+containing normal bounds, display device name, display and working-area bounds,
+effective DPI, and maximised state.
+
+Construct a manager after `InitializeComponent()` and restore before showing the
+form. Capture after a successful close, then dispose the manager. For example,
+in a form with application-specific `LoadPlacement()` and `SavePlacement(...)`:
+
+```csharp
+private WindowPlacementManager placement;
+
+public MainForm()
+{
+    InitializeComponent();
+    placement = new WindowPlacementManager(this);
+    placement.Restore(LoadPlacement()); // false leaves Windows' default placement intact
+}
+
+protected override void OnFormClosed(FormClosedEventArgs e)
+{
+    if (placement != null)
+    {
+        SavePlacement(placement.Capture()); // a null result means no valid bounds to save
+        placement.Dispose();
+    }
+    base.OnFormClosed(e);
+}
+```
+
+`WindowPlacementCalculator.TryCalculate` accepts saved placement and a list of
+`WindowDisplay` values for testing or previewing decisions without a live form.
+Restoration first matches the saved display device name, then substantial
+display-geometry overlap, then the primary display. It maps the position within
+the old working area to the new one, scales size using known effective DPI,
+clamps to the current working area, and respects the form's size constraints
+where the available screen permits. Missing or unreasonable settings leave
+normal Windows placement intact. Minimise is not persisted; a minimised form
+reopens restored, or maximised if that was its last non-minimised state.
+
+The manager listens for display changes only while its form exists. After
+Windows handles a change, it intervenes only if the title bar is inaccessible.
+It does not store intermediate move or resize events. It unsubscribes when the
+form closes or is disposed. Calls to `Restore`, `Capture` and
+`EnsureAccessible` belong on the form's UI thread. Independent secondary forms
+can opt in with separate placement keys. An MDI parent is a top-level window;
+MDI children are unsupported. Modal dialogs may opt in, but most should retain
+their owner-relative Windows placement. If a form's hard minimum size exceeds
+the working area, neither KDF nor Windows can keep the entire form visible.
+Display names may change or be reused, and exact physical monitor identity
+cannot always be recovered from WinForms display data. WinForms and Windows
+still control autoscaling and DPI awareness; test mixed-DPI arrangements in the
+application's actual DPI-awareness mode.

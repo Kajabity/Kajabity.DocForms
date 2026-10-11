@@ -19,6 +19,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Kajabity.DocForms.Forms;
 
@@ -29,6 +30,8 @@ namespace HexViewer
     /// </summary>
     public partial class HexViewerMainForm: SingleDocumentForm<BinaryDocument>
     {
+        private WindowPlacementManager _windowPlacementManager;
+
         public HexViewerMainForm()
             : base( new BinaryDocumentManager() )
         {
@@ -63,6 +66,22 @@ namespace HexViewer
 
             // Load recent documents.
             InitialseRecentDocuments( recentDocumentsToolStripMenuItem );
+
+            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
+            {
+                _windowPlacementManager = new WindowPlacementManager(this);
+                _windowPlacementManager.Restore(WindowPlacementSettings.Load());
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            if (_windowPlacementManager != null)
+            {
+                WindowPlacementSettings.Save(_windowPlacementManager.Capture());
+                _windowPlacementManager.Dispose();
+            }
+            base.OnFormClosed(e);
         }
 
         /// <summary>
