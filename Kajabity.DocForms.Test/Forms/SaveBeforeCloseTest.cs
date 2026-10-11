@@ -9,7 +9,7 @@ using NUnit.Framework.Legacy;
 
 namespace Kajabity.DocForms.Test.Forms
 {
-    // Issue #3: exercise the real command handlers without showing modal dialogs.
+    // Issues #3 and #4: exercise the real command handlers without showing modal dialogs.
     // Each test writes only inside its own temporary directory.
     [TestFixture]
     [Apartment(ApartmentState.STA)]
@@ -191,6 +191,7 @@ namespace Kajabity.DocForms.Test.Forms
         [TestCase(DialogResult.Cancel, DialogResult.OK, false)]
         [TestCase(DialogResult.Yes, DialogResult.Cancel, false)]
         [TestCase(DialogResult.Yes, DialogResult.OK, true)]
+        [Category("Issue4")]
         public void WindowCloseIsCancelledWhenDocumentIsPreserved(
             DialogResult confirmation, DialogResult saveAs, bool saveFails)
         {
@@ -200,8 +201,107 @@ namespace Kajabity.DocForms.Test.Forms
             if (saveFails)
                 _manager.SaveException = new IOException("Simulated write failure.");
 
+            int handlerCount = 0;
+            _form.FormClosing += (sender, args) =>
+            {
+                handlerCount++;
+                args.Cancel = false;
+            };
+
             ClassicAssert.IsFalse(_form.AttemptWindowClose());
             AssertPreserved();
+            ClassicAssert.AreEqual(1, handlerCount);
+            ClassicAssert.AreEqual(1, _form.PromptCount);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        [Category("Issue4")]
+        public void WindowCloseHandlerCancellationPreservesDocument(bool modified)
+        {
+            PrepareDocument(false);
+            _original.Modified = modified;
+            _form.PromptResult = DialogResult.No;
+            int handlerCount = 0;
+            bool handlerSawDocument = false;
+            _form.FormClosing += (sender, args) =>
+            {
+                handlerCount++;
+                handlerSawDocument = ReferenceEquals(_original, _manager.Document);
+                args.Cancel = true;
+            };
+
+            ClassicAssert.IsFalse(_form.AttemptWindowClose());
+
+            AssertPreserved(modified);
+            ClassicAssert.AreEqual(1, handlerCount);
+            ClassicAssert.IsTrue(handlerSawDocument);
+            ClassicAssert.AreEqual(0, _form.PromptCount);
+            ClassicAssert.AreEqual(0, _form.SaveAsCount);
+            ClassicAssert.AreEqual(0, _manager.SaveCount);
+        }
+
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        [TestCase(true, true)]
+        [Category("Issue4")]
+        public void AlreadyCancelledWindowClosePreservesDocument(bool modified, bool handlerClearsCancellation)
+        {
+            PrepareDocument(false);
+            _original.Modified = modified;
+            _form.PromptResult = DialogResult.No;
+            int handlerCount = 0;
+            bool handlerSawCancellation = false;
+            _form.FormClosing += (sender, args) =>
+            {
+                handlerCount++;
+                handlerSawCancellation = args.Cancel;
+                if (handlerClearsCancellation)
+                    args.Cancel = false;
+            };
+
+            ClassicAssert.IsFalse(_form.AttemptWindowClose(true));
+
+            AssertPreserved(modified);
+            ClassicAssert.AreEqual(1, handlerCount, "Existing handlers still run for a cancelled close.");
+            ClassicAssert.IsTrue(handlerSawCancellation);
+            ClassicAssert.AreEqual(0, _form.PromptCount);
+            ClassicAssert.AreEqual(0, _form.SaveAsCount);
+            ClassicAssert.AreEqual(0, _manager.SaveCount);
+        }
+
+        [TestCase(false, false, DialogResult.No)]
+        [TestCase(true, false, DialogResult.No)]
+        [TestCase(true, false, DialogResult.Yes)]
+        [TestCase(true, true, DialogResult.Yes)]
+        [Category("Issue4")]
+        public void SuccessfulWindowCloseClosesDocumentOnce(bool modified, bool newFile, DialogResult confirmation)
+        {
+            PrepareDocument(newFile);
+            _original.Modified = modified;
+            _form.PromptResult = confirmation;
+            int handlerCount = 0;
+            bool handlerSawDocument = false;
+            _form.FormClosing += (sender, args) =>
+            {
+                handlerCount++;
+                handlerSawDocument = ReferenceEquals(_original, _manager.Document);
+            };
+
+            ClassicAssert.IsTrue(_form.AttemptWindowClose());
+
+            AssertCommandCompleted("Close");
+            ClassicAssert.AreEqual(1, handlerCount);
+            ClassicAssert.IsTrue(handlerSawDocument);
+            ClassicAssert.AreEqual(1, _form.DocumentChangedCount);
+            ClassicAssert.AreEqual(modified ? 1 : 0, _form.PromptCount);
+            bool saved = modified && confirmation == DialogResult.Yes;
+            ClassicAssert.AreEqual(saved ? 1 : 0, _manager.SaveCount);
+            ClassicAssert.AreEqual(saved && newFile ? 1 : 0, _form.SaveAsCount);
+            ClassicAssert.IsNull(_form.SaveError);
+            if (saved)
+                ClassicAssert.AreEqual("Unsaved edits", File.ReadAllText(newFile ? _form.SavePath : _originalFilename));
         }
 
         [TestCase(false)]
@@ -331,13 +431,13 @@ namespace Kajabity.DocForms.Test.Forms
             }
         }
 
-        private void AssertPreserved()
+        private void AssertPreserved(bool modified = true)
         {
             Assert.Multiple((Action)(() =>
             {
                 ClassicAssert.AreSame(_original, _manager.Document, "Keep the same in-memory document.");
                 ClassicAssert.IsTrue(_manager.Opened);
-                ClassicAssert.IsTrue(_manager.Modified, "Unsaved changes must remain marked as modified.");
+                ClassicAssert.AreEqual(modified, _manager.Modified, "Preserve the document's modified state.");
                 ClassicAssert.AreEqual("Unsaved edits", _original.Text);
                 ClassicAssert.AreEqual(_originalFilename, _manager.Filename);
                 ClassicAssert.AreEqual(_originalName, _original.Name);
@@ -468,9 +568,9 @@ namespace Kajabity.DocForms.Test.Forms
                 return AttemptCloseDocument(this, EventArgs.Empty);
             }
 
-            public bool AttemptWindowClose()
+            public bool AttemptWindowClose(bool cancelled = false)
             {
-                var args = new FormClosingEventArgs(CloseReason.UserClosing, false);
+                var args = new FormClosingEventArgs(CloseReason.UserClosing, cancelled);
                 OnFormClosing(args);
                 return !args.Cancel;
             }
