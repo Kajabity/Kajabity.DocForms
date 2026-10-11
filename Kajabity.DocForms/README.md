@@ -11,8 +11,9 @@ Kajabity.DocForms is available in several different forms:
 -	Download the compiled DLL from [GitHub Releases](https://github.com/Kajabity/Kajabity.DocForms/releases).
 -	Add the NuGet component to your project from [nuget.org](https://www.nuget.org/packages/Kajabity.DocForms/).
 
-The maintained text-editor example is `Samples/PlainTextEditor`. The older
-TextEditor demonstration project was removed previously. `SDIForm` has now been
+`Samples/PlainTextEditor` remains the .NET Framework 4.8 compatibility example;
+`Samples/HexViewer` demonstrates .NET 10. The older TextEditor demonstration
+project was removed previously. `SDIForm` has now been
 removed from the library as an intentional breaking change for the upcoming
 major release. Applications deriving from it should migrate to
 `SingleDocumentForm<TDocument>` and `SingleDocumentManager<TDocument>`.

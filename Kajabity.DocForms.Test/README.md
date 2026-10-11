@@ -17,7 +17,11 @@ For just the disk safety cases, append `--filter TestCategory=SaveSafety`
 (12 cases). The full suite currently has 77 cases. `DocForms.runsettings` makes
 zero-test runs an error, including filtered runs.
 
-All projects use SDK-style project files and still target .NET Framework 4.8.
+All projects use SDK-style project files. The library and tests target both
+.NET Framework 4.8 and .NET 10 for Windows. PlainTextEditor targets .NET Framework
+4.8; the other samples target .NET 10 for Windows.
+The .NET 10 test target compiles the PlainTextEditor form sources and resource
+into the test assembly so the existing form tests run on both frameworks.
 To restore and build the full solution:
 
 ```powershell

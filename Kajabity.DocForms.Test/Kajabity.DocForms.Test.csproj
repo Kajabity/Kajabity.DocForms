@@ -15,9 +15,11 @@
     <PackageReference Include="NUnit3TestAdapter" Version="6.3.0" />
     <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     <ProjectReference Include="..\Kajabity.DocForms\Kajabity.DocForms.csproj" />
-    <ProjectReference Include="..\Samples\PlainTextEditor\PlainTextEditor.csproj" />
+    <ProjectReference Include="..\Samples\PlainTextEditor\PlainTextEditor.csproj" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
+    <Compile Include="..\Samples\PlainTextEditor\PlainText*.cs" Link="LegacySample\%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\Samples\PlainTextEditor\PlainTextEditorMainForm.resx" LogicalName="PlainTextEditor.PlainTextEditorMainForm.resources" />
     <Compile Include="..\WindowsOnlyAssemblyInfo.cs" Link="Properties\WindowsOnlyAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

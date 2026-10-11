@@ -19,6 +19,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Text;
 using System.Windows.Forms;
 
@@ -34,6 +35,7 @@ namespace CsvEditor
         /// <summary>
         /// Get or set the panel's document - updating the size when it is set.
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CsvDocument CsvDocument
         {
             get

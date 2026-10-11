@@ -19,6 +19,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -57,6 +58,7 @@ namespace HexViewer
         /// <summary>
         /// Get or set the panel's document - updating the size when it is set.
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public BinaryDocument BinaryDocument
         {
             get

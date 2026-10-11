@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
     <RootNamespace>CsvEditor</RootNamespace>
@@ -9,9 +9,7 @@
     <ProjectGuid>{29DBAF6E-5B02-4994-B17A-A2FDFA24758C}</ProjectGuid>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Platforms>AnyCPU;x86</Platforms>
     <Prefer32Bit>false</Prefer32Bit>
     <FileAlignment>512</FileAlignment>
@@ -33,8 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Kajabity.Tools.Csv" Version="0.1.6264.42631" />
-    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     <ProjectReference Include="..\..\Kajabity.DocForms\Kajabity.DocForms.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\WindowsOnlyAssemblyInfo.cs" Link="Properties\WindowsOnlyAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="CsvEditorMainForm.cs" SubType="Form" />
