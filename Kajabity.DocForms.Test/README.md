@@ -17,12 +17,16 @@ For just the disk safety cases, append `--filter TestCategory=SaveSafety`
 (12 cases). The full suite currently has 77 cases. `DocForms.runsettings` makes
 zero-test runs an error, including filtered runs.
 
-The production library and sample projects still use their existing .NET Framework
-project files. To build the full solution, restore the legacy sample packages first:
+All projects use SDK-style project files. The library and tests target both
+.NET Framework 4.8 and .NET 10 for Windows. PlainTextEditor targets .NET Framework
+4.8; the other samples target .NET 10 for Windows.
+The .NET 10 test target compiles the PlainTextEditor form sources and resource
+into the test assembly so the existing form tests run on both frameworks.
+To restore and build the full solution:
 
 ```powershell
 ./.github/scripts/restore-packages.ps1
-msbuild Kajabity.DocForms.sln /p:Configuration=Release
+dotnet build Kajabity.DocForms.sln -c Release --no-restore
 ```
 
 ## Save and close coverage

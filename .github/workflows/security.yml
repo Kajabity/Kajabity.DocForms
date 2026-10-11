@@ -44,8 +44,10 @@ jobs:
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Set up NuGet
-        uses: NuGet/setup-nuget@v2
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
 
       - name: Restore packages
         shell: pwsh
@@ -174,7 +176,6 @@ jobs:
             }
           }
 
-          Write-Warning 'JavaPropertiesEditor uses packages.config, which dotnet list package cannot audit. Its dependencies are not covered by this workflow.'
           if ($vulnerabilitiesFound) {
             throw 'Vulnerable PackageReference dependencies were found. See the uploaded reports.'
           }

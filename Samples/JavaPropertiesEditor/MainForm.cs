@@ -19,6 +19,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Kajabity.DocForms.Forms;
 using Kajabity.Tools.Java;
@@ -50,6 +51,7 @@ namespace JavaPropertiesEditor
             LoadDocument( filename );
 		}
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string Status
 		{
 			set
