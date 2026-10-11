@@ -12,10 +12,11 @@ Kajabity.DocForms is available in several different forms:
 -	Add the NuGet component to your project from [nuget.org](https://www.nuget.org/packages/Kajabity.DocForms/).
 
 The maintained text-editor example is `Samples/PlainTextEditor`. The older
-`Samples/Deprecated/TextEditor` example has been removed. Its public supporting
-types, `SDIForm`, `TextDocument` and `TextDocumentManager`, remain marked obsolete
-for compatibility with existing .NET Framework consumers; new applications should
-use `SingleDocumentForm<TDocument>` and the `PlainTextEditor` example instead.
+TextEditor demonstration project was removed previously. `SDIForm` has now been
+removed from the library as an intentional breaking change for the upcoming
+major release. Applications deriving from it should migrate to
+`SingleDocumentForm<TDocument>` and `SingleDocumentManager<TDocument>`.
+The separate `TextDocument` and `TextDocumentManager` types remain obsolete.
 
 See the Releases section on GitHub to download copies of code, DLL exe's and NuGets.
 
@@ -40,6 +41,6 @@ required. The strong-name assembly version stays at `0.3.0.0` for compatible
 the old automatically changing `0.2.*` identity; existing .NET Framework
 consumers may need rebuilding or a binding redirect when upgrading.
 
-The SDK-style project still targets .NET Framework 4.8. Package identity and
+The SDK-style project targets .NET Framework 4.8 and .NET 10 for Windows. Package identity and
 metadata are declared in the project file. Create a package with `dotnet pack`;
 the release workflow passes `ReleaseVersion` and `PackageVersion` from the tag.

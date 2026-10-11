@@ -71,7 +71,7 @@
     <DocumentationFile Condition="'$(TargetFramework)' == 'net10.0-windows'">bin\$(Configuration)\net10.0-windows\Kajabity.DocForms.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Forms\SDIForm.cs;Forms\SingleDocumentForm.cs" SubType="Form" />
+    <Compile Update="Forms\SingleDocumentForm.cs" SubType="Form" />
     <None Update="README.md" Pack="true" PackagePath="\" />
     <None Include="README.md" Pack="true" PackagePath="\" Condition="'$(TargetFramework)' == ''" />
   </ItemGroup>
