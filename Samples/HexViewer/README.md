@@ -15,8 +15,9 @@ The sample illustrates how to use some features of Kajabity.DocForms module incl
 
 The display is implemented using the ``HexPanel`` UserControl which extends Panel and draws the hexadecimal and character bytes using double buffering.  Mouse tracking is used to highlight individual hex and character bytes as the mouse moves over the panel.  Unused menu and toolbar items have been hidden - perhaps to be implemented later.
 
-Window placement is restored through KDF's opt-in `WindowPlacementManager`.
-HexViewer stores its own XML settings under
+HexViewer saves its normal window bounds and maximised state when it closes,
+then restores them when the application is restarted through KDF's opt-in
+`WindowPlacementManager`. HexViewer stores its own XML settings under
 `%LOCALAPPDATA%\Kajabity\HexViewer\window-placement.xml`. Deleting this file
 restores normal Windows placement. The settings are written after a successful
 window close; corrupt or unavailable settings are ignored. No KDF persistence

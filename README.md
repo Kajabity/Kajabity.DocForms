@@ -8,6 +8,12 @@ KDF handles the familiar application essentials — New, Open, Save, Save As, Cl
 
 Supporting .NET 10 for Windows and .NET Framework 4.8, KDF also provides optional window-position restoration and lets applications choose their own document formats and settings storage.
 
+## Key features
+
+- New, Open, Save, Save As and Close with unsaved-changes confirmation.
+- Opt-in recent files and document backups.
+- Opt-in window placement restoration, including maximised state and monitor fallback.
+
 ## Install
 
 Add the latest published `Kajabity.DocForms` package to a Windows Forms project with NuGet:
