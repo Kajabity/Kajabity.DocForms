@@ -8,8 +8,10 @@ using Microsoft.Win32;
 namespace Kajabity.DocForms.Forms
 {
     /// <summary>
-    /// Opt-in WinForms integration for capturing and restoring one independent top-level Form.
-    /// The application owns persistence. The manager unsubscribes when the Form closes or is disposed.
+    /// Opt-in WinForms integration for one independent top-level form. Construct on the
+    /// form's UI thread, restore before showing it, save a non-null capture after a
+    /// successful close, and dispose the manager. The application owns persistence.
+    /// MDI children are unsupported; the manager unsubscribes on close or disposal.
     /// </summary>
     public sealed class WindowPlacementManager : IDisposable
     {
@@ -67,8 +69,9 @@ namespace Kajabity.DocForms.Forms
         }
 
         /// <summary>
-        /// Captures normal bounds and the last non-minimised state. Returns the last valid placement
-        /// if the form currently has invalid bounds or a display change is in progress.
+        /// Captures normal bounds and the last non-minimised state. Returns the last valid
+        /// placement during a display change or when bounds are invalid; returns null if
+        /// no valid placement has yet been observed. Do not overwrite stored settings with null.
         /// </summary>
         public WindowPlacement Capture()
         {

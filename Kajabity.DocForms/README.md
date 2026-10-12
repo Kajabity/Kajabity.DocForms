@@ -1,8 +1,6 @@
-Kajabity.DocForms
-=================
+# Library guide
 
-This directory contains the Kajabity.DocForms DLL project and it produces 
-a Strongly Named DLL which is packaged as a NuGet.
+This directory contains the signed Kajabity.DocForms library project. Start with the [repository README](../README.md) for installation, a compiling example, and the current framework and release status.
 
 Kajabity.DocForms is available in several different forms:
 
@@ -14,33 +12,32 @@ Kajabity.DocForms is available in several different forms:
 `Samples/PlainTextEditor` remains the .NET Framework 4.8 compatibility example;
 `Samples/HexViewer` demonstrates .NET 10. The older TextEditor demonstration
 project was removed previously. `SDIForm` has now been
-removed from the library as an intentional breaking change for the upcoming
-major release. Applications deriving from it should migrate to
+removed from the library as an intentional breaking change in 0.4.0.
+Applications deriving from it should migrate to
 `SingleDocumentForm<TDocument>` and `SingleDocumentManager<TDocument>`.
 The separate `TextDocument` and `TextDocumentManager` types remain obsolete.
 
 See the Releases section on GitHub to download copies of code, DLL exe's and NuGets.
 
-Full documentation is available at [http://www.kajabity.com/kajabity-tools/](http://www.kajabity.com/kajabity-tools/).
+The older [Kajabity.com guide](https://www.kajabity.com/kajabity-tools/sdi-forms-document-classes/) describes APIs that have since changed; use the current [migration guide](../MIGRATION.md) and samples for this version.
 
 Versioning
 ----------
 
-Release tags use `X.Y.Z` (for example, `0.3.0`). The release workflow passes the
+Release tags use `X.Y.Z` (for example, `0.4.0`). The release workflow passes the
 tag as `ReleaseVersion` to MSBuild and as the NuGet package version. The DLL file
 version becomes `X.Y.Z.0` and its informational/product version becomes `X.Y.Z`.
 To build the same versions locally, use Visual Studio MSBuild:
 
 ```powershell
-msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /p:ReleaseVersion=0.3.0
+msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /p:ReleaseVersion=0.4.0
 ```
 
-Without `ReleaseVersion`, builds use file version `0.3.1.0` and product version
-`0.3.1-dev`. Version attributes are generated under `obj`; no source stamping is
-required. The strong-name assembly version stays at `0.3.0.0` for compatible
-`0.3.x` releases. Review it when making an incompatible release. This replaces
-the old automatically changing `0.2.*` identity; existing .NET Framework
-consumers may need rebuilding or a binding redirect when upgrading.
+Without `ReleaseVersion`, builds use file version `0.4.0.0` and product version
+`0.4.0-dev`. Version attributes are generated under `obj`; no source stamping is
+required. The strong-name assembly version is `0.4.0.0`; it changed from
+`0.3.0.0` because `SDIForm` was removed. Existing .NET Framework consumers
+should rebuild and review binding redirects when upgrading.
 
 The SDK-style project targets .NET Framework 4.8 and .NET 10 for Windows. Package identity and
 metadata are declared in the project file. Create a package with `dotnet pack`;
@@ -75,7 +72,8 @@ protected override void OnFormClosed(FormClosedEventArgs e)
 {
     if (placement != null)
     {
-        SavePlacement(placement.Capture()); // a null result means no valid bounds to save
+        WindowPlacement saved = placement.Capture();
+        if (saved != null) SavePlacement(saved);
         placement.Dispose();
     }
     base.OnFormClosed(e);

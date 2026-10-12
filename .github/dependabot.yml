@@ -1,0 +1,45 @@
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directories:
+      - /Kajabity.DocForms
+      - /Kajabity.DocForms.Test
+      - /Samples/PlainTextEditor
+      - /Samples/HexViewer
+      - /Samples/CsvEditor
+      - /Samples/JavaPropertiesEditor
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      test-tooling:
+        patterns:
+          - Microsoft.NET.Test.Sdk
+          - NUnit
+          - NUnit3TestAdapter
+        update-types:
+          - minor
+          - patch
+      resource-support:
+        patterns:
+          - System.Resources.Extensions
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    groups:
+      actions-nonbreaking:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+
+# TargetFrameworks are maintained in project files, not by Dependabot.
+# CI restores, builds and tests both targets for every dependency PR.
+# Major updates and the pre-1.0 Kajabity.Tools packages receive individual review.

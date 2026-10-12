@@ -32,8 +32,10 @@ using Microsoft.Win32;
 namespace Kajabity.DocForms.Forms
 {
     /// <summary>
-    /// Extends System.Windows.Forms.Form to implement support for handling 
-    /// Documents in a Single Document Interface (SDI) style.
+    /// Windows Forms base class for one document at a time. Connect its file-command
+    /// handlers to the application's menu or toolbar and subscribe to
+    /// <see cref="DocumentChanged"/> to refresh document controls. Window placement
+    /// requires a separate, opt-in <see cref="WindowPlacementManager"/>.
     /// </summary>
     public class SingleDocumentForm<TDocument> : Form where TDocument : Document
     {
@@ -44,8 +46,9 @@ namespace Kajabity.DocForms.Forms
         private SingleDocumentManager<TDocument> _manager;
 
         /// <summary>
-        /// A reference to an instance of the SingleDocumentManager used to load and save
-        /// documents for the application.
+        /// Gets or sets the format-specific manager. Replacing it changes which manager
+        /// supplies the document and its status events; the host should normally provide
+        /// one in the form constructor.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SingleDocumentManager<TDocument> Manager
@@ -74,9 +77,9 @@ namespace Kajabity.DocForms.Forms
         }
 
         /// <summary>
-        /// If true, when saving a document any existing file with the same name 
-        /// will be renamed with a trailing '~' character as a backup.  Any 
-        /// previous backup (i.e. with the same backup filename) will be deleted.
+        /// When true, replacing an existing file saves its previous contents to a
+        /// sibling file whose name ends in <c>~</c>. The previous backup is replaced.
+        /// This option applies to saves through this form, not direct manager calls.
         /// </summary>
         [
             Category("Document Handling"),
@@ -500,10 +503,10 @@ namespace Kajabity.DocForms.Forms
         //  ---------------------------------------------------------------------
 
         /// <summary>
-        /// A method to initialise the Recent Documents feature - pass in a menu item and,
-        /// when the menu is opened, it will have he recent files added.
-        /// Recent files are stored in the Registry using the path:
-        /// HKEY_CURRENT_USER\Software\(company-name)\(application-name)\Recent Documents
+        /// Enables the recent-files menu and reads entries from the current user's
+        /// registry at Software\(entry-assembly company)\(entry-assembly name)\Recent Documents.
+        /// Call this after the menu item exists; the entry assembly should carry an
+        /// <see cref="AssemblyCompanyAttribute"/>. The method name retains its original spelling.
         /// </summary>
         /// <param name="recentItemsMenuItem">a reference to the "Recent Documents..." menu item</param>
         public void InitialseRecentDocuments(ToolStripMenuItem recentItemsMenuItem)
@@ -585,7 +588,9 @@ namespace Kajabity.DocForms.Forms
 
 
         /// <summary>
-        /// Honour window-close cancellation before closing the document and saving recent files.
+        /// Lets application closing handlers cancel first. If they permit closure, prompts
+        /// for a modified document; a cancelled or failed save keeps the form and document open.
+        /// Recent-file settings are written only after the document can close.
         /// </summary>
         /// <param name="e"></param>
         protected override void OnFormClosing(FormClosingEventArgs e)

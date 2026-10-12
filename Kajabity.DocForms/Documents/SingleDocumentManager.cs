@@ -26,11 +26,9 @@ using System.IO;
 namespace Kajabity.DocForms.Documents
 {
     /// <summary>
-    /// A base class to manage the lifecycle of a Document by creating new, empty documents, 
-    /// Opening existing documents, tracking the modification state of documents and Saving
-    /// documents.
-    /// 
-    /// Extend this class to implement methods to handle specific document types.
+    /// Coordinates the state of one <see cref="Document"/>. Derive a manager to create
+    /// and read the document format, and to write it to the path supplied by the caller.
+    /// The companion form handles interactive prompts, backup and safe replacement.
     /// </summary>
     public abstract class SingleDocumentManager<TDocument> where TDocument : Document
     {
@@ -50,7 +48,7 @@ namespace Kajabity.DocForms.Documents
         public string DefaultName { get; set; } = DEFAULT_DOCUMENT_NAME;
 
         /// <summary>
-        /// The filename of the current document.  Will be null of no current document.
+        /// The filename of the current document, or null when none is open.
         /// </summary>
         public string Filename { get; private set; }
 
@@ -126,10 +124,8 @@ namespace Kajabity.DocForms.Documents
         //  ---------------------------------------------------------------------
 
         /// <summary>
-        /// Performs base initialisation of the document name and status of a 
-        /// new document.  Override this method to provide initialisation for
-        /// specific Document types then call this base class 
-        /// once document set (<code>base.NewDocument();</code>).
+        /// Assign a new <see cref="Document"/> in an override, then call the base method
+        /// to assign its default filename, mark it unsaved and clear its modified flag.
         /// </summary>
         public virtual void NewDocument()
         {
@@ -145,9 +141,9 @@ namespace Kajabity.DocForms.Documents
         }
 
         /// <summary>
-        /// Performs base class setup of loaded filename and status.  Override 
-        /// to load a file into a Document instance then call this base class 
-        /// once document set (<code>base.Load(filename);</code>).
+        /// Read the file and assign <see cref="Document"/> in an override, then call the
+        /// base method to commit the filename and clear its modified flag. Do not call
+        /// the base method after a failed read.
         /// </summary>
         /// <param name="filename">filename and path loaded</param>
         public virtual void Load(string filename)
@@ -166,9 +162,10 @@ namespace Kajabity.DocForms.Documents
         }
 
         /// <summary>
-        /// Performs base class setup of Saved filename and status.  Override 
-        /// to save a file from a Document instance then call this base class 
-        /// (<code>base.Save(filename);</code>).
+        /// Write the document to <paramref name="filename"/> in an override, then call
+        /// the base method. During a form save this path is a sibling temporary file;
+        /// the form replaces the destination only after the write succeeds. Calling
+        /// this method directly does not apply the form's backup or safe-save policy.
         /// </summary>
         /// <param name="filename">filename and path to save to</param>
         public virtual void Save(string filename)
@@ -246,10 +243,8 @@ namespace Kajabity.DocForms.Documents
         }
 
         /// <summary>
-        /// Close any currently open document - setting state appropriately.  
-        /// Override this method to perform any necessary cleanup (releasing 
-        /// resources, etc.) for the Document instance then call this base 
-        /// class (<code>base.Close();</code>).
+        /// Clear the current document and filename. Override for format-specific cleanup,
+        /// then call the base method. Interactive close confirmation belongs to the form.
         /// </summary>
         public virtual void Close()
         {
