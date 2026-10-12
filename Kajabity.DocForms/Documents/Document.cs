@@ -24,18 +24,16 @@ using System.ComponentModel;
 namespace Kajabity.DocForms.Documents
 {
     /// <summary>
-    /// An abstract base class for all types of document that can be created, 
-    /// loaded, modified and saved by the SingleDocumentForm methods.  Extend this class
-    /// to add properties and methods appropriate for your particular type of document
-    /// or data.
+    /// Base state for one file-backed document managed by <see cref="SingleDocumentManager{TDocument}"/>.
+    /// Derive a type to hold the application's content; this class does not perform file I/O.
     /// </summary>
     public abstract class Document
     {
         private bool _modified;
 
         /// <summary>
-        /// Gets or sets a flag to indicate if the contents of the document
-        /// have been modified and may require saving.
+        /// Gets or sets whether the content differs from its saved form. Changing the value
+        /// raises <see cref="StatusChanged"/> so the form can update commands and its title.
         /// </summary>
         public bool Modified
         {
@@ -56,7 +54,8 @@ namespace Kajabity.DocForms.Documents
         private string _name;
 
         /// <summary>
-        /// Gets or sets the name of the document - usually derived from the filename.
+        /// Gets or sets the display name, normally derived from the filename. Changing it
+        /// raises <see cref="StatusChanged"/>.
         /// </summary>
         public string Name
         {

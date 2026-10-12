@@ -1,48 +1,138 @@
-Kajabity.DocForms GitHub Repository
-===================================
+# Kajabity.DocForms
 
-[![Build status](https://ci.appveyor.com/api/projects/status/a3r57ga2s2urpv0b/branch/master?svg=true)](https://ci.appveyor.com/project/Kajabity/kajabity-docforms/branch/master)
+[![CI build and test](https://github.com/Kajabity/Kajabity.DocForms/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Kajabity/Kajabity.DocForms/actions/workflows/build.yml) [![Current NuGet version](https://img.shields.io/nuget/v/Kajabity.DocForms.svg?label=NuGet)](https://www.nuget.org/packages/Kajabity.DocForms/) [![Cumulative NuGet downloads](https://img.shields.io/nuget/dt/Kajabity.DocForms.svg?label=downloads)](https://www.nuget.org/packages/Kajabity.DocForms/) [![Supported frameworks: .NET Framework 4.8 and .NET 10 for Windows](https://img.shields.io/badge/frameworks-net48%20%7C%20net10.0--windows-blue.svg)](https://github.com/Kajabity/Kajabity.DocForms/blob/main/Kajabity.DocForms/Kajabity.DocForms.csproj) [![Licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-Kajabity.DocForms is a collection of WinForms classes to provide all those standard 'Boiler Plate'
-file handling features of a Windows Desktop application.  These classes have been refactored 
-from applications I've written over recent years and I am find I use them regularly for quickly
-putting together new applications.
+**Kajabity.DocForms (KDF)** is a lightweight .NET framework for rapidly building document-based, Single Document Interface (SDI) Windows desktop applications using Windows Forms.
 
-This repository contains several sub-projects:
+KDF handles the familiar application essentials — New, Open, Save, Save As, Close, unsaved-changes confirmation, recent files and optional document backups — so you can concentrate on your application's documents and user interface.
 
--	**[Kajabity.DocForms](./Kajabity.DocForms)** - a DLL project providing a collection of utilities for .NET projects.
--	**[Kajabity.DocForms.Test](./Kajabity.DocForms.Test)** - a suite of NUnit tests for Kajabity.DocForms.
--	**[Samples](./Samples)** - a collection of sample Desktop application projects illustrating the use of some of Kajabity.DocForms utility classes, as well as other NuGets I have published.
+Supporting .NET 10 for Windows and .NET Framework 4.8, KDF also provides optional window-position restoration and lets applications choose their own document formats and settings storage.
 
-See the Releases section on GitHub to download copies of code, DLL exe's and NuGets.
+## Key features
 
-Kajabity.DocForms DLL is a strongly named assembly and is available from nuget.org as Kajabity.DocForms.
+- New, Open, Save, Save As and Close with unsaved-changes confirmation.
+- Opt-in recent files and document backups.
+- Opt-in window placement restoration, including maximised state and monitor fallback.
 
-This code originally formed part of the Kajabity Tools library.  
-Full documentation is available at [http://www.kajabity.com/kajabity-tools/](http://www.kajabity.com/kajabity-tools/).
+## Install
 
-Features
---------
+Add the latest published `Kajabity.DocForms` package to a Windows Forms project with NuGet:
 
--	``SingleDocumentForm`` is an extension of ``System.Windows.Forms.Form`` providing standard file handling functionality linked to a document type.
--	``Document`` extend this abstract base class to represent each file (document) type.
--	``SingleDocumentManager`` abstract base class to extend to implement Load/Save/New document functionality.
+```powershell
+dotnet add package Kajabity.DocForms
+```
 
-File handling:
+Use version 0.4.0 or later for .NET 10 for Windows; the previously published 0.3.1 package contains only the .NET Framework 4.8 asset. See [MIGRATION.md](MIGRATION.md) before upgrading an existing application.
 
--	Open file
--	New File
-    - Set default filename and extension
--	Save File, Save File as
-    - Backup original file on Save
--	Close file
--	Open recent file
-    - Configurable number of recent files and display length
--	Exit application
+## Minimal application
 
-In addition, these features easily support:
+Create a Windows Forms project with `<UseWindowsForms>true</UseWindowsForms>` and a reference to KDF. This single-file example uses the same extension points as [PlainTextEditor](Samples/PlainTextEditor/). Put it in `Program.cs` and run the project on Windows:
 
--	Standard file handling menu items and tool strip items.
--	Drag and drop files onto application.
--	Opt-in window placement restoration for independent top-level forms; see the
-    [library guide](./Kajabity.DocForms/README.md#window-placement-opt-in).
+```csharp
+using System;
+using System.IO;
+using System.Windows.Forms;
+using Kajabity.DocForms.Documents;
+using Kajabity.DocForms.Forms;
+
+public sealed class Note : Document
+{
+    private string _text = "";
+    public string Text
+    {
+        get { return _text; }
+        set { _text = value; Modified = true; }
+    }
+}
+
+public sealed class NoteManager : SingleDocumentManager<Note>
+{
+    public NoteManager() { DefaultName = "Note"; DefaultExtension = "txt"; }
+    public override void NewDocument()
+    {
+        Document = new Note();
+        base.NewDocument();
+    }
+    public override void Load(string filename)
+    {
+        Document = new Note { Text = File.ReadAllText(filename) };
+        base.Load(filename);
+    }
+    public override void Save(string filename)
+    {
+        File.WriteAllText(filename, Document.Text);
+        base.Save(filename);
+    }
+}
+
+public sealed class NoteForm : SingleDocumentForm<Note>
+{
+    private readonly TextBox _editor = new TextBox { Dock = DockStyle.Fill, Multiline = true };
+
+    public NoteForm() : base(new NoteManager())
+    {
+        var file = new ToolStripMenuItem("File");
+        file.DropDownItems.Add("New", null, FileNewClick);
+        file.DropDownItems.Add("Open...", null, FileOpenClick);
+        file.DropDownItems.Add("Save", null, FileSaveClick);
+        file.DropDownItems.Add("Save As...", null, FileSaveAsClick);
+        file.DropDownItems.Add("Close", null, FileCloseClick);
+        var menu = new MenuStrip();
+        menu.Items.Add(file);
+        MainMenuStrip = menu;
+        Controls.Add(_editor);
+        Controls.Add(menu);
+        DocumentChanged += (sender, args) =>
+        {
+            _editor.Text = Manager.Opened ? Manager.Document.Text : "";
+            if (Manager.Opened) Manager.Document.Modified = false;
+        };
+        _editor.TextChanged += (sender, args) =>
+        {
+            if (Manager.Opened) Manager.Document.Text = _editor.Text;
+        };
+    }
+}
+
+internal static class Program
+{
+    [STAThread]
+    private static void Main()
+    {
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new NoteForm());
+    }
+}
+```
+
+`NoteManager` performs format-specific I/O and calls the base method **after** each successful operation. The form commands handle file selection, modified-document prompts and safe replacement of existing files. Connect your own controls to `DocumentChanged` and set `Document.Modified` when users edit content. If a close or Save As is cancelled, the current document remains open. Calling a manager's public `Save` directly bypasses the form's temporary-file replacement and backup path; use the form commands for interactive saves.
+
+Set `Backup = true` on the form to request a sibling `~` backup when replacing an existing file. Recent files are opt-in: call `InitialseRecentDocuments(menuItem)` after creating the menu, and connect the parent File menu opening event to `OnParentMenuDropDownOpening`. KDF stores that list under the application's `HKEY_CURRENT_USER\Software\<company>\<application>\Recent Documents` key; the entry assembly needs `AssemblyCompanyAttribute`. KDF does not supply a general settings system or automatic recovery after an interrupted process.
+
+## Window placement
+
+`WindowPlacementManager` restores an independent top-level form when the application opts in. Construct it after `InitializeComponent()`, call `Restore(savedPlacement)` before showing the form, then call `Capture()` after a successful close and persist the returned `WindowPlacement` using your own settings code. A `null` capture means there is no valid placement to overwrite an existing value. Dispose the manager when the form closes. [HexViewer](Samples/HexViewer/HexViewerMainForm.cs) shows the complete integration and an XML settings file.
+
+```csharp
+private WindowPlacementManager _placement;
+
+// In the form constructor, after InitializeComponent():
+_placement = new WindowPlacementManager(this);
+_placement.Restore(LoadPlacement()); // false leaves Windows' default position intact
+
+// In OnFormClosed, after a successful close:
+WindowPlacement saved = _placement.Capture();
+if (saved != null) SavePlacement(saved);
+_placement.Dispose();
+```
+
+The helper keeps normal bounds and a maximised flag, avoids reopening minimised, and adapts to changed monitor working areas and DPI where Windows provides the information. It falls back to the primary display if the original cannot be found; invalid settings leave normal Windows placement intact. It only moves an already open form after a display change if its title bar becomes inaccessible. Each independent form needs its own saved placement. MDI children are unsupported; modal dialogs normally use their owner's placement. Mixed-DPI and physical monitor reconnection still require testing on the application's actual Windows configuration. More detail is in the [library guide](Kajabity.DocForms/README.md#window-placement-opt-in).
+
+## Repository and help
+
+- [Samples](Samples/README.md): PlainTextEditor (`net48`), HexViewer, CsvEditor and JavaPropertiesEditor (`net10.0-windows`).
+- [Migration guide](MIGRATION.md) and [changelog](CHANGELOG.md).
+- [Issues](https://github.com/Kajabity/Kajabity.DocForms/issues) for bugs and feature requests; [pull requests](https://github.com/Kajabity/Kajabity.DocForms/pulls) for contributions. Include target framework, Windows version and reproduction steps.
+
+Licensed under [Apache-2.0](LICENSE).

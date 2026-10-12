@@ -28,6 +28,7 @@
 .vs/
 
 # Build results
+/artifacts/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

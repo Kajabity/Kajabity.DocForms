@@ -33,10 +33,28 @@ jobs:
       - name: Build solution
         run: msbuild Kajabity.DocForms.sln /m /p:Configuration=Release /v:minimal /nologo
 
-      - name: Run NUnit tests
+      - name: Run NUnit tests on .NET Framework 4.8
         shell: pwsh
         run: |
-          dotnet test Kajabity.DocForms.Test/Kajabity.DocForms.Test.csproj --configuration Release --no-build --settings Kajabity.DocForms.Test/DocForms.runsettings
+          dotnet test Kajabity.DocForms.Test/Kajabity.DocForms.Test.csproj --framework net48 --configuration Release --no-build --settings Kajabity.DocForms.Test/DocForms.runsettings
           if ($LASTEXITCODE -ne 0) {
-            throw 'NUnit test execution failed.'
+            throw '.NET Framework 4.8 NUnit tests failed.'
           }
+
+      - name: Run NUnit tests on .NET 10 for Windows
+        shell: pwsh
+        run: |
+          dotnet test Kajabity.DocForms.Test/Kajabity.DocForms.Test.csproj --framework net10.0-windows --configuration Release --no-build --settings Kajabity.DocForms.Test/DocForms.runsettings
+          if ($LASTEXITCODE -ne 0) {
+            throw '.NET 10 NUnit tests failed.'
+          }
+
+      - name: Pack and validate NuGet package
+        shell: pwsh
+        run: |
+          dotnet pack Kajabity.DocForms/Kajabity.DocForms.csproj --configuration Release --no-build --no-restore --output artifacts
+          if ($LASTEXITCODE -ne 0) { throw 'Package creation failed.' }
+          ./.github/scripts/validate-package.ps1 `
+            -PackagePath artifacts/Kajabity.DocForms.0.4.0.nupkg `
+            -SymbolPackagePath artifacts/Kajabity.DocForms.0.4.0.snupkg `
+            -ExpectedVersion 0.4.0
