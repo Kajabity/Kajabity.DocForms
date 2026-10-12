@@ -45,7 +45,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.12" />
     <ProjectReference Include="..\..\Kajabity.DocForms\Kajabity.DocForms.csproj" />
   </ItemGroup>
   <ItemGroup>
