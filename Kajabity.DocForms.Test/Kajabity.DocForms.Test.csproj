@@ -10,9 +10,9 @@
     <RunSettingsFilePath>$(MSBuildProjectDirectory)\DocForms.runsettings</RunSettingsFilePath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" />
     <PackageReference Include="NUnit" Version="5.0.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="6.3.0" />
     <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     <ProjectReference Include="..\Kajabity.DocForms\Kajabity.DocForms.csproj" />
     <ProjectReference Include="..\Samples\PlainTextEditor\PlainTextEditor.csproj" Condition="'$(TargetFramework)' == 'net48'" />
