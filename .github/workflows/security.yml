@@ -108,15 +108,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Audit all project dependencies
-        id: audit
-        shell: pwsh
-        run: ./.github/scripts/audit-nuget.ps1
-
-      - name: Upload vulnerability reports
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: nuget-vulnerability-reports
-          path: vulnerability-reports/*.json
-          if-no-files-found: warn
+      - name: Audit all NuGet dependencies
+        run: >
+          dotnet restore Kajabity.DocForms.sln --force
+          -p:NuGetAudit=true
+          -p:NuGetAuditMode=all
+          -p:NuGetAuditLevel=low
+          -p:WarningsAsErrors=NU1900%3BNU1901%3BNU1902%3BNU1903%3BNU1904%3BNU1905
+          -p:EnforceNuGetAudit=true

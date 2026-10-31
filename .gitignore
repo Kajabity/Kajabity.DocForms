@@ -29,7 +29,6 @@
 
 # Build results
 /artifacts/
-/vulnerability-reports/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
