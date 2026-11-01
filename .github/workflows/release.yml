@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '0.4.0'
+      - '0.4.1'
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
       - name: Validate release tag
         shell: pwsh
         run: |
-          if ($env:GITHUB_REF_NAME -ne '0.4.0') { throw 'This workflow is prepared only for 0.4.0.' }
+          if ($env:GITHUB_REF_NAME -ne '0.4.1') { throw 'This workflow is prepared only for 0.4.1.' }
           $tagCommit = git rev-parse "$($env:GITHUB_REF_NAME)^{commit}"
           if ($LASTEXITCODE -ne 0) { throw 'Could not resolve the release tag to a commit.' }
           git fetch origin main
@@ -58,8 +58,9 @@ jobs:
             $fullPath = (Resolve-Path $path).Path
             $assemblyVersion = [Reflection.AssemblyName]::GetAssemblyName($fullPath).Version.ToString()
             $fileVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo($fullPath)
-            if ($assemblyVersion -ne '0.4.0.0' -or $fileVersion.FileVersion -ne '0.4.0.0' -or
-                $fileVersion.ProductVersion -ne '0.4.0') {
+            # Patch releases keep the 0.4 strong-name assembly version.
+            if ($assemblyVersion -ne '0.4.0.0' -or $fileVersion.FileVersion -ne '0.4.1.0' -or
+                $fileVersion.ProductVersion -ne '0.4.1') {
               throw "Unexpected assembly, file or informational version in $path."
             }
           }
@@ -85,10 +86,10 @@ jobs:
             --output artifacts
           if ($LASTEXITCODE -ne 0) { throw 'Release package creation failed.' }
           ./.github/scripts/validate-package.ps1 `
-            -PackagePath artifacts/Kajabity.DocForms.0.4.0.nupkg `
-            -SymbolPackagePath artifacts/Kajabity.DocForms.0.4.0.snupkg `
-            -ExpectedVersion 0.4.0
-          $lines = foreach ($file in @('Kajabity.DocForms.0.4.0.nupkg', 'Kajabity.DocForms.0.4.0.snupkg')) {
+            -PackagePath artifacts/Kajabity.DocForms.0.4.1.nupkg `
+            -SymbolPackagePath artifacts/Kajabity.DocForms.0.4.1.snupkg `
+            -ExpectedVersion 0.4.1
+          $lines = foreach ($file in @('Kajabity.DocForms.0.4.1.nupkg', 'Kajabity.DocForms.0.4.1.snupkg')) {
             $hash = (Get-FileHash (Join-Path artifacts $file) -Algorithm SHA256).Hash.ToLowerInvariant()
             "$hash  $file"
           }
@@ -97,7 +98,7 @@ jobs:
       - name: Upload verified release files
         uses: actions/upload-artifact@v7
         with:
-          name: kdf-0.4.0
+          name: kdf-0.4.1
           path: artifacts/
           if-no-files-found: error
 
@@ -116,7 +117,7 @@ jobs:
       - name: Download verified release files
         uses: actions/download-artifact@v8
         with:
-          name: kdf-0.4.0
+          name: kdf-0.4.1
           path: artifacts
 
       - name: Set up .NET
@@ -128,9 +129,9 @@ jobs:
         shell: pwsh
         run: |
           ./.github/scripts/validate-package.ps1 `
-            -PackagePath artifacts/Kajabity.DocForms.0.4.0.nupkg `
-            -SymbolPackagePath artifacts/Kajabity.DocForms.0.4.0.snupkg `
-            -ExpectedVersion 0.4.0
+            -PackagePath artifacts/Kajabity.DocForms.0.4.1.nupkg `
+            -SymbolPackagePath artifacts/Kajabity.DocForms.0.4.1.snupkg `
+            -ExpectedVersion 0.4.1
           foreach ($line in Get-Content artifacts/SHA256SUMS.txt) {
             if ($line -notmatch '^([a-f0-9]{64})  (.+)$') { throw 'Malformed SHA256SUMS.txt.' }
             $actual = (Get-FileHash (Join-Path artifacts $Matches[2]) -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -151,7 +152,7 @@ jobs:
           if ([string]::IsNullOrWhiteSpace($env:NUGET_API_KEY)) {
             throw 'NuGet Trusted Publishing did not return a temporary key.'
           }
-          dotnet nuget push artifacts/Kajabity.DocForms.0.4.0.nupkg `
+          dotnet nuget push artifacts/Kajabity.DocForms.0.4.1.nupkg `
             --api-key $env:NUGET_API_KEY `
             --symbol-api-key $env:NUGET_API_KEY `
             --source https://api.nuget.org/v3/index.json
@@ -170,16 +171,16 @@ jobs:
       - name: Download verified release files
         uses: actions/download-artifact@v8
         with:
-          name: kdf-0.4.0
+          name: kdf-0.4.1
           path: artifacts
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          name: Kajabity.DocForms 0.4.0
+          name: Kajabity.DocForms 0.4.1
           body_path: RELEASE_NOTES.md
           files: |
-            artifacts/Kajabity.DocForms.0.4.0.nupkg
-            artifacts/Kajabity.DocForms.0.4.0.snupkg
+            artifacts/Kajabity.DocForms.0.4.1.nupkg
+            artifacts/Kajabity.DocForms.0.4.1.snupkg
             artifacts/SHA256SUMS.txt
           fail_on_unmatched_files: true

@@ -10,10 +10,12 @@ dotnet add package Kajabity.DocForms
 
 Derive a `Document`, implement `SingleDocumentManager<TDocument>` to create/read/write it, and derive the application's form from `SingleDocumentForm<TDocument>`. Use the form's file-command handlers for interactive saves so its safe replacement and backup policy applies. `WindowPlacementManager` is opt-in for independent top-level forms; the host stores the captured `WindowPlacement`.
 
+Recent-file history is opt-in. Set `MaximumRecentDocumentCount` to zero to disable it; negative values are rejected, and reducing the limit discards the oldest entries.
+
 - [Quick start and complete compiling example](https://github.com/Kajabity/Kajabity.DocForms#minimal-application)
 - [Migration from published 0.3.1](https://github.com/Kajabity/Kajabity.DocForms/blob/main/MIGRATION.md)
 - [Changelog](https://github.com/Kajabity/Kajabity.DocForms/blob/main/CHANGELOG.md)
 - [Samples](https://github.com/Kajabity/Kajabity.DocForms/tree/main/Samples)
 - [Issues and support](https://github.com/Kajabity/Kajabity.DocForms/issues)
 
-Apache-2.0 licensed. Version 0.4.0 adds the .NET 10 for Windows asset; see the migration guide when upgrading from 0.3.1.
+Apache-2.0 licensed. Version 0.4.1 fixes recent-file limits and retains the `0.4.0.0` signed assembly version. See the migration guide when upgrading from 0.3.1 or 0.4.0.

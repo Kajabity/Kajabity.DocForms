@@ -2,6 +2,14 @@
 
 [0.3.1](https://www.nuget.org/packages/Kajabity.DocForms/0.3.1) supplies a `net48` assembly. Version 0.4.0 supplies both `net48` and `net10.0-windows` in the same `Kajabity.DocForms` package.
 
+## Upgrading from 0.4.0 to 0.4.1
+
+The target frameworks and public type names are unchanged. The signed `AssemblyVersion` remains `0.4.0.0`, while the file and informational versions become `0.4.1.0` and `0.4.1`.
+
+`MaximumRecentDocumentCount = 0` now disables in-memory recent-file history safely. Assigning a negative value throws `ArgumentOutOfRangeException`, and lowering a positive limit immediately removes the oldest entries. Check applications that set this property from user preferences or configuration. Existing registry values are not deleted by changing the limit; the opt-in registry store continues to use the same key.
+
+The CsvEditor sample now serializes its document rows on save and counts columns correctly after edits. Its grid UI still has editing limitations, so treat it as a sample rather than a complete CSV editor.
+
 ## Choose a target
 
 - Existing .NET Framework 4.8 Windows Forms applications can remain on `net48` and upgrade to 0.4.0 after reviewing the compatibility changes below.

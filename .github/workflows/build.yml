@@ -55,6 +55,6 @@ jobs:
           dotnet pack Kajabity.DocForms/Kajabity.DocForms.csproj --configuration Release --no-build --no-restore --output artifacts
           if ($LASTEXITCODE -ne 0) { throw 'Package creation failed.' }
           ./.github/scripts/validate-package.ps1 `
-            -PackagePath artifacts/Kajabity.DocForms.0.4.0.nupkg `
-            -SymbolPackagePath artifacts/Kajabity.DocForms.0.4.0.snupkg `
-            -ExpectedVersion 0.4.0
+            -PackagePath artifacts/Kajabity.DocForms.0.4.1.nupkg `
+            -SymbolPackagePath artifacts/Kajabity.DocForms.0.4.1.snupkg `
+            -ExpectedVersion 0.4.1

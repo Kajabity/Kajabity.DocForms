@@ -4,6 +4,18 @@ All notable changes to Kajabity.DocForms are recorded here. The format follows [
 
 ## [Unreleased]
 
+## [0.4.1]
+
+### Fixed
+
+- A recent-document limit of zero now disables in-memory history without making a successful open or save report an error. Negative limits are rejected, and reducing the limit discards the oldest entries immediately.
+- CsvEditor now updates its column count when a cell is set beyond the current last column and writes CSV rows when saving, including quoted values, empty cells and embedded newlines. Failed writes do not mark the document saved.
+
+### Changed
+
+- The security workflow audits NuGet dependencies across all tracked projects with native NuGet auditing. Test and sample dependencies were updated.
+- Markdown line endings are fixed to LF for consistent edits across IDEs.
+
 ## [0.4.0]
 
 ### Added
