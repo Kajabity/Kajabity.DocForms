@@ -99,13 +99,34 @@ namespace Kajabity.DocForms.Forms
 
         /// <summary>
         /// Maximum number of documents to store in the recent files list.
+        /// Zero disables recent-file history. Negative values are not allowed.
+        /// Reducing the limit removes the oldest entries immediately.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
         [
             Category("Document Handling"),
             Description("The maximum number of recent documents to store in the recent files list."),
             DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
         ]
-        public int MaximumRecentDocumentCount { get; set; } = 20;
+        public int MaximumRecentDocumentCount
+        {
+            get { return _maximumRecentDocumentCount; }
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(MaximumRecentDocumentCount),
+                        "MaximumRecentDocumentCount must be non-negative.");
+
+                while (_recentFiles.Count > value)
+                {
+                    _recentFiles.RemoveAt(_recentFiles.Count - 1);
+                }
+
+                _maximumRecentDocumentCount = value;
+            }
+        }
+
+        private int _maximumRecentDocumentCount = 20;
 
         /// <summary>
         /// Maximum length of each document name and path entry in the recent documents menu.
@@ -657,12 +678,12 @@ namespace Kajabity.DocForms.Forms
         {
             RemoveFileHistory(file);
 
-            // if array has maximum length, remove last element
-            if (_recentFiles.Count == MaximumRecentDocumentCount)
-                _recentFiles.RemoveAt(MaximumRecentDocumentCount - 1);
-
             // add new file name to the start of array
             _recentFiles.Insert(0, file);
+
+            // Trim last (oldest) element if greater than the max count.
+            while (_recentFiles.Count > MaximumRecentDocumentCount)
+                _recentFiles.RemoveAt(_recentFiles.Count - 1);
         }
 
         /// <summary>
