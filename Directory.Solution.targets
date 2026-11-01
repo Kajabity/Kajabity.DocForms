@@ -1,0 +1,17 @@
+<Project>
+  <ItemGroup Condition="'$(EnforceNuGetAudit)' == 'true'">
+    <_AuditProject Include="**/*.csproj" Exclude="**/bin/**;**/obj/**;SJW/**" />
+    <_LegacyPackageManifest Include="**/packages.config" Exclude="**/bin/**;**/obj/**;SJW/**" />
+  </ItemGroup>
+  <Target Name="VerifyNuGetAudit" AfterTargets="Restore" Condition="'$(EnforceNuGetAudit)' == 'true'">
+    <Error Condition="'@(_LegacyPackageManifest)' != ''"
+           Text="Legacy packages.config files are not covered by this audit: @(_LegacyPackageManifest)." />
+    <Error Condition="'$(RestoreProjectCount)' == '' or '$(RestoreProjectsAuditedCount)' == ''"
+           Text="NuGet did not report how many projects were audited." />
+    <Error Condition="'@(_AuditProject->Count())' != '$(RestoreProjectCount)'"
+           Text="NuGet restored $(RestoreProjectCount) of @(_AuditProject->Count()) repository projects." />
+    <Error Condition="'$(RestoreProjectsAuditedCount)' != '$(RestoreProjectCount)'"
+           Text="NuGet audited $(RestoreProjectsAuditedCount) of $(RestoreProjectCount) restored projects." />
+    <Message Importance="High" Text="NuGet audited $(RestoreProjectsAuditedCount) of $(RestoreProjectCount) projects." />
+  </Target>
+</Project>
