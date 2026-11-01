@@ -38,6 +38,16 @@ namespace Kajabity.DocForms.Test.Documents
         }
 
         [Test]
+        public void OriginalCountPropertiesRemainAvailable()
+        {
+            var document = new CsvDocument();
+            document.SetCell(0, 2, "balance");
+
+            ClassicAssert.AreEqual(document.ColumnCount, document.NumberOfColumns);
+            ClassicAssert.AreEqual(document.RowCount, document.NumberOfRows);
+        }
+
+        [Test]
         public void UpdatingCellAndAddingShorterRowPreservesMaximumColumnCount()
         {
             var document = new CsvDocument("records", new[] { new[] { "first", "second", "third" } });

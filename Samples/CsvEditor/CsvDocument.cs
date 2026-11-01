@@ -39,6 +39,16 @@ namespace CsvEditor
         public int RowCount => _rowsList.Count;
 
         /// <summary>
+        /// Gets the number of columns. Retained for callers using the original property name.
+        /// </summary>
+        public int NumberOfColumns => ColumnCount;
+
+        /// <summary>
+        /// Gets the number of rows. Retained for callers using the original property name.
+        /// </summary>
+        public int NumberOfRows => RowCount;
+
+        /// <summary>
         /// Construct and empty document with a default name.
         /// </summary>
         public CsvDocument()
