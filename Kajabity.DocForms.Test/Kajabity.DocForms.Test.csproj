@@ -18,9 +18,13 @@
     <ProjectReference Include="..\Samples\PlainTextEditor\PlainTextEditor.csproj" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
+    <ProjectReference Include="..\Samples\CsvEditor\CsvEditor.csproj" />
     <Compile Include="..\Samples\PlainTextEditor\PlainText*.cs" Link="LegacySample\%(Filename)%(Extension)" />
     <EmbeddedResource Include="..\Samples\PlainTextEditor\PlainTextEditorMainForm.resx" LogicalName="PlainTextEditor.PlainTextEditorMainForm.resources" />
     <Compile Include="..\WindowsOnlyAssemblyInfo.cs" Link="Properties\WindowsOnlyAssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Compile Remove="Documents\CsvDocumentTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Forms\test.txt" CopyToOutputDirectory="Always" />

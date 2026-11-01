@@ -98,6 +98,12 @@ namespace CsvEditor
             return string.Empty;
         }
 
+        /// <summary>
+        /// Sets the value of a single cell in the data array.
+        /// </summary>
+        /// <param name="row">The zero-based row index of the cell to set.</param>
+        /// <param name="column">The zero-based column index of the cell to set.</param>
+        /// <param name="value">The new value to set for the cell.</param>
         public void SetCell( int row, int column, string value )
         {
             string oldValue =GetCell(row, column);
@@ -115,9 +121,9 @@ namespace CsvEditor
                 _rowsList[ row ][ column ] = value;
                 Modified = true;
 
-                if( NumberOfColumns < column )
+                if( NumberOfColumns <= column )
                 {
-                    NumberOfColumns = column;
+                    NumberOfColumns = column + 1;
                 }
             }
         }
