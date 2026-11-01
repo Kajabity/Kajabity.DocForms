@@ -60,8 +60,10 @@ namespace CsvEditor
 
                 CsvWriter writer = new CsvWriter( outStream );
 
-                //for( int row = 0; row < document.)
-                //writer.WriteAll( CsvDocument );
+                for (int row = 0; row < Document.RowCount; row++) {
+                    writer.WriteRecord(Document.GetRow(row));
+                }
+
                 outStream.Flush();
             }
 
