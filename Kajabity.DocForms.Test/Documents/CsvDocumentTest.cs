@@ -19,8 +19,8 @@ namespace Kajabity.DocForms.Test.Documents
 
             document.SetCell(0, 0, "account");
 
-            ClassicAssert.AreEqual(1, document.NumberOfColumns);
-            ClassicAssert.AreEqual(1, document.NumberOfRows);
+            ClassicAssert.AreEqual(1, document.ColumnCount);
+            ClassicAssert.AreEqual(1, document.RowCount);
             ClassicAssert.AreEqual("account", document.GetCell(0, 0));
         }
 
@@ -31,7 +31,7 @@ namespace Kajabity.DocForms.Test.Documents
 
             document.SetCell(0, 2, "balance");
 
-            ClassicAssert.AreEqual(3, document.NumberOfColumns);
+            ClassicAssert.AreEqual(3, document.ColumnCount);
             ClassicAssert.AreEqual(string.Empty, document.GetCell(0, 0));
             ClassicAssert.AreEqual(string.Empty, document.GetCell(0, 1));
             ClassicAssert.AreEqual("balance", document.GetCell(0, 2));
@@ -45,8 +45,8 @@ namespace Kajabity.DocForms.Test.Documents
             document.SetCell(0, 1, "updated");
             document.SetCell(1, 0, "short row");
 
-            ClassicAssert.AreEqual(3, document.NumberOfColumns);
-            ClassicAssert.AreEqual(2, document.NumberOfRows);
+            ClassicAssert.AreEqual(3, document.ColumnCount);
+            ClassicAssert.AreEqual(2, document.RowCount);
             ClassicAssert.AreEqual("updated", document.GetCell(0, 1));
             ClassicAssert.AreEqual("third", document.GetCell(0, 2));
         }

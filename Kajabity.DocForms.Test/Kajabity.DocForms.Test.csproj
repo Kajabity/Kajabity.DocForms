@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Compile Remove="Documents\CsvDocumentTest.cs" />
+    <Compile Remove="Documents\CsvDocumentManagerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Forms\test.txt" CopyToOutputDirectory="Always" />

@@ -34,9 +34,9 @@ namespace CsvEditor
         /// </summary>
         private readonly List<List<string>> _rowsList;
 
-        public int NumberOfColumns { get; private set; }
+        public int ColumnCount { get; private set; }
 
-        public int NumberOfRows => _rowsList.Count;
+        public int RowCount => _rowsList.Count;
 
         /// <summary>
         /// Construct and empty document with a default name.
@@ -44,7 +44,7 @@ namespace CsvEditor
         public CsvDocument()
         {
             _rowsList = new List<List<string>>();
-            NumberOfColumns = 0;
+            ColumnCount = 0;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace CsvEditor
                 : base( name )
         {
             _rowsList = new List<List<string>>();
-            NumberOfColumns = 0;
+            ColumnCount = 0;
         }
 
         /// <summary>
@@ -71,9 +71,9 @@ namespace CsvEditor
             {
                 _rowsList.Add( new List<string>( column ) );
 
-                if (NumberOfColumns < column.Length)
+                if (ColumnCount < column.Length)
                 {
-                    NumberOfColumns = column.Length;
+                    ColumnCount = column.Length;
                 }
             }
         }
@@ -121,11 +121,21 @@ namespace CsvEditor
                 _rowsList[ row ][ column ] = value;
                 Modified = true;
 
-                if( NumberOfColumns <= column )
+                if( ColumnCount <= column )
                 {
-                    NumberOfColumns = column + 1;
+                    ColumnCount = column + 1;
                 }
             }
+        }
+
+        /// <summary>
+        /// Return a detached copy array of strings representing a row in the document.
+        /// </summary>
+        /// <param name="row">the zero-based row index of the row to return.</param>
+        /// <returns></returns>
+        public string[] GetRow(int row)
+        {
+            return _rowsList[row].ToArray();
         }
     }
 }

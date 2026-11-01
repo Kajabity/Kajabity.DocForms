@@ -52,12 +52,12 @@ namespace CsvEditor
 
                 if( _document != null )
                 {
-                    ListViewItem[] lvItems = new ListViewItem[ _document.NumberOfRows ];
+                    ListViewItem[] lvItems = new ListViewItem[ _document.RowCount ];
 
-                    for( int row = 0; row < _document.NumberOfRows; row++ )
+                    for( int row = 0; row < _document.RowCount; row++ )
                     {
                         var lvItem = new ListViewItem( _document.GetCell( row, 0 ) );
-                        for( int col = 1; col < _document.NumberOfColumns; col++ )
+                        for( int col = 1; col < _document.ColumnCount; col++ )
                         {
                             ListViewItem.ListViewSubItem lvSubItem  =
                                 new ListViewItem.ListViewSubItem( lvItem, _document.GetCell( row, col ));
@@ -68,7 +68,7 @@ namespace CsvEditor
                         lvItems[ row ] = lvItem;
                     }
 
-                    for( int col = 0; col < _document.NumberOfColumns; col++ )
+                    for( int col = 0; col < _document.ColumnCount; col++ )
                     {
                         listView.Columns.Add( columnName( col ) );
                     }
