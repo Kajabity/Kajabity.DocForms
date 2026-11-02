@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- Legacy metadata reference. Current releases pack Kajabity.DocForms.csproj, not this file. -->
 <package >
   <metadata>
     <id>$id$</id>
@@ -7,18 +8,14 @@
     <authors>Kajabity.com</authors>
     <owners>Williams Technologies Limited</owners>
     <license type="expression">Apache-2.0</license>
-    <projectUrl>http://www.kajabity.com/content/kajabity-tools/</projectUrl>
+    <projectUrl>https://github.com/Kajabity/Kajabity.DocForms</projectUrl>
     <readme>README.md</readme>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
-      Preserve unsaved documents when Save As is cancelled or saving fails before closing.
-      Save through a unique sibling temporary file, preserving the original and backup on write failure.
-      Commit document filename and modified state only after successful file replacement.
-      Honour window-close cancellation from the save prompt and retain WinForms click-handler signatures.
-      Expand regression coverage to 77 tests and fix filtered NUnit test execution.
+      Version 0.4.1 fixes zero and reduced recent-file limits, CSV sample column counts and saving, and broadens NuGet vulnerability auditing.
     </releaseNotes>
-    <copyright>Copyright © 2009-17 Williams Technologies Limited.</copyright>
+    <copyright>Copyright © 2009-2026 Williams Technologies Limited.</copyright>
     <tags>Kajabity DocForms WinForms Tools Forms Single Document Interface SDI Recent Documents MRU</tags>
   </metadata>
   <files>

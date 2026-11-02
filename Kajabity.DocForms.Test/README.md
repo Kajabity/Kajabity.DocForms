@@ -1,7 +1,7 @@
 Kajabity.DocForms.Test
 ======================
 
-A suite of NUnit 4 tests for Kajabity.DocForms, targeting .NET Framework 4.8
+A suite of NUnit 5 tests for Kajabity.DocForms, targeting .NET Framework 4.8
 and .NET 10 for Windows.
 
 ## Running the tests
@@ -10,14 +10,16 @@ From PowerShell at the repository root, with a .NET SDK and the .NET Framework 4
 targeting pack installed:
 
 ```powershell
-dotnet test Kajabity.DocForms.Test\Kajabity.DocForms.Test.csproj -c Release --settings Kajabity.DocForms.Test\DocForms.runsettings
+dotnet test Kajabity.DocForms.Test\Kajabity.DocForms.Test.csproj --framework net48 -c Release --settings Kajabity.DocForms.Test\DocForms.runsettings
+dotnet test Kajabity.DocForms.Test\Kajabity.DocForms.Test.csproj --framework net10.0-windows -c Release --settings Kajabity.DocForms.Test\DocForms.runsettings
 ```
 
-For the save/close fixture, append `--filter TestCategory=Issue3` (64 cases).
+For the save/close fixture, append `--filter TestCategory=Issue3`.
 For window-close cancellation and successful closure, use
-`--filter TestCategory=Issue4` (13 cases).
+`--filter TestCategory=Issue4`.
 For just the disk safety cases, append `--filter TestCategory=SaveSafety`
-(12 cases). The full suite currently has 111 cases. `DocForms.runsettings` makes
+(12 cases). The full suite currently has 117 `net48` cases and 126
+`net10.0-windows` cases. `DocForms.runsettings` makes
 zero-test runs an error, including filtered runs.
 
 All projects use SDK-style project files. The library and tests target both
@@ -61,8 +63,10 @@ Coverage includes:
 - Partial write failures and locked destinations, preserving original and backup
   contents, retaining unsaved state, and successfully retrying after unlocking.
 
-The issue #4 regression checks failed all 13 cases before the lifecycle fix;
-the updated full suite passes all 111 cases.
+The issue #4 regression checks failed all 13 cases before the lifecycle fix.
+Recent-file history tests now cover zero and one, reductions, negative limits and
+moving an existing entry to the front. CSV document and save tests run on
+`net10.0-windows`, where the CsvEditor sample is available.
 
 ## Follow-up coverage
 
@@ -75,4 +79,4 @@ The form's safe-save path defers that base status update until replacement succe
 direct calls to `Manager.Save` retain their existing behaviour. Overrides that change
 document state themselves or write multiple files need separate review.
 
-Full documentation is available at [Kajabity Tools](http://www.kajabity.com/kajabity-tools/).
+For current usage guidance, see the [repository README](../README.md) and [library guide](../Kajabity.DocForms/README.md).
