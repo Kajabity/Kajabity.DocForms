@@ -1,0 +1,48 @@
+name: Dependabot auto-merge
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-auto-merge:
+    runs-on: ubuntu-latest
+    if: >-
+      github.repository == 'Kajabity/Kajabity.DocForms' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.base.ref == 'main'
+    steps:
+      - name: Clear auto-merge after a PR change
+        if: github.event.action == 'synchronize' || github.event.action == 'converted_to_draft'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          if [ "$(gh pr view "$PR_URL" --json autoMergeRequest --jq '.autoMergeRequest != null')" = "true" ]; then
+            gh pr merge --disable-auto "$PR_URL"
+          fi
+
+      # Do not check out PR code in this privileged workflow.
+      - name: Fetch verified Dependabot metadata
+        id: metadata
+        if: github.event.pull_request.draft == false
+        continue-on-error: true
+        uses: dependabot/fetch-metadata@v3
+
+      - name: Enable auto-merge for routine version updates
+        if: >-
+          steps.metadata.outcome == 'success' &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+           steps.metadata.outputs.update-type == 'version-update:semver-patch') &&
+          (steps.metadata.outputs.dependency-group == 'test-tooling' ||
+           steps.metadata.outputs.dependency-group == 'resource-support' ||
+           steps.metadata.outputs.dependency-group == 'actions-nonbreaking')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: gh pr merge --auto --merge --match-head-commit "$PR_HEAD_SHA" "$PR_URL"
